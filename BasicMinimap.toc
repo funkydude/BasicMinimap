@@ -1,0 +1,14 @@
+﻿## Interface: 20300
+## Title: BasicMinimap
+## Notes: Square minimap with basic options
+## Author: Funkydude
+# X-Category: 
+# X-Website: http://wowace.com/wiki/
+## Version: 1.0
+## SavedVariables: BasicMinimapDB
+## OptionalDeps: Ace3
+## X-Embeds: Ace3
+
+# embeds.xml
+
+BasicMinimap.lua
