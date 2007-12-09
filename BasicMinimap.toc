@@ -1,6 +1,6 @@
 ﻿## Interface: 20300
 ## Title: BasicMinimap
-## Notes: Square minimap with basic options
+## Notes: Configurable minimap with basic options
 ## Author: Funkydude
 # X-Category: 
 # X-Website: http://wowace.com/wiki/

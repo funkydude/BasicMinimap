@@ -1,9 +1,10 @@
 --[[
-	Square minimap with basic options
+	Configurable minimap with basic options
 	Features:
 	-Moving of the minimap
 	-Scaling of the minimap
 	-Hiding all minimap buttons
+	-Square or circular minimap
 ]]
 
 ------------------------------
@@ -18,6 +19,7 @@ local defaults = {
 		x = nil,
 		y = nil,
 		lock = nil,
+		shape = "square",
 	}
 }
 
@@ -56,6 +58,14 @@ local function setLock()
 	end
 end
 
+local function setShape(n, shape)
+	if shape == "square" then
+		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+	else
+		Minimap:SetMaskTexture("Textures\\MinimapMask")
+	end
+end
+
 local bmoptions = {
 	type = "group",
 	name = "BasicMinimap",
@@ -66,6 +76,14 @@ local bmoptions = {
 			type = "toggle",
 			get = function() return db.lock end,
 			set = setLock
+		},
+		shape = {
+			name = "Shape",
+			desc = "Choose the shape of the minimap.",
+			type = "select",
+			get = function() return db.shape end,
+			set = setShape,
+			values = {square = "Square", circular = "Circular"},
 		},
 		scale = {
 			name = "Scale",
@@ -114,9 +132,11 @@ function BasicMinimap:OnEnable()
 	Minimap:SetScale(db.scale)
 	MinimapNorthTag:Hide()
 
-	MinimapBorder:SetTexture()
+	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
-	Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+	if db.shape == "square" then
+		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+	end
 
 	MinimapZoomIn:Hide()
 	MinimapZoomOut:Hide()
