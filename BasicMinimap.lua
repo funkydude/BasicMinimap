@@ -4,7 +4,7 @@
 	-Moving of the minimap
 	-Scaling of the minimap
 	-Hiding all minimap buttons
-	--Minimap mouse scroll zooming
+	-Minimap mouse scroll zooming
 	-Square or circular minimap
 ]]
 
@@ -78,7 +78,8 @@ local bmoptions = {
 			desc = "Lock the minimap.",
 			type = "toggle",
 			get = function() return db.lock end,
-			set = setLock
+			set = setLock,
+			order = 3,
 		},
 		shape = {
 			name = "Shape",
@@ -87,6 +88,7 @@ local bmoptions = {
 			get = function() return db.shape end,
 			set = setShape,
 			values = {square = "Square", circular = "Circular"},
+			order = 1,
 		},
 		scale = {
 			name = "Scale",
@@ -97,6 +99,7 @@ local bmoptions = {
 			step = 0.1,
 			get = function() return db.scale end,
 			set = setScale,
+			order = 2,
 		},
 	}
 }
