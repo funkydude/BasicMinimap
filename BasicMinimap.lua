@@ -4,6 +4,7 @@
 	-Moving of the minimap
 	-Scaling of the minimap
 	-Hiding all minimap buttons
+	--Minimap mouse scroll zooming
 	-Square or circular minimap
 ]]
 
@@ -61,8 +62,10 @@ end
 local function setShape(n, shape)
 	if shape == "square" then
 		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+		db.shape = "square"
 	else
 		Minimap:SetMaskTexture("Textures\\MinimapMask")
+		db.shape = "circular"
 	end
 end
 
