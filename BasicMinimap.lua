@@ -142,6 +142,8 @@ function BasicMinimap:OnEnable()
 	MinimapBorderTop:Hide()
 	if db.shape == "square" then
 		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+		--Return minimap shape for other addons
+		function GetMinimapShape() return "SQUARE" end
 	end
 
 	MinimapZoomIn:Hide()
