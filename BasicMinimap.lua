@@ -12,7 +12,6 @@
 --      Are you local?      --
 ------------------------------
 
-local _G = _G
 local db
 local defaults = {
 	profile = {
@@ -117,11 +116,9 @@ function BasicMinimap:OnInitialize()
 end
 
 function BasicMinimap:OnEnable()
-	local x = db.x
-	local y = db.y
-	if x and y then
+	if db.x and db.y then
 		Minimap:ClearAllPoints()
-		Minimap:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x, y)
+		Minimap:SetPoint("CENTER", UIParent, "BOTTOMLEFT", db.x, db.y)
 	else
 		Minimap:SetPoint("CENTER", UIParent, "CENTER")
 	end
