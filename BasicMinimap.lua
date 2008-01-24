@@ -72,33 +72,71 @@ local bmoptions = {
 	type = "group",
 	name = "BasicMinimap",
 	args = {
-		lock = {
-			name = "Lock",
-			desc = "Lock the minimap.",
-			type = "toggle",
-			get = function() return db.lock end,
-			set = setLock,
-			order = 3,
-		},
-		shape = {
-			name = "Shape",
-			desc = "Choose the shape of the minimap.",
-			type = "select",
-			get = function() return db.shape end,
-			set = setShape,
-			values = {square = "Square", circular = "Circular"},
+		intro = {
+			type = "description",
+			name = "BasicMinimap is a basic solution to a clean, square minimap. Allowing scaling, moving and locking of the minimap.",
 			order = 1,
 		},
-		scale = {
-			name = "Scale",
-			type = "range",
-			desc = "Adjust the minimap scale.",
-			min = 0.5,
-			max = 2,
-			step = 0.1,
-			get = function() return db.scale end,
-			set = setScale,
+		shape = {
 			order = 2,
+			name = "Shape",
+			type = "group",
+			args = {
+				shapedesc = {
+					order = 1,
+					type = "description",
+					name = "Change the minimap shape, curcular or square.",
+				},
+				shapeset = {
+					name = "Shape",
+					type = "select",
+					get = function() return db.shape end,
+					set = setShape,
+					values = {square = "Square", circular = "Circular"},
+					order = 2,
+				},
+			},
+		},
+		scale = {
+			order = 3,
+			name = "Scale",
+			type = "group",
+			args = {
+				scaledesc = {
+					order = 1,
+					type = "description",
+					name = "Adjust the minimap scale, from 0.5 to 2.",
+				},
+				scaleset = {
+					name = "Scale",
+					type = "range",
+					min = 0.5,
+					max = 2,
+					step = 0.1,
+					get = function() return db.scale end,
+					set = setScale,
+					order = 2,
+				},
+			},
+		},
+		lock = {
+			order = 4,
+			name = "Lock",
+			type = "group",
+			args = {
+				lockdesc = {
+					order = 1,
+					type = "description",
+					name = "Lock the minimap in its current location.",
+				},
+				lockset = {
+					name = "Lock",
+					type = "toggle",
+					get = function() return db.lock end,
+					set = setLock,
+					order = 2,
+				},
+			},
 		},
 	}
 }
