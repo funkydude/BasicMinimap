@@ -2,13 +2,13 @@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options
 ## Author: Funkydude
-# X-Category: 
+## X-Category: Map
 # X-Website: http://wowace.com/wiki/
 ## Version: 1.0
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 
-# embeds.xml
+embeds.xml
 
 BasicMinimap.lua

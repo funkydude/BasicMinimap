@@ -1,4 +1,4 @@
---[[
+﻿--[[
 	Configurable minimap with basic options
 	Features:
 	-Moving of the minimap
