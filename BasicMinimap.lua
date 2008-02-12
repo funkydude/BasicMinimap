@@ -6,6 +6,7 @@
 	-Hiding all minimap buttons
 	-Minimap mouse scroll zooming
 	-Square or circular minimap
+	-Minimap strata selection
 ]]
 
 ------------------------------
@@ -20,6 +21,7 @@ local defaults = {
 		y = nil,
 		lock = nil,
 		shape = "square",
+		strata = "BACKGROUND",
 	}
 }
 
@@ -39,7 +41,7 @@ local function stop()
 	db.x, db.y = Minimap:GetCenter()
 end
 
-local function setScale(n, scale)
+local function setScale(_, scale)
 	db.scale = scale
 	Minimap:SetScale(scale)
 end
@@ -58,7 +60,7 @@ local function setLock()
 	end
 end
 
-local function setShape(n, shape)
+local function setShape(_, shape)
 	if shape == "square" then
 		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
 		db.shape = "square"
@@ -68,13 +70,18 @@ local function setShape(n, shape)
 	end
 end
 
+local function setStrata(_, strata)
+	Minimap:SetFrameStrata(strata)
+	db.strata = strata
+end
+
 local bmoptions = {
 	type = "group",
 	name = "BasicMinimap",
 	args = {
 		intro = {
 			type = "description",
-			name = "BasicMinimap is a basic solution to a clean, square minimap. Allowing scaling, moving and locking of the minimap.",
+			name = "BasicMinimap is a basic solution to a clean, square minimap. Allowing scaling, moving, mouse-wheel zooming, strata changing and locking of the minimap.",
 			order = 1,
 		},
 		shape = {
@@ -105,7 +112,7 @@ local bmoptions = {
 				scaledesc = {
 					order = 1,
 					type = "description",
-					name = "Adjust the minimap scale, from 0.5 to 2.",
+					name = "Adjust the minimap scale, from 0.5 to 2.0",
 				},
 				scaleset = {
 					name = "Scale",
@@ -119,8 +126,29 @@ local bmoptions = {
 				},
 			},
 		},
-		lock = {
+		strata = {
 			order = 4,
+			name = "Strata",
+			type = "group",
+			args = {
+				stratadesc = {
+					order = 1,
+					type = "description",
+					name = "Change the strata of the Minimap.",
+				},
+				strataset = {
+					name = "Strata",
+					type = "select",
+					get = function() return db.strata end,
+					set = setStrata,
+					values = {TOOLTIP = "Tooltip", FULLSCREEN_DIALOG = "Fullscreen_dialog", FULLSCREEN = "Fullscreen",
+					DIALOG = "Dialog", HIGH = "High", MEDIUM = "Medium", LOW = "Low", BACKGROUND = "Background"},
+					order = 2,
+				},
+			},
+		},
+		lock = {
+			order = 5,
 			name = "Lock",
 			type = "group",
 			args = {
@@ -171,6 +199,7 @@ function BasicMinimap:OnEnable()
 	end
 
 	Minimap:SetScale(db.scale)
+	Minimap:SetFrameStrata(db.strata)
 	MinimapNorthTag:Hide()
 
 	MinimapBorder:Hide()
@@ -198,6 +227,8 @@ function BasicMinimap:OnEnable()
 
 	MinimapZoneTextButton:Hide()
 	MinimapZoneTextButton:UnregisterAllEvents()
+
+	MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
 
 	local MinimapZoom = CreateFrame("Frame", "BasicMinimapZoom", Minimap)
 	MinimapZoom:SetPoint("TOPLEFT", Minimap, "TOPLEFT")
