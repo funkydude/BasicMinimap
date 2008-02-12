@@ -34,6 +34,7 @@ local function zoom()
 end
 
 local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap", "AceConsole-3.0")
+local L = LibStub("AceLocale-3.0"):GetLocale("BasicMinimap", true)
 
 local function move() this:StartMoving() end
 local function stop()
@@ -81,41 +82,41 @@ local bmoptions = {
 	args = {
 		intro = {
 			type = "description",
-			name = "BasicMinimap is a basic solution to a clean, square minimap. Allowing scaling, moving, mouse-wheel zooming, strata changing and locking of the minimap.",
+			name = L["Intro"],
 			order = 1,
 		},
 		shape = {
 			order = 2,
-			name = "Shape",
+			name = L["Shape"],
 			type = "group",
 			args = {
 				shapedesc = {
 					order = 1,
 					type = "description",
-					name = "Change the minimap shape, curcular or square.",
+					name = L["Change the minimap shape, curcular or square."],
 				},
 				shapeset = {
-					name = "Shape",
+					name = L["Shape"],
 					type = "select",
 					get = function() return db.shape end,
 					set = setShape,
-					values = {square = "Square", circular = "Circular"},
+					values = {square = L["Square"], circular = L["Circular"]},
 					order = 2,
 				},
 			},
 		},
 		scale = {
 			order = 3,
-			name = "Scale",
+			name = L["Scale"],
 			type = "group",
 			args = {
 				scaledesc = {
 					order = 1,
 					type = "description",
-					name = "Adjust the minimap scale, from 0.5 to 2.0",
+					name = L["Adjust the minimap scale, from 0.5 to 2.0"],
 				},
 				scaleset = {
-					name = "Scale",
+					name = L["Scale"],
 					type = "range",
 					min = 0.5,
 					max = 2,
@@ -128,16 +129,16 @@ local bmoptions = {
 		},
 		strata = {
 			order = 4,
-			name = "Strata",
+			name = L["Strata"],
 			type = "group",
 			args = {
 				stratadesc = {
 					order = 1,
 					type = "description",
-					name = "Change the strata of the Minimap.",
+					name = L["Change the strata of the Minimap."],
 				},
 				strataset = {
-					name = "Strata",
+					name = L["Strata"],
 					type = "select",
 					get = function() return db.strata end,
 					set = setStrata,
@@ -149,16 +150,16 @@ local bmoptions = {
 		},
 		lock = {
 			order = 5,
-			name = "Lock",
+			name = L["Lock"],
 			type = "group",
 			args = {
 				lockdesc = {
 					order = 1,
 					type = "description",
-					name = "Lock the minimap in its current location.",
+					name = L["Lock the minimap in its current location."],
 				},
 				lockset = {
-					name = "Lock",
+					name = L["Lock"],
 					type = "toggle",
 					get = function() return db.lock end,
 					set = setLock,
