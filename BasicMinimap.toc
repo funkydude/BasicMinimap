@@ -12,5 +12,6 @@
 embeds.xml
 
 Locales\enUS.lua
+Locales\deDE.lua
 
 BasicMinimap.lua
