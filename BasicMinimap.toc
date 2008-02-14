@@ -1,6 +1,7 @@
 ﻿## Interface: 20300
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options
+## Notes-frFR: Minicarte configurable comportant des options basiques.
 ## Author: Funkydude
 ## X-Category: Map
 # X-Website: http://wowace.com/wiki/
@@ -14,5 +15,6 @@ embeds.xml
 Locales\enUS.lua
 Locales\deDE.lua
 Locales\koKR.lua
+Locales\frFR.lua
 
 BasicMinimap.lua
