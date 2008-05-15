@@ -182,6 +182,7 @@ function BasicMinimap:OnInitialize()
 	self:RegisterChatCommand("bm", function() LibStub("AceConfigDialog-3.0"):Open("BasicMinimap") end)
 end
 
+local function kill() end
 function BasicMinimap:OnEnable()
 	if db.x and db.y then
 		Minimap:ClearAllPoints()
@@ -201,6 +202,7 @@ function BasicMinimap:OnEnable()
 
 	Minimap:SetScale(db.scale)
 	Minimap:SetFrameStrata(db.strata)
+	MinimapNorthTag.Show = kill
 	MinimapNorthTag:Hide()
 
 	MinimapBorder:Hide()
