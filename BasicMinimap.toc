@@ -1,4 +1,4 @@
-﻿## Interface: 20300
+﻿## Interface: 20400
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options
 ## Notes-frFR: Minicarte configurable comportant des options basiques.

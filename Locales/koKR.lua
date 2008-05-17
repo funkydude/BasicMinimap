@@ -1,4 +1,5 @@
-﻿local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","koKR",true)
+﻿local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","koKR")
+if not L then return end
 
 L["Intro"] = "BasicMinimap은 사각형 미니맵을 지원합니다. 그이외에 크기 조절, 위치 이동, 마우스로 확대, 축소의 기능을 가지고 있습니다."
 

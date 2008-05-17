@@ -1,4 +1,5 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","deDE",true)
+local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","deDE")
+if not L then return end
 
 L["Intro"] = "BasicMinimap ist eine einfache L\195\182sung f\195\188r eine komplette, eckige Minimap. Erlaubt das Skalieren, Verschieben, Mausrad-Zoomen und Sperren der Minimap."
 
