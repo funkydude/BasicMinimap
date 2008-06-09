@@ -102,10 +102,10 @@ function BasicMinimap:OnInitialize()
 	_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
 end
 
-local function zoom()
-	if arg1 > 0 then
+local function zoom(_, d)
+	if d > 0 then
 		MinimapZoomIn:Click()
-	elseif arg1 < 0 then
+	elseif d < 0 then
 		MinimapZoomOut:Click()
 	end
 end
@@ -164,9 +164,6 @@ function BasicMinimap:OnEnable()
 
 	MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
 
-	local MinimapZoom = CreateFrame("Frame", "BasicMinimapZoom", Minimap)
-	MinimapZoom:SetPoint("TOPLEFT", Minimap, "TOPLEFT")
-	MinimapZoom:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT")
-	MinimapZoom:EnableMouseWheel(true)
-	MinimapZoom:SetScript("OnMouseWheel", zoom)
+	Minimap:EnableMouseWheel(true)
+	Minimap:SetScript("OnMouseWheel", zoom)
 end
