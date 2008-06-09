@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Configurable minimap with basic options
 	Features:
 	-Moving of the minimap
@@ -8,6 +8,8 @@
 	-Square or circular minimap
 	-Minimap strata selection
 ]]
+
+local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
 
 ------------------------------
 --      Are you local?      --
@@ -25,150 +27,64 @@ local defaults = {
 	}
 }
 
-local function zoom()
-	if arg1 > 0 then
-		MinimapZoomIn:Click()
-	elseif arg1 < 0 then
-		MinimapZoomOut:Click()
-	end
-end
-
-local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap", "AceConsole-3.0")
-local L = LibStub("AceLocale-3.0"):GetLocale("BasicMinimap", true)
-
-local function move() this:StartMoving() end
-local function stop()
-	this:StopMovingOrSizing()
-	db.x, db.y = Minimap:GetCenter()
-end
-
-local function setScale(_, scale)
-	db.scale = scale
-	Minimap:SetScale(scale)
-end
-
-local function setLock()
-	if not db.lock then
-		Minimap:SetMovable(false)
-		Minimap:SetScript("OnDragStart", nil)
-		Minimap:SetScript("OnDragStop", nil)
-		db.lock = true
-	else
-		Minimap:SetMovable(true)
-		Minimap:SetScript("OnDragStart", move)
-		Minimap:SetScript("OnDragStop", stop)
-		db.lock = nil
-	end
-end
-
-local function setShape(_, shape)
-	if shape == "square" then
-		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
-		db.shape = "square"
-	else
-		Minimap:SetMaskTexture("Textures\\MinimapMask")
-		db.shape = "circular"
-	end
-end
-
-local function setStrata(_, strata)
-	Minimap:SetFrameStrata(strata)
-	db.strata = strata
-end
-
-local bmoptions = {
-	type = "group",
-	name = "BasicMinimap",
-	args = {
-		intro = {
-			type = "description",
-			name = L["Intro"],
-			order = 1,
-		},
-		shape = {
-			order = 2,
-			name = L["Shape"],
+local options
+local function getOptions()
+	if not options then
+		local L = LibStub("AceLocale-3.0"):GetLocale("BasicMinimap", true)
+		options = {
 			type = "group",
+			name = "BasicMinimap",
 			args = {
-				shapedesc = {
-					order = 1,
-					type = "description",
-					name = L["Change the minimap shape, curcular or square."],
+				intro = {
+					name = L["Intro"],
+					order = 1, type = "description",
 				},
-				shapeset = {
-					name = L["Shape"],
-					type = "select",
-					get = function() return db.shape end,
-					set = setShape,
-					values = {square = L["Square"], circular = L["Circular"]},
-					order = 2,
+				spacer = {
+					name = "",
+					order = 2, type = "header",
 				},
-			},
-		},
-		scale = {
-			order = 3,
-			name = L["Scale"],
-			type = "group",
-			args = {
-				scaledesc = {
-					order = 1,
-					type = "description",
-					name = L["Adjust the minimap scale, from 0.5 to 2.0"],
-				},
-				scaleset = {
-					name = L["Scale"],
-					type = "range",
-					min = 0.5,
-					max = 2,
-					step = 0.01,
+				scale = {
+					name = L["Scale"], desc = L["Adjust the minimap scale, from 0.5 to 2.0"],
+					order = 3, type = "range", width = "full",
+					min = 0.5, max = 2, step = 0.01,
 					get = function() return db.scale end,
-					set = setScale,
-					order = 2,
+					set = function(_, scale) db.scale = scale Minimap:SetScale(scale) end,
 				},
-			},
-		},
-		strata = {
-			order = 4,
-			name = L["Strata"],
-			type = "group",
-			args = {
-				stratadesc = {
-					order = 1,
-					type = "description",
-					name = L["Change the strata of the Minimap."],
-				},
-				strataset = {
-					name = L["Strata"],
-					type = "select",
+				strata = {
+					name = L["Strata"], desc = L["Change the strata of the Minimap."],
+					order = 4, type = "select", width = "full",
 					get = function() return db.strata end,
-					set = setStrata,
-					values = {TOOLTIP = "Tooltip", FULLSCREEN_DIALOG = "Fullscreen_dialog", FULLSCREEN = "Fullscreen",
-					DIALOG = "Dialog", HIGH = "High", MEDIUM = "Medium", LOW = "Low", BACKGROUND = "Background"},
-					order = 2,
+					set = function(_, strata) Minimap:SetFrameStrata(strata) db.strata = strata end,
+					values = {TOOLTIP = L["Tooltip"], FULLSCREEN_DIALOG = L["Fullscreen_dialog"], FULLSCREEN = L["Fullscreen"],
+					DIALOG = L["Dialog"], HIGH = _G["HIGH"], MEDIUM = _G["AUCTION_TIME_LEFT2"], LOW = _G["LOW"], BACKGROUND = _G["BACKGROUND"]},
 				},
-			},
-		},
-		lock = {
-			order = 5,
-			name = L["Lock"],
-			type = "group",
-			args = {
-				lockdesc = {
-					order = 1,
-					type = "description",
-					name = L["Lock the minimap in its current location."],
-				},
-				lockset = {
-					name = L["Lock"],
-					type = "toggle",
+				lock = {
+					name = _G["LOCK"], desc = L["Lock the minimap in its current location."],
+					order = 5, type = "toggle",
 					get = function() return db.lock end,
-					set = setLock,
-					order = 2,
+					set = function(_, state) db.lock = state
+						if not state then state = true else state = false end
+						Minimap:SetMovable(state)
+					end,
+				},
+				shape = {
+					name = L["Shape"], desc = L["Change the minimap shape, curcular or square."],
+					order = 6, type = "select",
+					values = {square = _G["RAID_TARGET_6"], circular = _G["RAID_TARGET_2"]}, --Square, Circle
+					get = function() return db.shape end,
+					set = function(_, shape) db.shape = shape
+						if shape == "square" then
+							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+						else
+							Minimap:SetMaskTexture("Textures\\MinimapMask")
+						end
+					end,
 				},
 			},
-		},
-	}
-}
+		}
+	end
+	return options
+end
 
 ------------------------------
 --      Initialization      --
@@ -178,11 +94,24 @@ function BasicMinimap:OnInitialize()
 	BasicMinimap.db = LibStub("AceDB-3.0"):New("BasicMinimapDB", defaults)
 	db = self.db.profile
 
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", bmoptions)
-	self:RegisterChatCommand("bm", function() LibStub("AceConfigDialog-3.0"):Open("BasicMinimap") end)
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
+
+	_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToFrame("BasicMinimap") end
+	_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
+	_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
+end
+
+local function zoom()
+	if arg1 > 0 then
+		MinimapZoomIn:Click()
+	elseif arg1 < 0 then
+		MinimapZoomOut:Click()
+	end
 end
 
 local function kill() end
+
 function BasicMinimap:OnEnable()
 	if db.x and db.y then
 		Minimap:ClearAllPoints()
@@ -194,11 +123,13 @@ function BasicMinimap:OnEnable()
 	Minimap:RegisterForDrag("LeftButton")
 	Minimap:SetClampedToScreen(true)
 
-	if not db.lock then
-		Minimap:SetMovable(true)
-		Minimap:SetScript("OnDragStart", move)
-		Minimap:SetScript("OnDragStop", stop)
-	end
+	Minimap:SetScript("OnDragStart", function() if this:IsMovable() then this:StartMoving() end end)
+	Minimap:SetScript("OnDragStop", function()
+		this:StopMovingOrSizing()
+		db.x, db.y = Minimap:GetCenter()
+	end)
+
+	if not db.lock then Minimap:SetMovable(true) end
 
 	Minimap:SetScale(db.scale)
 	Minimap:SetFrameStrata(db.strata)

@@ -5,8 +5,6 @@ L["Intro"] = "BasicMinimap은 사각형 미니맵을 지원합니다. 그이외�
 
 L["Shape"] = "모양"
 L["Change the minimap shape, curcular or square."] = "미니맵의 모양을 변경합니다. 사각형 또는 동그라미"
-L["Square"] = "사각형"
-L["Circular"] = "동그라미"
 
 L["Scale"] = "크기"
 L["Adjust the minimap scale, from 0.5 to 2.0"] = "미니맵의 크기를 조절합니다. (0.5 - 2.0)"
@@ -14,6 +12,9 @@ L["Adjust the minimap scale, from 0.5 to 2.0"] = "미니맵의 크기를 조절�
 L["Strata"] = "우선순위"
 L["Change the strata of the Minimap."] = "미니맵의 프레임 높이를 조절합니다.(프레임에서 다른 프레임과 겹칠때 우선순위를 결정합니다.)"
 
-L["Lock"] = "고정"
 L["Lock the minimap in its current location."] = "미니맵을 현재 위치에 고정합니다."
 
+L["Tooltip"] = "Tooltip"
+L["Fullscreen_dialog"] = "Fullscreen_dialog"
+L["Fullscreen"] = "Fullscreen"
+L["Dialog"] = "Dialog"

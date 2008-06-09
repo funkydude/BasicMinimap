@@ -1,10 +1,10 @@
-﻿## Interface: 20400
+## Interface: 20400
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
 ## Author: Funkydude
 ## X-Category: Map
-# X-Website: http://wowace.com/wiki/
+## X-Website: http://www.wowace.com/wiki/BasicMinimap
 ## Version: 1.0
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
