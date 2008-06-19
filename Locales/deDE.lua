@@ -18,3 +18,9 @@ L["Tooltip"] = "Tooltip"
 L["Fullscreen_dialog"] = "Fullscreen_dialog"
 L["Fullscreen"] = "Fullscreen"
 L["Dialog"] = "Dialog"
+
+L["Border Color"] = "Border Color"
+L["Change the minimap border color."] = "Change the minimap border color."
+
+L["Border Size"] = "Border Size"
+L["Adjust the minimap border size."] = "Adjust the minimap border size."

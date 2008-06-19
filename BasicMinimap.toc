@@ -1,6 +1,6 @@
 ## Interface: 20400
 ## Title: BasicMinimap
-## Notes: Configurable minimap with basic options
+## Notes: Configurable minimap with basic options.
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
 ## Author: Funkydude
 ## X-Category: Map
@@ -9,6 +9,9 @@
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
+# X-RelSite-WoWI: 0
+# X-RelSite-Curse: 0
+## X-AceForum: 11236
 
 embeds.xml
 
