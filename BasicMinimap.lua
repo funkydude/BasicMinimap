@@ -93,6 +93,7 @@ local function getOptions()
 						db.border.r = r db.border.g = g db.border.b = b
 						_G.BasicMinimapBorder:SetBackdropBorderColor(r, g, b)
 					end,
+					disabled = function() return db.shape ~= "square" end,
 				},
 				bordersize = {
 					name = L["Border Size"], desc = L["Adjust the minimap border size."],
@@ -107,6 +108,7 @@ local function getOptions()
 						_G.BasicMinimapBorder:SetWidth(_G.Minimap:GetWidth()+s)
 						_G.BasicMinimapBorder:SetHeight(_G.Minimap:GetHeight()+s)
 					end,
+					disabled = function() return db.shape ~= "square" end,
 				},
 			},
 		}
@@ -165,6 +167,8 @@ function BasicMinimap:OnEnable()
 	Minimap:SetFrameStrata(db.strata)
 	MinimapNorthTag.Show = kill
 	MinimapNorthTag:Hide()
+	MiniMapCompassRing.Show = kill
+	MiniMapCompassRing:Hide()
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
