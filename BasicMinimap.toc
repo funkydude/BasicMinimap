@@ -9,8 +9,9 @@
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
-# X-RelSite-WoWI: 0
-# X-RelSite-Curse: 0
+## X-RelSite-WoWI: 9101
+## X-RelSite-Curse: 13048
+## X-RelSite-UI.WoW: 6475
 ## X-AceForum: 11236
 
 embeds.xml
