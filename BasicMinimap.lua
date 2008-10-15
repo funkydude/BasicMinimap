@@ -201,6 +201,15 @@ function BasicMinimap:OnEnable()
 			_G.MinimapZoomOut:Click()
 		end
 	end)
+	Minimap:SetScript("OnMouseUp", function(self, btn)
+		if btn == "RightButton" then
+			_G.GameTimeFrame:Click()
+		elseif btn == "MiddleButton" then
+			_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
+		else
+			_G.Minimap_OnClick(self)
+		end
+	end)
 
 	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
 	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})
