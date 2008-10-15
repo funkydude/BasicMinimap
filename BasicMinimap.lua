@@ -80,8 +80,10 @@ local function getOptions()
 					set = function(_, shape) db.shape = shape
 						if shape == "square" then
 							_G.Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+							BasicMinimapBorder:Show()
 						else
 							_G.Minimap:SetMaskTexture("Textures\\MinimapMask")
+							BasicMinimapBorder:Hide()
 						end
 					end,
 				},
@@ -127,21 +129,12 @@ function BasicMinimap:OnInitialize()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
 
-	_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToFrame("BasicMinimap") end
+	_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
 	_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
 	_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
 end
 
-local function zoom(_, d)
-	if d > 0 then
-		_G.MinimapZoomIn:Click()
-	elseif d < 0 then
-		_G.MinimapZoomOut:Click()
-	end
-end
-
 local function kill() end
-
 function BasicMinimap:OnEnable()
 	local Minimap = _G.Minimap
 
@@ -155,9 +148,9 @@ function BasicMinimap:OnEnable()
 	Minimap:RegisterForDrag("LeftButton")
 	Minimap:SetClampedToScreen(true)
 
-	Minimap:SetScript("OnDragStart", function() if this:IsMovable() then this:StartMoving() end end)
-	Minimap:SetScript("OnDragStop", function()
-		this:StopMovingOrSizing()
+	Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
+	Minimap:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
 		db.x, db.y = Minimap:GetCenter()
 	end)
 
@@ -197,9 +190,17 @@ function BasicMinimap:OnEnable()
 	MinimapZoneTextButton:UnregisterAllEvents()
 
 	MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
+	MiniMapTracking:Hide()
+	MiniMapTracking:UnregisterAllEvents()
 
 	Minimap:EnableMouseWheel(true)
-	Minimap:SetScript("OnMouseWheel", zoom)
+	Minimap:SetScript("OnMouseWheel", function(self, d)
+		if d > 0 then
+			_G.MinimapZoomIn:Click()
+		elseif d < 0 then
+			_G.MinimapZoomOut:Click()
+		end
+	end)
 
 	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
 	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})

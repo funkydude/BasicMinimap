@@ -1,18 +1,13 @@
-## Interface: 20400
+## Interface: 30000
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
 ## Author: Funkydude
 ## X-Category: Map
-## X-Website: http://www.wowace.com/wiki/BasicMinimap
-## Version: 1.0
+## Version: 1.1
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
-## X-RelSite-WoWI: 9101
-## X-RelSite-Curse: 13048
-## X-RelSite-UI.WoW: 6475
-## X-AceForum: 11236
 
 embeds.xml
 
