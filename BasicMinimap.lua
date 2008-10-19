@@ -138,6 +138,15 @@ local function kill() end
 function BasicMinimap:OnEnable()
 	local Minimap = _G.Minimap
 
+	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
+	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})
+	border:SetFrameStrata(db.strata)
+	border:SetPoint("CENTER", Minimap, "CENTER")
+	border:SetBackdropBorderColor(db.border.r, db.border.g, db.border.b)
+	border:SetWidth(Minimap:GetWidth()+db.borderSize)
+	border:SetHeight(Minimap:GetHeight()+db.borderSize)
+	border:Hide()
+
 	if db.x and db.y then
 		Minimap:ClearAllPoints()
 		Minimap:SetPoint("CENTER", UIParent, "BOTTOMLEFT", db.x, db.y)
@@ -166,6 +175,7 @@ function BasicMinimap:OnEnable()
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
 	if db.shape == "square" then
+		border:Show()
 		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
 		--Return minimap shape for other addons
 		function GetMinimapShape() return "SQUARE" end
@@ -176,21 +186,25 @@ function BasicMinimap:OnEnable()
 
 	MiniMapVoiceChatFrame:Hide()
 	MiniMapVoiceChatFrame:UnregisterAllEvents()
+	MiniMapVoiceChatFrame.Show = kill
 
 	MinimapToggleButton:Hide()
 	MinimapToggleButton:UnregisterAllEvents()
 
 	GameTimeFrame:Hide()
 	GameTimeFrame:UnregisterAllEvents()
+	GameTimeFrame.Show = kill
 
 	MiniMapWorldMapButton:Hide()
 	MiniMapWorldMapButton:UnregisterAllEvents()
+	MiniMapWorldMapButton.Show = kill
 
 	MinimapZoneTextButton:Hide()
 	MinimapZoneTextButton:UnregisterAllEvents()
 
 	MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
 	MiniMapTracking:Hide()
+	MiniMapTracking.Show = kill
 	MiniMapTracking:UnregisterAllEvents()
 
 	Minimap:EnableMouseWheel(true)
@@ -210,13 +224,4 @@ function BasicMinimap:OnEnable()
 			_G.Minimap_OnClick(self)
 		end
 	end)
-
-	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
-	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})
-	border:SetFrameStrata(db.strata)
-	border:SetPoint("CENTER", Minimap, "CENTER")
-	border:SetBackdropBorderColor(db.border.r, db.border.g, db.border.b)
-	border:SetWidth(Minimap:GetWidth()+db.borderSize)
-	border:SetHeight(Minimap:GetHeight()+db.borderSize)
-	border:Show()
 end

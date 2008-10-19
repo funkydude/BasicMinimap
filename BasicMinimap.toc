@@ -4,7 +4,7 @@
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
 ## Author: Funkydude
 ## X-Category: Map
-## Version: 1.2
+## Version: 1.3
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
