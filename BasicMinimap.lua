@@ -192,7 +192,6 @@ function BasicMinimap:OnEnable()
 	border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 	border:RegisterEvent("CALENDAR_ACTION_PENDING")
 	border:SetScript("OnEvent", function()
-		print(evt,arg)
 		if CalendarGetNumPendingInvites() < 1 then
 			GameTimeFrame:Hide()
 		else
