@@ -119,6 +119,7 @@ local function getOptions()
 						)
 						_G.BasicMinimapBorder:SetWidth(_G.Minimap:GetWidth()+s)
 						_G.BasicMinimapBorder:SetHeight(_G.Minimap:GetHeight()+s)
+						_G.BasicMinimapBorder:SetBackdropBorderColor(db.border.r, db.border.g, db.border.b)
 					end,
 					disabled = function() return db.shape ~= "square" end,
 				},
