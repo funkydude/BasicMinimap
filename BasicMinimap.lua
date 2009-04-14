@@ -169,8 +169,6 @@ function BasicMinimap:OnEnable()
 	Minimap:SetFrameStrata(db.strata)
 	MinimapNorthTag.Show = kill
 	MinimapNorthTag:Hide()
-	MiniMapCompassRing.Show = kill
-	MiniMapCompassRing:Hide()
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
