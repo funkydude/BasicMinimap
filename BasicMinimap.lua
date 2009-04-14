@@ -189,9 +189,16 @@ function BasicMinimap:OnEnable()
 	MinimapToggleButton:Hide()
 	MinimapToggleButton:UnregisterAllEvents()
 
-	GameTimeFrame:Hide()
-	GameTimeFrame:UnregisterAllEvents()
-	GameTimeFrame.Show = kill
+	border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+	border:RegisterEvent("CALENDAR_ACTION_PENDING")
+	border:SetScript("OnEvent", function()
+		print(evt,arg)
+		if CalendarGetNumPendingInvites() < 1 then
+			GameTimeFrame:Hide()
+		else
+			GameTimeFrame:Show()
+		end
+	end)
 
 	MiniMapWorldMapButton:Hide()
 	MiniMapWorldMapButton:UnregisterAllEvents()
