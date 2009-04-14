@@ -24,3 +24,8 @@ L["Change the minimap border color."] = "Change the minimap border color."
 
 L["Border Size"] = "Border Size"
 L["Adjust the minimap border size."] = "Adjust the minimap border size."
+
+L["Button Description"] = "Choose the buttons for opening the Calendar and tracking menu.\nOptions are: RightButton, MiddleButton, Button4, Button5 ..."
+
+L["Calendar"] = "Calendar"
+L["Tracking"] = "Tracking"

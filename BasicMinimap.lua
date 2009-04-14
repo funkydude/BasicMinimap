@@ -11,10 +11,6 @@
 
 local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
 
-------------------------------
---      Are you local?      --
-------------------------------
-
 local db
 local defaults = {
 	profile = {
@@ -26,8 +22,22 @@ local defaults = {
 		strata = "BACKGROUND",
 		border = { r = 0.73, g = 0.75, b = 1 },
 		borderSize = 3,
+		calendar = "RightButton",
+		tracking = "MiddleButton",
 	}
 }
+
+local function updateMap()
+	Minimap:SetScript("OnMouseUp", function(self, btn)
+		if btn == db.calendar then
+			_G.GameTimeFrame:Click()
+		elseif btn == db.tracking then
+			_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
+		elseif btn == "LeftButton" then
+			_G.Minimap_OnClick(self)
+		end
+	end)
+end
 
 local options
 local function getOptions()
@@ -111,6 +121,32 @@ local function getOptions()
 						_G.BasicMinimapBorder:SetHeight(_G.Minimap:GetHeight()+s)
 					end,
 					disabled = function() return db.shape ~= "square" end,
+				},
+				btndesc = {
+					name = L["Button Description"],
+					order = 9, type = "description",
+				},
+				calendarbtn = {
+					name = L["Calendar"],
+					order = 10, type = "input",
+					get = function() return db.calendar end,
+					set = function(_, btn)
+						if btn == "RightButton" or btn == "MiddleButton" or btn:match("^Button%d$") then
+							db.calendar = btn
+							updateMap()
+						end
+					end,
+				},
+				trackingbtn = {
+					name = L["Tracking"],
+					order = 11, type = "input",
+					get = function() return db.tracking end,
+					set = function(_, btn)
+						if btn == "RightButton" or btn == "MiddleButton" or btn:match("^Button%d$") then
+							db.tracking = btn
+							updateMap()
+						end
+					end,
 				},
 			},
 		}
@@ -219,13 +255,5 @@ function BasicMinimap:OnEnable()
 			_G.MinimapZoomOut:Click()
 		end
 	end)
-	Minimap:SetScript("OnMouseUp", function(self, btn)
-		if btn == "RightButton" then
-			_G.GameTimeFrame:Click()
-		elseif btn == "MiddleButton" then
-			_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
-		else
-			_G.Minimap_OnClick(self)
-		end
-	end)
+	updateMap()
 end
