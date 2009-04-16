@@ -7,6 +7,7 @@
 	-Minimap mouse scroll zooming
 	-Square or circular minimap
 	-Minimap strata selection
+	-Selecting which mouseclick opens which menu (tracking/calendar)
 ]]
 
 local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
