@@ -9,6 +9,7 @@
 	-Minimap strata selection
 	-Selecting which mouseclick opens which menu (tracking/calendar)
 	-Auto showing the calendar button when invites arrive
+	-Minimap border and color selection
 ]]
 
 local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
