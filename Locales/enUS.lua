@@ -1,4 +1,10 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","enUS",true)
+local debug = false
+--@debug@
+debug = true
+--@end-debug@
+
+local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","enUS",true,debug)
+--@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, handle-subnamespaces="concat")@
 
 L["Intro"] = "BasicMinimap is a basic solution to a clean, square minimap. Allowing scaling, moving, mouse-wheel zooming, strata changing and locking of the minimap."
 

@@ -1,5 +1,6 @@
-﻿local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","frFR")
+local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","frFR")
 if not L then return end
+--@localization(locale="frFR", format="lua_additive_table", handle-subnamespaces="concat")@
 
 L["Intro"] = "BasicMinimap est un solution basique pour une minicarte propre et carrée. Permet le redimensionnement, le déplacement, le zoom à la molette, le changement de couche et le verrouillage de la minicarte."
 
