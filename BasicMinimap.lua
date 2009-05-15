@@ -13,23 +13,7 @@
 ]]
 
 local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
-
 local db
-local defaults = {
-	profile = {
-		scale = 1.0,
-		x = nil,
-		y = nil,
-		lock = nil,
-		shape = "square",
-		strata = "BACKGROUND",
-		border = { r = 0.73, g = 0.75, b = 1 },
-		borderSize = 3,
-		calendar = "RightButton",
-		tracking = "MiddleButton",
-	}
-}
-
 local function updateMap()
 	Minimap:SetScript("OnMouseUp", function(self, btn)
 		if btn == db.calendar then
@@ -41,7 +25,6 @@ local function updateMap()
 		end
 	end)
 end
-
 local options
 local function getOptions()
 	if not options then
@@ -163,6 +146,20 @@ end
 ------------------------------
 
 function BasicMinimap:OnInitialize()
+	local defaults = {
+		profile = {
+			scale = 1.0,
+			x = nil,
+			y = nil,
+			lock = nil,
+			shape = "square",
+			strata = "BACKGROUND",
+			border = { r = 0.73, g = 0.75, b = 1 },
+			borderSize = 3,
+			calendar = "RightButton",
+			tracking = "MiddleButton",
+		}
+	}
 	self.db = LibStub("AceDB-3.0"):New("BasicMinimapDB", defaults)
 	db = self.db.profile
 
@@ -177,6 +174,9 @@ end
 local function kill() end
 function BasicMinimap:OnEnable()
 	local Minimap = _G.Minimap
+
+	Minimap:SetParent(UIParent)
+	MinimapCluster:EnableMouse(false)
 
 	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
 	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})
