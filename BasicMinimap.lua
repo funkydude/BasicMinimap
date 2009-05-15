@@ -13,19 +13,7 @@
 ]]
 
 local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
-local db
-local function updateMap()
-	Minimap:SetScript("OnMouseUp", function(self, btn)
-		if btn == db.calendar then
-			_G.GameTimeFrame:Click()
-		elseif btn == db.tracking then
-			_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
-		elseif btn == "LeftButton" then
-			_G.Minimap_OnClick(self)
-		end
-	end)
-end
-local options
+local db, options
 local function getOptions()
 	if not options then
 		local L = LibStub("AceLocale-3.0"):GetLocale("BasicMinimap", true)
@@ -57,8 +45,8 @@ local function getOptions()
 						_G.BasicMinimapBorder:SetFrameStrata(strata) 
 					end,
 					values = {TOOLTIP = L["Tooltip"], HIGH = _G["HIGH"], MEDIUM = _G["AUCTION_TIME_LEFT2"],
-								LOW = _G["LOW"], BACKGROUND = _G["BACKGROUND"]
-							},
+						LOW = _G["LOW"], BACKGROUND = _G["BACKGROUND"]
+					},
 				},
 				lock = {
 					name = _G["LOCK"], desc = L["Lock the minimap in its current location."],
@@ -116,25 +104,21 @@ local function getOptions()
 				},
 				calendarbtn = {
 					name = L["Calendar"],
-					order = 10, type = "input",
+					order = 10, type = "select",
 					get = function() return db.calendar end,
-					set = function(_, btn)
-						if btn == "RightButton" or btn == "MiddleButton" or btn:match("^Button%d$") then
-							db.calendar = btn
-							updateMap()
-						end
-					end,
+					set = function(_, btn) db.calendar = btn end,
+					values = {RightButton = L["RightButton"], MiddleButton = L["MiddleButton"], Button4 = L["Button%d"]:format(4),
+						Button5 = L["Button%d"]:format(5), Button6 = L["Button%d"]:format(6), Button7 = L["Button%d"]:format(7)
+					},
 				},
 				trackingbtn = {
 					name = L["Tracking"],
-					order = 11, type = "input",
+					order = 11, type = "select",
 					get = function() return db.tracking end,
-					set = function(_, btn)
-						if btn == "RightButton" or btn == "MiddleButton" or btn:match("^Button%d$") then
-							db.tracking = btn
-							updateMap()
-						end
-					end,
+					set = function(_, btn) db.tracking = btn end,
+					values = {RightButton = L["RightButton"], MiddleButton = L["MiddleButton"], Button4 = L["Button%d"]:format(4),
+						Button5 = L["Button%d"]:format(5), Button6 = L["Button%d"]:format(6), Button7 = L["Button%d"]:format(7)
+					},
 				},
 			},
 		}
@@ -260,5 +244,13 @@ function BasicMinimap:OnEnable()
 			_G.MinimapZoomOut:Click()
 		end
 	end)
-	updateMap()
+	Minimap:SetScript("OnMouseUp", function(self, btn)
+		if btn == db.calendar then
+			_G.GameTimeFrame:Click()
+		elseif btn == db.tracking then
+			_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
+		elseif btn == "LeftButton" then
+			_G.Minimap_OnClick(self)
+		end
+	end)
 end
