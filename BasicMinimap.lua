@@ -56,8 +56,9 @@ local function getOptions()
 						_G.Minimap:SetFrameStrata(strata)
 						_G.BasicMinimapBorder:SetFrameStrata(strata) 
 					end,
-					values = {TOOLTIP = L["Tooltip"], FULLSCREEN_DIALOG = L["Fullscreen_dialog"], FULLSCREEN = L["Fullscreen"],
-					DIALOG = L["Dialog"], HIGH = _G["HIGH"], MEDIUM = _G["AUCTION_TIME_LEFT2"], LOW = _G["LOW"], BACKGROUND = _G["BACKGROUND"]},
+					values = {TOOLTIP = L["Tooltip"], HIGH = _G["HIGH"], MEDIUM = _G["AUCTION_TIME_LEFT2"],
+								LOW = _G["LOW"], BACKGROUND = _G["BACKGROUND"]
+							},
 				},
 				lock = {
 					name = _G["LOCK"], desc = L["Lock the minimap in its current location."],
