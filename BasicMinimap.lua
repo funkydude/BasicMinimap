@@ -12,7 +12,7 @@
 	-Minimap border and color selection
 ]]
 
-local BasicMinimap = LibStub("AceAddon-3.0"):NewAddon("BasicMinimap")
+local Minimap = _G.Minimap
 local db, options
 local function getOptions()
 	if not options then
@@ -126,11 +126,8 @@ local function getOptions()
 	return options
 end
 
-------------------------------
---      Initialization      --
-------------------------------
-
-function BasicMinimap:OnInitialize()
+local function kill() end
+local function Enable()
 	local defaults = {
 		profile = {
 			scale = 1.0,
@@ -145,8 +142,8 @@ function BasicMinimap:OnInitialize()
 			tracking = "MiddleButton",
 		}
 	}
-	self.db = LibStub("AceDB-3.0"):New("BasicMinimapDB", defaults)
-	db = self.db.profile
+	local new = LibStub("AceDB-3.0"):New("BasicMinimapDB", defaults)
+	db = new.profile
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
@@ -154,11 +151,6 @@ function BasicMinimap:OnInitialize()
 	_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
 	_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
 	_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
-end
-
-local function kill() end
-function BasicMinimap:OnEnable()
-	local Minimap = _G.Minimap
 
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
@@ -254,3 +246,7 @@ function BasicMinimap:OnEnable()
 		end
 	end)
 end
+
+Minimap:RegisterEvent("PLAYER_LOGIN")
+Minimap:SetScript("OnEvent", Enable)
+
