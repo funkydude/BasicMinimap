@@ -5,7 +5,7 @@
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.5
+## Version: 1.51
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
