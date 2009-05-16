@@ -112,9 +112,11 @@ local function getOptions()
 						if shape == "square" then
 							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
 							BasicMinimapBorder:Show()
+							function GetMinimapShape() return "SQUARE" end
 						else
 							Minimap:SetMaskTexture("Textures\\MinimapMask")
 							BasicMinimapBorder:Hide()
+							function GetMinimapShape() return "ROUND" end
 						end
 					end,
 					values = {square = _G.RAID_TARGET_6, circular = _G.RAID_TARGET_2}, --Square, Circle
@@ -134,125 +136,130 @@ local function getOptions()
 	return options
 end
 
-local function kill() end
-local function Enable()
-	if not _G.BasicMinimapDB or not _G.BasicMinimapDB.scale then
-		_G.BasicMinimapDB = {
-			scale = 1.0,
-			x = 0,
-			y = 0,
-			point = "CENTER",
-			relpoint = "CENTER",
-			lock = false,
-			shape = "square",
-			strata = "BACKGROUND",
-			border = { r = 0.73, g = 0.75, b = 1 },
-			borderSize = 3,
-			calendar = "RightButton",
-			tracking = "MiddleButton",
-		}
-	end
-	db = _G.BasicMinimapDB
+do
+	Minimap:SetScript("OnEvent", function(_,_,msg)
+		if msg ~= "BasicMinimap" then return end
 
-	_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
-	_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
-
-	_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
-	_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
-	_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
-
-	Minimap:SetParent(UIParent)
-	MinimapCluster:EnableMouse(false)
-
-	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
-	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})
-	border:SetFrameStrata(db.strata)
-	border:SetPoint("CENTER", Minimap, "CENTER")
-	border:SetBackdropBorderColor(db.border.r, db.border.g, db.border.b)
-	border:SetWidth(Minimap:GetWidth()+db.borderSize)
-	border:SetHeight(Minimap:GetHeight()+db.borderSize)
-	border:Hide()
-
-	Minimap:ClearAllPoints()
-	Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
-
-	Minimap:RegisterForDrag("LeftButton")
-	Minimap:SetClampedToScreen(true)
-
-	Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
-	Minimap:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
-		local p, _, rp, x, y = Minimap:GetPoint()
-		db.point, db.relpoint, db.x, db.y = p, rp, x, y
-	end)
-
-	if not db.lock then Minimap:SetMovable(true) end
-
-	Minimap:SetScale(db.scale)
-	Minimap:SetFrameStrata(db.strata)
-	MinimapNorthTag.Show = kill
-	MinimapNorthTag:Hide()
-
-	MinimapBorder:Hide()
-	MinimapBorderTop:Hide()
-	if db.shape == "square" then
-		border:Show()
-		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
-		--Return minimap shape for other addons
-		function GetMinimapShape() return "SQUARE" end
-	end
-
-	MinimapZoomIn:Hide()
-	MinimapZoomOut:Hide()
-
-	MiniMapVoiceChatFrame:Hide()
-	MiniMapVoiceChatFrame:UnregisterAllEvents()
-	MiniMapVoiceChatFrame.Show = kill
-
-	MinimapToggleButton:Hide()
-	MinimapToggleButton:UnregisterAllEvents()
-
-	border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-	border:RegisterEvent("CALENDAR_ACTION_PENDING")
-	border:SetScript("OnEvent", function()
-		if CalendarGetNumPendingInvites() < 1 then
-			GameTimeFrame:Hide()
-		else
-			GameTimeFrame:Show()
+		if not _G.BasicMinimapDB or not _G.BasicMinimapDB.scale then
+			_G.BasicMinimapDB = {
+				scale = 1.0,
+				x = 0,
+				y = 0,
+				point = "CENTER",
+				relpoint = "CENTER",
+				lock = false,
+				shape = "square",
+				strata = "BACKGROUND",
+				border = { r = 0.73, g = 0.75, b = 1 },
+				borderSize = 3,
+				calendar = "RightButton",
+				tracking = "MiddleButton",
+			}
 		end
-	end)
+		db = _G.BasicMinimapDB
 
-	MiniMapWorldMapButton:Hide()
-	MiniMapWorldMapButton:UnregisterAllEvents()
-	MiniMapWorldMapButton.Show = kill
+		_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
+		_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
 
-	MinimapZoneTextButton:Hide()
-	MinimapZoneTextButton:UnregisterAllEvents()
+		_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
+		_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
+		_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
 
-	MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
-	MiniMapTracking:Hide()
-	MiniMapTracking.Show = kill
-	MiniMapTracking:UnregisterAllEvents()
+		Minimap:SetParent(UIParent)
+		MinimapCluster:EnableMouse(false)
+		local kill = function() end
 
-	Minimap:EnableMouseWheel(true)
-	Minimap:SetScript("OnMouseWheel", function(self, d)
-		if d > 0 then
-			_G.MinimapZoomIn:Click()
-		elseif d < 0 then
-			_G.MinimapZoomOut:Click()
+		local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
+		border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize,})
+		border:SetFrameStrata(db.strata)
+		border:SetPoint("CENTER", Minimap, "CENTER")
+		border:SetBackdropBorderColor(db.border.r, db.border.g, db.border.b)
+		border:SetWidth(Minimap:GetWidth()+db.borderSize)
+		border:SetHeight(Minimap:GetHeight()+db.borderSize)
+		border:Hide()
+
+		Minimap:ClearAllPoints()
+		Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
+
+		Minimap:RegisterForDrag("LeftButton")
+		Minimap:SetClampedToScreen(true)
+
+		Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
+		Minimap:SetScript("OnDragStop", function(self)
+			self:StopMovingOrSizing()
+			local p, _, rp, x, y = Minimap:GetPoint()
+			db.point, db.relpoint, db.x, db.y = p, rp, x, y
+		end)
+
+		if not db.lock then Minimap:SetMovable(true) end
+
+		Minimap:SetScale(db.scale)
+		Minimap:SetFrameStrata(db.strata)
+		MinimapNorthTag.Show = kill
+		MinimapNorthTag:Hide()
+
+		MinimapBorder:Hide()
+		MinimapBorderTop:Hide()
+		if db.shape == "square" then
+			border:Show()
+			Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+			--Return minimap shape for other addons
+			function GetMinimapShape() return "SQUARE" end
 		end
+
+		MinimapZoomIn:Hide()
+		MinimapZoomOut:Hide()
+
+		MiniMapVoiceChatFrame:Hide()
+		MiniMapVoiceChatFrame:UnregisterAllEvents()
+		MiniMapVoiceChatFrame.Show = kill
+
+		MinimapToggleButton:Hide()
+		MinimapToggleButton:UnregisterAllEvents()
+
+		border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+		border:RegisterEvent("CALENDAR_ACTION_PENDING")
+		border:SetScript("OnEvent", function()
+			if CalendarGetNumPendingInvites() < 1 then
+				GameTimeFrame:Hide()
+			else
+				GameTimeFrame:Show()
+			end
+		end)
+
+		MiniMapWorldMapButton:Hide()
+		MiniMapWorldMapButton:UnregisterAllEvents()
+		MiniMapWorldMapButton.Show = kill
+
+		MinimapZoneTextButton:Hide()
+		MinimapZoneTextButton:UnregisterAllEvents()
+
+		MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
+		MiniMapTracking:Hide()
+		MiniMapTracking.Show = kill
+		MiniMapTracking:UnregisterAllEvents()
+
+		Minimap:EnableMouseWheel(true)
+		Minimap:SetScript("OnMouseWheel", function(self, d)
+			if d > 0 then
+				_G.MinimapZoomIn:Click()
+			elseif d < 0 then
+				_G.MinimapZoomOut:Click()
+			end
+		end)
+		Minimap:SetScript("OnMouseUp", function(self, btn)
+			if btn == db.calendar then
+				_G.GameTimeFrame:Click()
+			elseif btn == db.tracking then
+				_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
+			elseif btn == "LeftButton" then
+				_G.Minimap_OnClick(self)
+			end
+		end)
+
+		Minimap:UnregisterEvent("ADDON_LOADED")
+		Minimap:SetScript("OnEvent", nil)
 	end)
-	Minimap:SetScript("OnMouseUp", function(self, btn)
-		if btn == db.calendar then
-			_G.GameTimeFrame:Click()
-		elseif btn == db.tracking then
-			_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
-		elseif btn == "LeftButton" then
-			_G.Minimap_OnClick(self)
-		end
-	end)
+	Minimap:RegisterEvent("ADDON_LOADED")
 end
-
-Minimap:RegisterEvent("PLAYER_LOGIN")
-Minimap:SetScript("OnEvent", Enable)
 
