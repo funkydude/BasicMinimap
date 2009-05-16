@@ -21,68 +21,35 @@ local function getOptions()
 			type = "group",
 			name = "BasicMinimap",
 			args = {
-				intro = {
-					name = L["Intro"],
+				btndesc = {
+					name = L["Button Description"],
 					order = 1, type = "description",
 				},
-				spacer = {
-					name = "",
-					order = 2, type = "header",
-				},
-				scale = {
-					name = L["Scale"], desc = L["Adjust the minimap scale, from 0.5 to 2.0"],
-					order = 3, type = "range", width = "full",
-					min = 0.5, max = 2, step = 0.01,
-					get = function() return db.scale end,
-					set = function(_, scale)
-						Minimap:SetScale(scale)
-						Minimap:ClearAllPoints()
-						local s = db.scale/scale
-						Minimap:SetPoint(db.point, nil, db.relpoint, db.x*s, db.y*s)
-						db.scale = scale
-						local p, _, rp, x, y = Minimap:GetPoint()
-						db.point, db.relpoint, db.x, db.y = p, rp, x, y
-					end,
-				},
-				strata = {
-					name = L["Strata"], desc = L["Change the strata of the Minimap."],
-					order = 4, type = "select", width = "full",
-					get = function() return db.strata end,
-					set = function(_, strata) db.strata = strata
-						Minimap:SetFrameStrata(strata)
-						BasicMinimapBorder:SetFrameStrata(strata) 
-					end,
-					values = {TOOLTIP = L["Tooltip"], HIGH = _G["HIGH"], MEDIUM = _G["AUCTION_TIME_LEFT2"],
-						LOW = _G["LOW"], BACKGROUND = _G["BACKGROUND"]
+				calendarbtn = {
+					name = L["Calendar"],
+					order = 2, type = "select",
+					get = function() return db.calendar end,
+					set = function(_, btn) db.calendar = btn end,
+					values = {RightButton = _G.KEY_BUTTON2, MiddleButton = _G.KEY_BUTTON3, Button4 = _G.KEY_BUTTON4,
+						Button5 = _G.KEY_BUTTON5
 					},
 				},
-				lock = {
-					name = _G["LOCK"], desc = L["Lock the minimap in its current location."],
-					order = 5, type = "toggle",
-					get = function() return db.lock end,
-					set = function(_, state) db.lock = state
-						if not state then state = true else state = false end
-						Minimap:SetMovable(state)
-					end,
+				trackingbtn = {
+					name = L["Tracking"],
+					order = 3, type = "select",
+					get = function() return db.tracking end,
+					set = function(_, btn) db.tracking = btn end,
+					values = {RightButton = _G.KEY_BUTTON2, MiddleButton = _G.KEY_BUTTON3, Button4 = _G.KEY_BUTTON4,
+						Button5 = _G.KEY_BUTTON5
+					},
 				},
-				shape = {
-					name = L["Shape"], desc = L["Change the minimap shape, curcular or square."],
-					order = 6, type = "select",
-					get = function() return db.shape end,
-					set = function(_, shape) db.shape = shape
-						if shape == "square" then
-							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
-							BasicMinimapBorder:Show()
-						else
-							Minimap:SetMaskTexture("Textures\\MinimapMask")
-							BasicMinimapBorder:Hide()
-						end
-					end,
-					values = {square = _G["RAID_TARGET_6"], circular = _G["RAID_TARGET_2"]}, --Square, Circle
+				borderspacer = {
+					name = _G.EMBLEM_BORDER, --Border
+					order = 4, type = "header",
 				},
 				bordercolor = {
-					name = L["Border Color"], desc = L["Change the minimap border color."],
-					order = 7, type = "color",
+					name = _G.EMBLEM_BORDER_COLOR, --Border Color
+					order = 5, type = "color",
 					get = function() return db.border.r, db.border.g, db.border.b end,
 					set = function(_, r, g, b)
 						db.border.r = r db.border.g = g db.border.b = b
@@ -91,8 +58,8 @@ local function getOptions()
 					disabled = function() return db.shape ~= "square" end,
 				},
 				bordersize = {
-					name = L["Border Size"], desc = L["Adjust the minimap border size."],
-					order = 8, type = "range",
+					name = L["Border Size"],
+					order = 6, type = "range",
 					min = 0.5, max = 5, step = 0.5,
 					get = function() return db.borderSize end,
 					set = function(_, s) db.borderSize = s
@@ -106,27 +73,60 @@ local function getOptions()
 					end,
 					disabled = function() return db.shape ~= "square" end,
 				},
-				btndesc = {
-					name = L["Button Description"],
-					order = 9, type = "description",
+				miscspacer = {
+					name = _G.MISCELLANEOUS,
+					order = 7, type = "header",
 				},
-				calendarbtn = {
-					name = L["Calendar"],
+				scale = {
+					name = L["Scale"],
+					order = 8, type = "range", width = "full",
+					min = 0.5, max = 2, step = 0.01,
+					get = function() return db.scale end,
+					set = function(_, scale)
+						Minimap:SetScale(scale)
+						Minimap:ClearAllPoints()
+						local s = db.scale/scale
+						Minimap:SetPoint(db.point, nil, db.relpoint, db.x*s, db.y*s)
+						db.scale = scale
+						local p, _, rp, x, y = Minimap:GetPoint()
+						db.point, db.relpoint, db.x, db.y = p, rp, x, y
+					end,
+				},
+				strata = {
+					name = L["Strata"],
+					order = 9, type = "select",
+					get = function() return db.strata end,
+					set = function(_, strata) db.strata = strata
+						Minimap:SetFrameStrata(strata)
+						BasicMinimapBorder:SetFrameStrata(strata) 
+					end,
+					values = {TOOLTIP = L["Tooltip"], HIGH = _G.HIGH, MEDIUM = _G.AUCTION_TIME_LEFT2,
+						LOW = _G.LOW, BACKGROUND = _G.BACKGROUND
+					},
+				},
+				shape = {
+					name = L["Shape"],
 					order = 10, type = "select",
-					get = function() return db.calendar end,
-					set = function(_, btn) db.calendar = btn end,
-					values = {RightButton = L["RightButton"], MiddleButton = L["MiddleButton"], Button4 = L["Button%d"]:format(4),
-						Button5 = L["Button%d"]:format(5), Button6 = L["Button%d"]:format(6), Button7 = L["Button%d"]:format(7)
-					},
+					get = function() return db.shape end,
+					set = function(_, shape) db.shape = shape
+						if shape == "square" then
+							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+							BasicMinimapBorder:Show()
+						else
+							Minimap:SetMaskTexture("Textures\\MinimapMask")
+							BasicMinimapBorder:Hide()
+						end
+					end,
+					values = {square = _G.RAID_TARGET_6, circular = _G.RAID_TARGET_2}, --Square, Circle
 				},
-				trackingbtn = {
-					name = L["Tracking"],
-					order = 11, type = "select",
-					get = function() return db.tracking end,
-					set = function(_, btn) db.tracking = btn end,
-					values = {RightButton = L["RightButton"], MiddleButton = L["MiddleButton"], Button4 = L["Button%d"]:format(4),
-						Button5 = L["Button%d"]:format(5), Button6 = L["Button%d"]:format(6), Button7 = L["Button%d"]:format(7)
-					},
+				lock = {
+					name = _G.LOCK,
+					order = 11, type = "toggle",
+					get = function() return db.lock end,
+					set = function(_, state) db.lock = state
+						if not state then state = true else state = false end
+						Minimap:SetMovable(state)
+					end,
 				},
 			},
 		}
