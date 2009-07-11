@@ -2,12 +2,13 @@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
+## Notes-deDE: Anpassbare Minimap mit grundliegenden Optionen.
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.51
+## Version: 1.6
 ## SavedVariables: BasicMinimapDB
-## OptionalDeps: Ace3
+## OptionalDeps: Ace3, !ClassColors
 ## X-Embeds: Ace3
 
 embeds.xml
