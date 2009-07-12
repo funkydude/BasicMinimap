@@ -6,7 +6,7 @@
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.6
+## Version: 1.61
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3, !ClassColors
 ## X-Embeds: Ace3

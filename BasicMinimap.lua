@@ -71,7 +71,7 @@ local function getOptions()
 							BasicMinimapBorder:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
 						end
 					end,
-					disabled = function() return db.round or db.ccolor end,
+					disabled = function() return db.round end,
 				},
 				bordersize = {
 					name = L["Border Size"],
