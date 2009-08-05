@@ -1,4 +1,4 @@
-## Interface: 30100
+## Interface: 30200
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
@@ -8,7 +8,7 @@
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.61
+## Version: 1.62
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3, !ClassColors
 ## X-Embeds: Ace3
