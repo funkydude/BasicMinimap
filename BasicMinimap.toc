@@ -26,3 +26,4 @@ Locales\esES.lua
 Locales\zhTW.lua
 
 BasicMinimap.lua
+
