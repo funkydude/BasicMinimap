@@ -242,8 +242,10 @@ do
 			MiniMapVoiceChatFrame:UnregisterAllEvents()
 			MiniMapVoiceChatFrame.Show = kill
 
-			MinimapToggleButton:Hide()
-			MinimapToggleButton:UnregisterAllEvents()
+			if MinimapToggleButton then
+				MinimapToggleButton:Hide()
+				MinimapToggleButton:UnregisterAllEvents()
+			end
 
 			border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 			border:RegisterEvent("CALENDAR_ACTION_PENDING")
