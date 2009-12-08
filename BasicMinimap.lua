@@ -192,7 +192,6 @@ do
 		elseif evt == "PLAYER_LOGIN" then
 			Minimap:SetParent(UIParent)
 			MinimapCluster:EnableMouse(false)
-			local kill = function() end
 
 			local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
 			border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize or 3})
@@ -225,7 +224,7 @@ do
 
 			Minimap:SetScale(db.scale or 1)
 			Minimap:SetFrameStrata(db.strata or "BACKGROUND")
-			MinimapNorthTag.Show = kill
+			MinimapNorthTag.Show = MinimapNorthTag.Hide
 			MinimapNorthTag:Hide()
 
 			MinimapBorder:Hide()
@@ -238,14 +237,9 @@ do
 			MinimapZoomIn:Hide()
 			MinimapZoomOut:Hide()
 
+			MiniMapVoiceChatFrame.Show = MiniMapVoiceChatFrame.Hide
 			MiniMapVoiceChatFrame:Hide()
 			MiniMapVoiceChatFrame:UnregisterAllEvents()
-			MiniMapVoiceChatFrame.Show = kill
-
-			if MinimapToggleButton then
-				MinimapToggleButton:Hide()
-				MinimapToggleButton:UnregisterAllEvents()
-			end
 
 			border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 			border:RegisterEvent("CALENDAR_ACTION_PENDING")
@@ -257,23 +251,24 @@ do
 				end
 			end)
 
+			MiniMapWorldMapButton.Show = MiniMapWorldMapButton.Hide
 			MiniMapWorldMapButton:Hide()
 			MiniMapWorldMapButton:UnregisterAllEvents()
-			MiniMapWorldMapButton.Show = kill
 
+			MinimapZoneTextButton.Show = MinimapZoneTextButton.Hide
 			MinimapZoneTextButton:Hide()
 			MinimapZoneTextButton:UnregisterAllEvents()
 
-			MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
+			--MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
+			MiniMapTracking.Show = MiniMapTracking.Hide
 			MiniMapTracking:Hide()
-			MiniMapTracking.Show = kill
 			MiniMapTracking:UnregisterAllEvents()
 
 			Minimap:EnableMouseWheel(true)
 			local t = 0
 			local zoomfunc = function(_, e)
 				t = t + e
-				if t > 5 then
+				if t > 4 then
 					t = 0
 					for i = 1, 5 do
 						_G.MinimapZoomOut:Click()
