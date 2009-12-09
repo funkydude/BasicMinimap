@@ -264,6 +264,10 @@ do
 			MiniMapTracking:Hide()
 			MiniMapTracking:UnregisterAllEvents()
 
+			MiniMapLFGFrame:ClearAllPoints()
+			MiniMapLFGFrame:SetParent(Minimap)
+			MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
+
 			Minimap:EnableMouseWheel(true)
 			local t = 0
 			local zoomfunc = function(_, e)
