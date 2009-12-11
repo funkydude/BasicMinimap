@@ -16,7 +16,10 @@ local db, options
 local function getOptions()
 	local Minimap, BasicMinimapBorder = _G.Minimap, _G.BasicMinimapBorder
 	local val = {RightButton = _G.KEY_BUTTON2, MiddleButton = _G.KEY_BUTTON3,
-		Button4 = _G.KEY_BUTTON4, Button5 = _G.KEY_BUTTON5
+		Button4 = _G.KEY_BUTTON4, Button5 = _G.KEY_BUTTON5, Button6 = _G.KEY_BUTTON6,
+		Button7 = _G.KEY_BUTTON7, Button8 = _G.KEY_BUTTON8, Button9 = _G.KEY_BUTTON9,
+		Button10 = _G.KEY_BUTTON10, Button11 = _G.KEY_BUTTON11, Button12 = _G.KEY_BUTTON12,
+		Button13 = _G.KEY_BUTTON13, Button14 = _G.KEY_BUTTON14, Button15 = _G.KEY_BUTTON15
 	}
 	if not options then
 		local L = LibStub("AceLocale-3.0"):GetLocale("BasicMinimap", true)
@@ -264,6 +267,9 @@ do
 			MiniMapTracking:Hide()
 			MiniMapTracking:UnregisterAllEvents()
 
+			MiniMapInstanceDifficulty:ClearAllPoints()
+			MiniMapInstanceDifficulty:SetParent(Minimap)
+			MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 			MiniMapLFGFrame:ClearAllPoints()
 			MiniMapLFGFrame:SetParent(Minimap)
 			MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
