@@ -153,9 +153,28 @@ local function getOptions()
 					get = function() return db.zoom end,
 					set = function(_, state) db.zoom = state and true or nil end,
 				},
+				raiddiff = {
+					name = RAID_DIFFICULTY,
+					order = 13, type = "toggle",
+					get = function() if db.hideraid then return false else return true end end,
+					set = function(_, state)
+						if state then
+							db.hideraid = nil
+							MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.NewShow
+							MiniMapInstanceDifficulty.NewShow = nil
+							local z = select(2, IsInInstance())
+							if z and (z == "party" or z == "raid") then MiniMapInstanceDifficulty:Show() end
+						else
+							db.hideraid = true
+							MiniMapInstanceDifficulty.NewShow = MiniMapInstanceDifficulty.Show
+							MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.Hide
+							MiniMapInstanceDifficulty:Hide()
+						end
+					end,
+				},
 				lock = {
 					name = _G.LOCK,
-					order = 13, type = "toggle",
+					order = 14, type = "toggle",
 					get = function() return db.lock end,
 					set = function(_, state) db.lock = state and true or nil
 						if not state then state = true else state = false end
@@ -270,6 +289,13 @@ do
 			MiniMapInstanceDifficulty:ClearAllPoints()
 			MiniMapInstanceDifficulty:SetParent(Minimap)
 			MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
+
+			if db.hideraid then
+				MiniMapInstanceDifficulty.NewShow = MiniMapInstanceDifficulty.Show
+				MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.Hide
+				MiniMapInstanceDifficulty:Hide()
+			end
+
 			MiniMapLFGFrame:ClearAllPoints()
 			MiniMapLFGFrame:SetParent(Minimap)
 			MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
