@@ -290,6 +290,10 @@ do
 			MiniMapInstanceDifficulty:SetParent(Minimap)
 			MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
+			GuildInstanceDifficulty:ClearAllPoints()
+			GuildInstanceDifficulty:SetParent(Minimap)
+			GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
+
 			if db.hideraid then
 				MiniMapInstanceDifficulty.NewShow = MiniMapInstanceDifficulty.Show
 				MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.Hide

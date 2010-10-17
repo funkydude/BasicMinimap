@@ -12,7 +12,7 @@
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.73
+## Version: 1.75
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3, !ClassColors
 ## X-Embeds: Ace3
