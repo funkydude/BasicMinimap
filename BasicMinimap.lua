@@ -244,7 +244,7 @@ Minimap:SetScript("OnEvent", function(_,evt,msg)
 
 		Minimap:SetScale(db.scale or 1)
 		Minimap:SetFrameStrata(db.strata or "BACKGROUND")
-		MinimapNorthTag:SetScript("OnShow", hideMe)
+		MinimapNorthTag.Show = MinimapNorthTag.Hide
 		MinimapNorthTag:Hide()
 
 		MinimapBorder:Hide()
