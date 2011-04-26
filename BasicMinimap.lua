@@ -13,6 +13,7 @@
 ]]
 
 local db, options
+local hideMe = function(frame) frame:Hide() end
 local function getOptions()
 	local Minimap, BasicMinimapBorder = _G.Minimap, _G.BasicMinimapBorder
 	local val = {RightButton = _G.KEY_BUTTON2, MiddleButton = _G.KEY_BUTTON3,
@@ -86,8 +87,8 @@ local function getOptions()
 							{edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false,
 							tileSize = 0, edgeSize = s,}
 						)
-						BasicMinimapBorder:SetWidth(_G.Minimap:GetWidth()+s)
-						BasicMinimapBorder:SetHeight(_G.Minimap:GetHeight()+s)
+						BasicMinimapBorder:SetWidth(Minimap:GetWidth()+s)
+						BasicMinimapBorder:SetHeight(Minimap:GetHeight()+s)
 						if db.ccolor then
 							local class = select(2, UnitClass("player"))
 							local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
@@ -160,14 +161,12 @@ local function getOptions()
 					set = function(_, state)
 						if state then
 							db.hideraid = nil
-							MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.NewShow
-							MiniMapInstanceDifficulty.NewShow = nil
+							MiniMapInstanceDifficulty:SetScript("OnShow", nil)
 							local z = select(2, IsInInstance())
 							if z and (z == "party" or z == "raid") then MiniMapInstanceDifficulty:Show() end
 						else
 							db.hideraid = true
-							MiniMapInstanceDifficulty.NewShow = MiniMapInstanceDifficulty.Show
-							MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.Hide
+							MiniMapInstanceDifficulty:SetScript("OnShow", hideMe)
 							MiniMapInstanceDifficulty:Hide()
 						end
 					end,
@@ -187,161 +186,157 @@ local function getOptions()
 	return options
 end
 
-do
-	local Minimap = _G.Minimap
-	Minimap:SetScript("OnEvent", function(_,evt,msg)
-		if evt == "ADDON_LOADED" and msg == "BasicMinimap" then
-			if not _G.BasicMinimapDB or not _G.BasicMinimapDB.borderR then
-				_G.BasicMinimapDB = {
-					x = 0, y = 0,
-					point = "CENTER", relpoint = "CENTER",
-					borderR = 0.73, borderG = 0.75, borderB = 1
-				}
-			end
-			db = _G.BasicMinimapDB
+Minimap:SetScript("OnEvent", function(_,evt,msg)
+	if evt == "ADDON_LOADED" and msg == "BasicMinimap" then
+		if not _G.BasicMinimapDB or not _G.BasicMinimapDB.borderR then
+			_G.BasicMinimapDB = {
+				x = 0, y = 0,
+				point = "CENTER", relpoint = "CENTER",
+				borderR = 0.73, borderG = 0.75, borderB = 1
+			}
+		end
+		db = _G.BasicMinimapDB
 
-			--Return minimap shape for other addons
-			if not db.round then function GetMinimapShape() return "SQUARE" end end
+		--Return minimap shape for other addons
+		if not db.round then function GetMinimapShape() return "SQUARE" end end
 
-			_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
-			_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
+		_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
+		_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
 
-			_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
-			_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
-			_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
+		_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
+		_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
+		_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
 
-			Minimap:UnregisterEvent("ADDON_LOADED")
-		elseif evt == "PLAYER_LOGIN" then
-			Minimap:SetParent(UIParent)
-			MinimapCluster:EnableMouse(false)
+		Minimap:UnregisterEvent("ADDON_LOADED")
+	elseif evt == "PLAYER_LOGIN" then
+		local Minimap = Minimap
+		Minimap:SetParent(UIParent)
+		MinimapCluster:EnableMouse(false)
 
-			local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
-			border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize or 3})
-			border:SetFrameStrata(db.strata or "BACKGROUND")
-			border:SetPoint("CENTER", Minimap, "CENTER")
-			if db.ccolor then
-				local class = select(2, UnitClass("player"))
-				local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-				BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
+		local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
+		border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize or 3})
+		border:SetFrameStrata(db.strata or "BACKGROUND")
+		border:SetPoint("CENTER", Minimap, "CENTER")
+		if db.ccolor then
+			local class = select(2, UnitClass("player"))
+			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+			BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
+		else
+			border:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
+		end
+		border:SetWidth(Minimap:GetWidth()+(db.borderSize or 3))
+		border:SetHeight(Minimap:GetHeight()+(db.borderSize or 3))
+		border:Hide()
+
+		Minimap:ClearAllPoints()
+		Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
+		Minimap:RegisterForDrag("LeftButton")
+		Minimap:SetClampedToScreen(true)
+
+		Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
+		Minimap:SetScript("OnDragStop", function(self)
+			self:StopMovingOrSizing()
+			local p, _, rp, x, y = Minimap:GetPoint()
+			db.point, db.relpoint, db.x, db.y = p, rp, x, y
+		end)
+
+		if not db.lock then Minimap:SetMovable(true) end
+
+		Minimap:SetScale(db.scale or 1)
+		Minimap:SetFrameStrata(db.strata or "BACKGROUND")
+		MinimapNorthTag:SetScript("OnShow", hideMe)
+		MinimapNorthTag:Hide()
+
+		MinimapBorder:Hide()
+		MinimapBorderTop:Hide()
+		if not db.round then
+			border:Show()
+			Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
+		end
+
+		MinimapZoomIn:Hide()
+		MinimapZoomOut:Hide()
+
+		MiniMapVoiceChatFrame:SetScript("OnShow", hideMe)
+		MiniMapVoiceChatFrame:Hide()
+		MiniMapVoiceChatFrame:UnregisterAllEvents()
+
+		border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+		border:RegisterEvent("CALENDAR_ACTION_PENDING")
+		border:SetScript("OnEvent", function()
+			if CalendarGetNumPendingInvites() < 1 then
+				GameTimeFrame:Hide()
 			else
-				border:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
+				GameTimeFrame:Show()
 			end
-			border:SetWidth(Minimap:GetWidth()+(db.borderSize or 3))
-			border:SetHeight(Minimap:GetHeight()+(db.borderSize or 3))
-			border:Hide()
+		end)
 
-			Minimap:ClearAllPoints()
-			Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
-			Minimap:RegisterForDrag("LeftButton")
-			Minimap:SetClampedToScreen(true)
+		MiniMapWorldMapButton:SetScript("OnShow", hideMe)
+		MiniMapWorldMapButton:Hide()
+		MiniMapWorldMapButton:UnregisterAllEvents()
 
-			Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
-			Minimap:SetScript("OnDragStop", function(self)
-				self:StopMovingOrSizing()
-				local p, _, rp, x, y = Minimap:GetPoint()
-				db.point, db.relpoint, db.x, db.y = p, rp, x, y
-			end)
+		MinimapZoneTextButton:SetScript("OnShow", hideMe)
+		MinimapZoneTextButton:Hide()
+		MinimapZoneTextButton:UnregisterAllEvents()
 
-			if not db.lock then Minimap:SetMovable(true) end
+		MiniMapTracking:SetScript("OnShow", hideMe)
+		MiniMapTracking:Hide()
+		MiniMapTracking:UnregisterAllEvents()
 
-			Minimap:SetScale(db.scale or 1)
-			Minimap:SetFrameStrata(db.strata or "BACKGROUND")
-			MinimapNorthTag.Show = MinimapNorthTag.Hide
-			MinimapNorthTag:Hide()
+		MiniMapInstanceDifficulty:ClearAllPoints()
+		MiniMapInstanceDifficulty:SetParent(Minimap)
+		MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
-			MinimapBorder:Hide()
-			MinimapBorderTop:Hide()
-			if not db.round then
-				border:Show()
-				Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\Mask.blp")
-			end
+		GuildInstanceDifficulty:ClearAllPoints()
+		GuildInstanceDifficulty:SetParent(Minimap)
+		GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
-			MinimapZoomIn:Hide()
-			MinimapZoomOut:Hide()
+		if db.hideraid then
+			MiniMapInstanceDifficulty:SetScript("OnShow", hideMe)
+			MiniMapInstanceDifficulty:Hide()
+		end
 
-			MiniMapVoiceChatFrame.Show = MiniMapVoiceChatFrame.Hide
-			MiniMapVoiceChatFrame:Hide()
-			MiniMapVoiceChatFrame:UnregisterAllEvents()
+		MiniMapLFGFrame:ClearAllPoints()
+		MiniMapLFGFrame:SetParent(Minimap)
+		MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
 
-			border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-			border:RegisterEvent("CALENDAR_ACTION_PENDING")
-			border:SetScript("OnEvent", function()
-				if CalendarGetNumPendingInvites() < 1 then
-					GameTimeFrame:Hide()
-				else
-					GameTimeFrame:Show()
-				end
-			end)
-
-			MiniMapWorldMapButton.Show = MiniMapWorldMapButton.Hide
-			MiniMapWorldMapButton:Hide()
-			MiniMapWorldMapButton:UnregisterAllEvents()
-
-			MinimapZoneTextButton.Show = MinimapZoneTextButton.Hide
-			MinimapZoneTextButton:Hide()
-			MinimapZoneTextButton:UnregisterAllEvents()
-
-			--MiniMapTracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -25, -22)
-			MiniMapTracking.Show = MiniMapTracking.Hide
-			MiniMapTracking:Hide()
-			MiniMapTracking:UnregisterAllEvents()
-
-			MiniMapInstanceDifficulty:ClearAllPoints()
-			MiniMapInstanceDifficulty:SetParent(Minimap)
-			MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
-
-			GuildInstanceDifficulty:ClearAllPoints()
-			GuildInstanceDifficulty:SetParent(Minimap)
-			GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
-
-			if db.hideraid then
-				MiniMapInstanceDifficulty.NewShow = MiniMapInstanceDifficulty.Show
-				MiniMapInstanceDifficulty.Show = MiniMapInstanceDifficulty.Hide
-				MiniMapInstanceDifficulty:Hide()
-			end
-
-			MiniMapLFGFrame:ClearAllPoints()
-			MiniMapLFGFrame:SetParent(Minimap)
-			MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
-
-			Minimap:EnableMouseWheel(true)
-			local t = 0
-			local zoomfunc = function(_, e)
-				t = t + e
-				if t > 4 then
-					t = 0
-					for i = 1, 5 do
-						_G.MinimapZoomOut:Click()
-					end
-					Minimap:SetScript("OnUpdate", nil)
-				end
-			end
-			Minimap:SetScript("OnMouseWheel", function(self, d)
-				if d > 0 then
-					_G.MinimapZoomIn:Click()
-				elseif d < 0 then
+		Minimap:EnableMouseWheel(true)
+		local t = 0
+		local zoomfunc = function(_, e)
+			t = t + e
+			if t > 4 then
+				t = 0
+				for i = 1, 5 do
 					_G.MinimapZoomOut:Click()
 				end
-				if db.zoom then
-					t = 0
-					Minimap:SetScript("OnUpdate", zoomfunc)
-				end
-			end)
-			Minimap:SetScript("OnMouseUp", function(self, btn)
-				if btn == (db.calendar or "RightButton") then
-					_G.GameTimeFrame:Click()
-				elseif btn == (db.tracking or "MiddleButton") then
-					_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
-				elseif btn == "LeftButton" then
-					_G.Minimap_OnClick(self)
-				end
-			end)
-
-			Minimap:UnregisterEvent("PLAYER_LOGIN")
-			Minimap:SetScript("OnEvent", nil)
+				Minimap:SetScript("OnUpdate", nil)
+			end
 		end
-	end)
-	Minimap:RegisterEvent("ADDON_LOADED")
-	Minimap:RegisterEvent("PLAYER_LOGIN")
-end
+		Minimap:SetScript("OnMouseWheel", function(self, d)
+			if d > 0 then
+				_G.MinimapZoomIn:Click()
+			elseif d < 0 then
+				_G.MinimapZoomOut:Click()
+			end
+			if db.zoom then
+				t = 0
+				Minimap:SetScript("OnUpdate", zoomfunc)
+			end
+		end)
+		Minimap:SetScript("OnMouseUp", function(self, btn)
+			if btn == (db.calendar or "RightButton") then
+				_G.GameTimeFrame:Click()
+			elseif btn == (db.tracking or "MiddleButton") then
+				_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
+			elseif btn == "LeftButton" then
+				_G.Minimap_OnClick(self)
+			end
+		end)
+
+		Minimap:UnregisterEvent("PLAYER_LOGIN")
+		Minimap:SetScript("OnEvent", nil)
+	end
+end)
+Minimap:RegisterEvent("ADDON_LOADED")
+Minimap:RegisterEvent("PLAYER_LOGIN")
 
