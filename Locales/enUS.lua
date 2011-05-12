@@ -1,7 +1,13 @@
-local debug = false
---@debug@
-debug = true
---@end-debug@
 
-local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","enUS",true,debug)
---@localization(locale="enUS", format="lua_additive_table", same-key-is-true=true, handle-subnamespaces="concat")@
+local _, BM = ...
+
+BM.AUTOZOOM = "Auto Zoom Out"
+BM.BORDERSIZE = "Border Size"
+BM.BUTTONDESC = "Choose the buttons for opening the Calendar and Tracking menu."
+BM.CALENDAR = "Calendar"
+BM.CLASSCOLORED = "Class Colored"
+BM.SCALE = "Scale"
+BM.SHAPE = "Shape"
+BM.STRATA = "Strata"
+BM.TOOLTIP = "Tooltip"
+

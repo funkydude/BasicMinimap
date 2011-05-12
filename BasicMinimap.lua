@@ -1,19 +1,7 @@
---[[
-	Configurable minimap with basic options
-	Features:
-	-Moving of the minimap
-	-Scaling of the minimap
-	-Hiding all minimap buttons
-	-Minimap mouse scroll zooming & auto zoom
-	-Square or circular minimap
-	-Minimap strata selection
-	-Selecting which mouseclick opens which menu (tracking/calendar)
-	-Auto showing the calendar button when invites arrive
-	-Minimap border and color selection with class color support
-]]
+
+local name, BM = ...
 
 local db, options
-local hideMe = function(frame) frame:Hide() end
 local function getOptions()
 	local Minimap, BasicMinimapBorder = _G.Minimap, _G.BasicMinimapBorder
 	local val = {RightButton = _G.KEY_BUTTON2, MiddleButton = _G.KEY_BUTTON3,
@@ -29,18 +17,18 @@ local function getOptions()
 			name = "BasicMinimap",
 			args = {
 				btndesc = {
-					name = L["Button Description"],
+					name = BM.BUTTONDESC,
 					order = 1, type = "description",
 				},
 				calendarbtn = {
-					name = L["Calendar"],
+					name = BM.CALENDAR,
 					order = 2, type = "select",
 					get = function() return db.calendar or "RightButton" end,
 					set = function(_, btn) db.calendar = btn~="RightButton" and btn or nil end,
 					values = val,
 				},
 				trackingbtn = {
-					name = L["Tracking"],
+					name = TRACKING,
 					order = 3, type = "select",
 					get = function() return db.tracking or "MiddleButton" end,
 					set = function(_, btn) db.tracking = btn~="MiddleButton" and btn or nil end,
@@ -61,7 +49,7 @@ local function getOptions()
 					disabled = function() return db.round or db.ccolor end,
 				},
 				classcolor = {
-					name = L["Class Colored"],
+					name = BM.CLASSCOLORED,
 					order = 6, type = "toggle",
 					get = function() return db.ccolor end,
 					set = function(_, state)
@@ -78,7 +66,7 @@ local function getOptions()
 					disabled = function() return db.round end,
 				},
 				bordersize = {
-					name = L["Border Size"],
+					name = BM.BORDERSIZE,
 					order = 7, type = "range", width = "full",
 					min = 0.5, max = 5, step = 0.5,
 					get = function() return db.borderSize or 3 end,
@@ -104,7 +92,7 @@ local function getOptions()
 					order = 8, type = "header",
 				},
 				scale = {
-					name = L["Scale"],
+					name = BM.SCALE,
 					order = 9, type = "range", width = "full",
 					min = 0.5, max = 2, step = 0.01,
 					get = function() return db.scale or 1 end,
@@ -118,19 +106,19 @@ local function getOptions()
 					end,
 				},
 				strata = {
-					name = L["Strata"],
+					name = BM.STRATA,
 					order = 10, type = "select",
 					get = function() return db.strata or "BACKGROUND" end,
 					set = function(_, strata) db.strata = strata~="BACKGROUND" and strata or nil
 						Minimap:SetFrameStrata(strata)
 						BasicMinimapBorder:SetFrameStrata(strata)
 					end,
-					values = {TOOLTIP = L["Tooltip"], HIGH = _G.HIGH, MEDIUM = _G.AUCTION_TIME_LEFT2,
+					values = {TOOLTIP = BM.TOOLTIP, HIGH = _G.HIGH, MEDIUM = _G.AUCTION_TIME_LEFT2,
 						LOW = _G.LOW, BACKGROUND = _G.BACKGROUND
 					},
 				},
 				shape = {
-					name = L["Shape"],
+					name = BM.SHAPE,
 					order = 11, type = "select",
 					get = function() return db.round and "circular" or "square" end,
 					set = function(_, shape)
@@ -149,7 +137,7 @@ local function getOptions()
 					values = {square = _G.RAID_TARGET_6, circular = _G.RAID_TARGET_2}, --Square, Circle
 				},
 				autozoom = {
-					name = L["Auto Zoom Out"],
+					name = BM.AUTOZOOM,
 					order = 12, type = "toggle",
 					get = function() return db.zoom end,
 					set = function(_, state) db.zoom = state and true or nil end,
@@ -186,8 +174,19 @@ local function getOptions()
 	return options
 end
 
-Minimap:SetScript("OnEvent", function(_,evt,msg)
-	if evt == "ADDON_LOADED" and msg == "BasicMinimap" then
+local function addOptions()
+	BM.self.name = "BasicMinimapNew"
+	InterfaceOptions_AddCategory(BM.self)
+	local bmTitle = BM.self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	bmTitle:SetPoint("TOPLEFT", 16, -16)
+	bmTitle:SetText("BasicMinimapNew".." @project-version@") --wowace magic, replaced with tag version
+end
+
+BM.self = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
+BM.self:SetScript("OnEvent", function()
+	local hideMe = function(frame) frame:Hide() end
+	addOptions()
+
 		if not _G.BasicMinimapDB or not _G.BasicMinimapDB.borderR then
 			_G.BasicMinimapDB = {
 				x = 0, y = 0,
@@ -203,12 +202,10 @@ Minimap:SetScript("OnEvent", function(_,evt,msg)
 		_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
 		_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
 
-		_G["SlashCmdList"]["BASICMINIMAP_MAIN"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
-		_G["SLASH_BASICMINIMAP_MAIN1"] = "/bm"
-		_G["SLASH_BASICMINIMAP_MAIN2"] = "/basicminimap"
+		_G["SlashCmdList"]["BASICMINIMAP"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
+		_G["SLASH_BASICMINIMAP1"] = "/bm"
+		_G["SLASH_BASICMINIMAP2"] = "/basicminimap"
 
-		Minimap:UnregisterEvent("ADDON_LOADED")
-	elseif evt == "PLAYER_LOGIN" then
 		local Minimap = Minimap
 		Minimap:SetParent(UIParent)
 		MinimapCluster:EnableMouse(false)
@@ -333,10 +330,8 @@ Minimap:SetScript("OnEvent", function(_,evt,msg)
 			end
 		end)
 
-		Minimap:UnregisterEvent("PLAYER_LOGIN")
-		Minimap:SetScript("OnEvent", nil)
-	end
+		BM.self:UnregisterEvent("PLAYER_LOGIN")
+		BM.self:SetScript("OnEvent", nil)
 end)
-Minimap:RegisterEvent("ADDON_LOADED")
-Minimap:RegisterEvent("PLAYER_LOGIN")
+BM.self:RegisterEvent("PLAYER_LOGIN")
 

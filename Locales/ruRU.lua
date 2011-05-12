@@ -1,3 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("BasicMinimap","ruRU")
-if not L then return end
---@localization(locale="ruRU", format="lua_additive_table", handle-subnamespaces="concat")@
+
+if GetLocale() ~= "ruRU" then return end
+local _, BM = ...
+--@localization(locale="ruRU", namespace="Config_Module", format="lua_additive_table", handle-unlocalized="ignore", table-name="BM")@
