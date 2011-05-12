@@ -11,7 +11,6 @@ local function getOptions()
 		Button13 = _G.KEY_BUTTON13, Button14 = _G.KEY_BUTTON14, Button15 = _G.KEY_BUTTON15
 	}
 	if not options then
-		local L = LibStub("AceLocale-3.0"):GetLocale("BasicMinimap", true)
 		options = {
 			type = "group",
 			name = "BasicMinimap",
