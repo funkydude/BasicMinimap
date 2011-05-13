@@ -1,6 +1,5 @@
 
 local _, BM = ...
-
 BM.AUTOZOOM = "Auto Zoom Out"
 BM.BORDERSIZE = "Border Size"
 BM.BUTTONDESC = "Choose the buttons for opening the Calendar and Tracking menu."

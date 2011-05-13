@@ -174,11 +174,65 @@ local function getOptions()
 end
 
 local function addOptions()
+	--move this out to new module when done
 	BM.self.name = "BasicMinimapNew"
 	InterfaceOptions_AddCategory(BM.self)
 	local bmTitle = BM.self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	bmTitle:SetPoint("TOPLEFT", 16, -16)
-	bmTitle:SetText("BasicMinimapNew".." @project-version@") --wowace magic, replaced with tag version
+	bmTitle:SetText(name.." @project-version@") --wowace magic, replaced with tag version
+
+	local calendarSlider = CreateFrame("Slider", "BM_Calendar_Slider", BM.self, "OptionsSliderTemplate")
+	calendarSlider:SetMinMaxValues(2, 15)
+	calendarSlider:SetValue(INSERT_DB_HERE or 3)
+	calendarSlider:SetValueStep(1)
+	calendarSlider:SetScript("OnValueChanged", function(_, v)
+		BM_Calendar_SliderText:SetFormattedText("%s: %s", BM.CALENDAR, _G["KEY_BUTTON"..v])
+		if v == 3 then INSERT_DB_HERE = nil else INSERT_DB_HERE_VAL = v end
+	end)
+	BM_Calendar_SliderHigh:SetText(15)
+	BM_Calendar_SliderLow:SetText(2)
+	BM_Calendar_SliderText:SetFormattedText("%s: %s", BM.CALENDAR, _G["KEY_BUTTON"..(INSERT_DB_HERE or 3)])
+	calendarSlider:SetPoint("TOPLEFT", 20, -60)
+
+	local trackingSlider = CreateFrame("Slider", "BM_Tracking_Slider", BM.self, "OptionsSliderTemplate")
+	trackingSlider:SetMinMaxValues(2, 15)
+	trackingSlider:SetValue(INSERT_DB_HERE or 2)
+	trackingSlider:SetValueStep(1)
+	trackingSlider:SetScript("OnValueChanged", function(_, v)
+		BM_Tracking_SliderText:SetFormattedText("%s: %s", TRACKING, _G["KEY_BUTTON"..v])
+		if v == 2 then INSERT_DB_HERE = nil else INSERT_DB_HERE_VAL = v end
+	end)
+	BM_Tracking_SliderHigh:SetText(15)
+	BM_Tracking_SliderLow:SetText(2)
+	BM_Tracking_SliderText:SetFormattedText("%s: %s", TRACKING, _G["KEY_BUTTON"..(INSERT_DB_HERE or 2)])
+	trackingSlider:SetPoint("TOPLEFT", 225, -60)
+
+	local borderSizeSlider = CreateFrame("Slider", "BM_Border_Slider", BM.self, "OptionsSliderTemplate")
+	borderSizeSlider:SetMinMaxValues(0.5, 5)
+	borderSizeSlider:SetValue(INSERT_DB_HERE or 3)
+	borderSizeSlider:SetValueStep(0.1)
+	borderSizeSlider:SetScript("OnValueChanged", function(_, v)
+		BM_Border_SliderText:SetFormattedText("%s: %.1f", BM.BORDERSIZE, v)
+		if v == 3 then INSERT_DB_HERE = nil else INSERT_DB_HERE_VAL = v end
+	end)
+	BM_Border_SliderHigh:SetText(5)
+	BM_Border_SliderLow:SetText(0.5)
+	BM_Border_SliderText:SetFormattedText("%s: %.1f", BM.BORDERSIZE, INSERT_DB_HERE or 3)
+	borderSizeSlider:SetPoint("TOPLEFT", 20, -100)
+
+	local scaleSlider = CreateFrame("Slider", "BM_Scale_Slider", BM.self, "OptionsSliderTemplate")
+	scaleSlider:SetMinMaxValues(0.5, 2)
+	scaleSlider:SetValue(INSERT_DB_HERE or 1)
+	scaleSlider:SetValueStep(0.01)
+	scaleSlider:SetWidth(380)
+	scaleSlider:SetScript("OnValueChanged", function(_, v)
+		BM_Scale_SliderText:SetFormattedText("%s: %.2f", "Minimap Size", v)
+		if v == 1 then INSERT_DB_HERE = nil else INSERT_DB_HERE_VAL = v end
+	end)
+	BM_Scale_SliderHigh:SetText(2)
+	BM_Scale_SliderLow:SetText(0.5)
+	BM_Scale_SliderText:SetFormattedText("%s: %.2f", "Minimap Size", INSERT_DB_HERE or 1)
+	scaleSlider:SetPoint("TOPLEFT", 20, -140)
 end
 
 BM.self = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
