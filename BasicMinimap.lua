@@ -172,7 +172,7 @@ local function getOptions()
 	end
 	return options
 end
-
+--[[
 local function addOptions()
 	--move this out to new module when done
 	BM.self.name = "BasicMinimapNew"
@@ -234,11 +234,11 @@ local function addOptions()
 	BM_Scale_SliderText:SetFormattedText("%s: %.2f", "Minimap Size", INSERT_DB_HERE or 1)
 	scaleSlider:SetPoint("TOPLEFT", 20, -140)
 end
-
+]]
 BM.self = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
 BM.self:SetScript("OnEvent", function()
 	local hideMe = function(frame) frame:Hide() end
-	addOptions()
+	--addOptions()
 
 		if not _G.BasicMinimapDB or not _G.BasicMinimapDB.borderR then
 			_G.BasicMinimapDB = {
