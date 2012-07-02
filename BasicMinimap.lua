@@ -346,9 +346,10 @@ BM.self:SetScript("OnEvent", function()
 			MiniMapInstanceDifficulty:Hide()
 		end
 
-		MiniMapLFGFrame:ClearAllPoints()
-		MiniMapLFGFrame:SetParent(Minimap)
-		MiniMapLFGFrame:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
+		local lfg = MiniMapLFGFrame or QueueStatusMinimapButton
+		lfg:ClearAllPoints()
+		lfg:SetParent(Minimap)
+		lfg:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
 
 		Minimap:EnableMouseWheel(true)
 		local t = 0
