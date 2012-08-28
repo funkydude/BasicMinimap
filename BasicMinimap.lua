@@ -3,12 +3,12 @@ local name, BM = ...
 
 local db, options
 local function getOptions()
-	local Minimap, BasicMinimapBorder = _G.Minimap, _G.BasicMinimapBorder
-	local val = {RightButton = _G.KEY_BUTTON2, MiddleButton = _G.KEY_BUTTON3,
-		Button4 = _G.KEY_BUTTON4, Button5 = _G.KEY_BUTTON5, Button6 = _G.KEY_BUTTON6,
-		Button7 = _G.KEY_BUTTON7, Button8 = _G.KEY_BUTTON8, Button9 = _G.KEY_BUTTON9,
-		Button10 = _G.KEY_BUTTON10, Button11 = _G.KEY_BUTTON11, Button12 = _G.KEY_BUTTON12,
-		Button13 = _G.KEY_BUTTON13, Button14 = _G.KEY_BUTTON14, Button15 = _G.KEY_BUTTON15
+	local Minimap, BasicMinimapBorder = Minimap, BasicMinimapBorder
+	local val = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
+		Button4 = KEY_BUTTON4, Button5 = KEY_BUTTON5, Button6 = KEY_BUTTON6,
+		Button7 = KEY_BUTTON7, Button8 = KEY_BUTTON8, Button9 = KEY_BUTTON9,
+		Button10 = KEY_BUTTON10, Button11 = KEY_BUTTON11, Button12 = KEY_BUTTON12,
+		Button13 = KEY_BUTTON13, Button14 = KEY_BUTTON14, Button15 = KEY_BUTTON15
 	}
 	if not options then
 		options = {
@@ -34,11 +34,11 @@ local function getOptions()
 					values = val,
 				},
 				borderspacer = {
-					name = _G.EMBLEM_BORDER, --Border
+					name = EMBLEM_BORDER, --Border
 					order = 4, type = "header",
 				},
 				bordercolor = {
-					name = _G.EMBLEM_BORDER_COLOR, --Border Color
+					name = EMBLEM_BORDER_COLOR, --Border Color
 					order = 5, type = "color",
 					get = function() return db.borderR, db.borderG, db.borderB end,
 					set = function(_, r, g, b)
@@ -87,7 +87,7 @@ local function getOptions()
 					disabled = function() return db.round end,
 				},
 				miscspacer = {
-					name = _G.MISCELLANEOUS,
+					name = MISCELLANEOUS,
 					order = 8, type = "header",
 				},
 				scale = {
@@ -112,8 +112,8 @@ local function getOptions()
 						Minimap:SetFrameStrata(strata)
 						BasicMinimapBorder:SetFrameStrata(strata)
 					end,
-					values = {TOOLTIP = BM.TOOLTIP, HIGH = _G.HIGH, MEDIUM = _G.AUCTION_TIME_LEFT2,
-						LOW = _G.LOW, BACKGROUND = _G.BACKGROUND
+					values = {TOOLTIP = BM.TOOLTIP, HIGH = HIGH, MEDIUM = AUCTION_TIME_LEFT2,
+						LOW = LOW, BACKGROUND = BACKGROUND
 					},
 				},
 				shape = {
@@ -133,7 +133,7 @@ local function getOptions()
 							function GetMinimapShape() return "ROUND" end
 						end
 					end,
-					values = {square = _G.RAID_TARGET_6, circular = _G.RAID_TARGET_2}, --Square, Circle
+					values = {square = RAID_TARGET_6, circular = RAID_TARGET_2}, --Square, Circle
 				},
 				autozoom = {
 					name = BM.AUTOZOOM,
@@ -159,7 +159,7 @@ local function getOptions()
 					end,
 				},
 				lock = {
-					name = _G.LOCK,
+					name = LOCK,
 					order = 14, type = "toggle",
 					get = function() return db.lock end,
 					set = function(_, state) db.lock = state and true or nil
@@ -240,20 +240,20 @@ BM.self:SetScript("OnEvent", function()
 	local hideMe = function(frame) frame:Hide() end
 	--addOptions()
 
-		if not _G.BasicMinimapDB or not _G.BasicMinimapDB.borderR then
-			_G.BasicMinimapDB = {
+		if not BasicMinimapDB or not BasicMinimapDB.borderR then
+			BasicMinimapDB = {
 				x = 0, y = 0,
 				point = "CENTER", relpoint = "CENTER",
 				borderR = 0.73, borderG = 0.75, borderB = 1
 			}
 		end
-		db = _G.BasicMinimapDB
+		db = BasicMinimapDB
 
 		--Return minimap shape for other addons
 		if not db.round then function GetMinimapShape() return "SQUARE" end end
 
-		_G.LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
-		_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
+		LibStub("AceConfig-3.0"):RegisterOptionsTable("BasicMinimap", getOptions)
+		LibStub("AceConfigDialog-3.0"):AddToBlizOptions("BasicMinimap")
 
 		_G["SlashCmdList"]["BASICMINIMAP"] = function() InterfaceOptionsFrame_OpenToCategory("BasicMinimap") end
 		_G["SLASH_BASICMINIMAP1"] = "/bm"
@@ -358,16 +358,16 @@ BM.self:SetScript("OnEvent", function()
 			if t > 4 then
 				t = 0
 				for i = 1, 5 do
-					_G.MinimapZoomOut:Click()
+					MinimapZoomOut:Click()
 				end
 				Minimap:SetScript("OnUpdate", nil)
 			end
 		end
 		Minimap:SetScript("OnMouseWheel", function(self, d)
 			if d > 0 then
-				_G.MinimapZoomIn:Click()
+				MinimapZoomIn:Click()
 			elseif d < 0 then
-				_G.MinimapZoomOut:Click()
+				MinimapZoomOut:Click()
 			end
 			if db.zoom then
 				t = 0
@@ -376,11 +376,11 @@ BM.self:SetScript("OnEvent", function()
 		end)
 		Minimap:SetScript("OnMouseUp", function(self, btn)
 			if btn == (db.calendar or "RightButton") then
-				_G.GameTimeFrame:Click()
+				GameTimeFrame:Click()
 			elseif btn == (db.tracking or "MiddleButton") then
-				_G.ToggleDropDownMenu(1, nil, _G.MiniMapTrackingDropDown, self)
+				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self)
 			elseif btn == "LeftButton" then
-				_G.Minimap_OnClick(self)
+				Minimap_OnClick(self)
 			end
 		end)
 

@@ -1,4 +1,4 @@
-## Interface: 40300
+## Interface: 50001
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-frFR: Minicarte configurable comportant des options basiques.
@@ -7,12 +7,12 @@
 ## Notes-zhCN: 小地图增强插件
 ## Notes-koKR: 미니맵의 간단한 옵션들을 설정할 수 있습니다.
 ## Notes-ruRU: Настраиваемая миникарта с базовыми возможностями.
-## Notes-esES: Configurable minimap with basic options.
-## Notes-esMX: Configurable minimap with basic options.
+## Notes-esES: Minimapa configurable con opciones básicas.
+## Notes-esMX: Minimapa configurable con opciones básicas.
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.85
+## Version: 1.86
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3, !ClassColors
 ## X-Embeds: Ace3
