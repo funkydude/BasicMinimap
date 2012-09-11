@@ -293,6 +293,8 @@ BM.self:SetScript("OnEvent", function(f)
 	if BM.db.hideraid then
 		MiniMapInstanceDifficulty:SetScript("OnShow", hideMe)
 		MiniMapInstanceDifficulty:Hide()
+		GuildInstanceDifficulty:SetScript("OnShow", hideMe)
+		GuildInstanceDifficulty:Hide()
 	end
 
 	local lfg = MiniMapLFGFrame or QueueStatusMinimapButton
