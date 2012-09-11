@@ -12,9 +12,9 @@
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 1.86
+## Version: 2.00
 ## SavedVariables: BasicMinimapDB
-## OptionalDeps: Ace3, !ClassColors
+## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 
 embeds.xml
