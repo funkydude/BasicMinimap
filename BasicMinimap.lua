@@ -155,9 +155,22 @@ BM.options = {
 				end
 			end,
 		},
+		clock = {
+			name = TIMEMANAGER_TITLE,
+			order = 14, type = "toggle",
+			get = function() return BM.db.clock or BM.db.clock == nil and true end,
+			set = function(_, state)
+				BM.db.clock = state
+				if state then
+					TimeManagerClockButton:Show()
+				else
+					TimeManagerClockButton:Hide()
+				end
+			end,
+		},
 		lock = {
 			name = LOCK,
-			order = 14, type = "toggle",
+			order = 15, type = "toggle",
 			get = function() return BM.db.lock end,
 			set = function(_, state) BM.db.lock = state and true or nil
 				if not state then state = true else state = false end
@@ -184,7 +197,7 @@ BM.self:SetScript("OnEvent", function(f)
 	--Return minimap shape for other addons
 	if not BM.db.round then function GetMinimapShape() return "SQUARE" end end
 
-	LibStub("AceConfig-3.0"):RegisterOptionsTable(name, getOptions)
+	LibStub("AceConfig-3.0"):RegisterOptionsTable(name, BM.options)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(name)
 
 	SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) end
@@ -242,6 +255,10 @@ BM.self:SetScript("OnEvent", function(f)
 	MiniMapVoiceChatFrame:SetScript("OnShow", hideMe)
 	MiniMapVoiceChatFrame:Hide()
 	MiniMapVoiceChatFrame:UnregisterAllEvents()
+
+	if BM.db.clock == false then
+		TimeManagerClockButton:Hide()
+	end
 
 	border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 	border:RegisterEvent("CALENDAR_ACTION_PENDING")
