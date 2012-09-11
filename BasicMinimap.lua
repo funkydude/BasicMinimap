@@ -8,6 +8,8 @@ BM.buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 	Button13 = KEY_BUTTON13, Button14 = KEY_BUTTON14, Button15 = KEY_BUTTON15
 }
 
+BM.hide = function(frame) frame:Hide() end
+
 BM.options = {
 	type = "group",
 	name = name,
@@ -146,12 +148,18 @@ BM.options = {
 				if state then
 					BM.db.hideraid = nil
 					MiniMapInstanceDifficulty:SetScript("OnShow", nil)
+					GuildInstanceDifficulty:SetScript("OnShow", nil)
 					local z = select(2, IsInInstance())
-					if z and (z == "party" or z == "raid") then MiniMapInstanceDifficulty:Show() end
+					if z and (z == "party" or z == "raid") and (IsInRaid() or IsInGroup()) then
+						MiniMapInstanceDifficulty:Show()
+						GuildInstanceDifficulty:Show()
+					end
 				else
 					BM.db.hideraid = true
-					MiniMapInstanceDifficulty:SetScript("OnShow", hideMe)
+					MiniMapInstanceDifficulty:SetScript("OnShow", BM.hide)
 					MiniMapInstanceDifficulty:Hide()
+					GuildInstanceDifficulty:SetScript("OnShow", BM.hide)
+					GuildInstanceDifficulty:Hide()
 				end
 			end,
 		},
@@ -183,8 +191,6 @@ BM.options = {
 BM.self = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
 BM.self:RegisterEvent("PLAYER_LOGIN")
 BM.self:SetScript("OnEvent", function(f)
-	local hideMe = function(frame) frame:Hide() end
-
 	if not BasicMinimapDB or not BasicMinimapDB.borderR then
 		BasicMinimapDB = {
 			x = 0, y = 0,
@@ -252,7 +258,7 @@ BM.self:SetScript("OnEvent", function(f)
 	MinimapZoomIn:Hide()
 	MinimapZoomOut:Hide()
 
-	MiniMapVoiceChatFrame:SetScript("OnShow", hideMe)
+	MiniMapVoiceChatFrame:SetScript("OnShow", BM.hide)
 	MiniMapVoiceChatFrame:Hide()
 	MiniMapVoiceChatFrame:UnregisterAllEvents()
 
@@ -270,15 +276,15 @@ BM.self:SetScript("OnEvent", function(f)
 		end
 	end)
 
-	MiniMapWorldMapButton:SetScript("OnShow", hideMe)
+	MiniMapWorldMapButton:SetScript("OnShow", BM.hide)
 	MiniMapWorldMapButton:Hide()
 	MiniMapWorldMapButton:UnregisterAllEvents()
 
-	MinimapZoneTextButton:SetScript("OnShow", hideMe)
+	MinimapZoneTextButton:SetScript("OnShow", BM.hide)
 	MinimapZoneTextButton:Hide()
 	MinimapZoneTextButton:UnregisterAllEvents()
 
-	MiniMapTracking:SetScript("OnShow", hideMe)
+	MiniMapTracking:SetScript("OnShow", BM.hide)
 	MiniMapTracking:Hide()
 	MiniMapTracking:UnregisterAllEvents()
 
@@ -291,9 +297,9 @@ BM.self:SetScript("OnEvent", function(f)
 	GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
 	if BM.db.hideraid then
-		MiniMapInstanceDifficulty:SetScript("OnShow", hideMe)
+		MiniMapInstanceDifficulty:SetScript("OnShow", BM.hide)
 		MiniMapInstanceDifficulty:Hide()
-		GuildInstanceDifficulty:SetScript("OnShow", hideMe)
+		GuildInstanceDifficulty:SetScript("OnShow", BM.hide)
 		GuildInstanceDifficulty:Hide()
 	end
 
