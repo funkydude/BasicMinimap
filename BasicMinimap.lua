@@ -275,6 +275,11 @@ BM.self:SetScript("OnEvent", function(f)
 			GameTimeFrame:Show()
 		end
 	end)
+	if CalendarGetNumPendingInvites() < 1 then
+		GameTimeFrame:Hide()
+	else
+		GameTimeFrame:Show()
+	end
 
 	MiniMapWorldMapButton:SetScript("OnShow", BM.hide)
 	MiniMapWorldMapButton:Hide()
