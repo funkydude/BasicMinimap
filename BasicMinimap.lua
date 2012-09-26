@@ -210,6 +210,10 @@ BM.self:SetScript("OnEvent", function(f)
 	SLASH_BASICMINIMAP1 = "/bm"
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 
+	if FRAMELOCK_STATES then
+		FRAMELOCK_STATES.PETBATTLES.Minimap = "hidden" -- Hide the Minimap during a pet battle
+	end
+
 	local Minimap = Minimap
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
