@@ -210,10 +210,6 @@ BM.self:SetScript("OnEvent", function(f)
 	SLASH_BASICMINIMAP1 = "/bm"
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 
-	if FRAMELOCK_STATES then
-		FRAMELOCK_STATES.PETBATTLES.Minimap = "hidden" -- Hide the Minimap during a pet battle
-	end
-
 	local Minimap = Minimap
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
@@ -351,6 +347,16 @@ BM.self:SetScript("OnEvent", function(f)
 	end)
 
 	f:UnregisterEvent("PLAYER_LOGIN")
-	f:SetScript("OnEvent", nil)
+
+	-- Hide the Minimap during a pet battle
+	f:SetScript("OnEvent", function(_, event)
+		if event == "PET_BATTLE_OVER" then
+			Minimap:Show()
+		else
+			Minimap:Hide()
+		end
+	end)
+	f:RegisterEvent("PET_BATTLE_OPENING_START")
+	f:RegisterEvent("PET_BATTLE_OVER")
 end)
 
