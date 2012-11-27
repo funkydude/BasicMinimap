@@ -170,8 +170,16 @@ BM.options = {
 			set = function(_, state)
 				BM.db.clock = state
 				if state then
+					if TimeManagerClockButton.bmShow then
+						TimeManagerClockButton.Show = TimeManagerClockButton.bmShow
+						TimeManagerClockButton.bmShow = nil
+					end
 					TimeManagerClockButton:Show()
 				else
+					if not TimeManagerClockButton.bmShow then
+						TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
+						TimeManagerClockButton.Show = function() end
+					end
 					TimeManagerClockButton:Hide()
 				end
 			end,
@@ -264,6 +272,8 @@ BM.self:SetScript("OnEvent", function(f)
 
 	if BM.db.clock == false then
 		TimeManagerClockButton:Hide()
+		TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
+		TimeManagerClockButton.Show = function() end
 	end
 
 	border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
@@ -350,13 +360,13 @@ BM.self:SetScript("OnEvent", function(f)
 
 	-- Hide the Minimap during a pet battle
 	f:SetScript("OnEvent", function(_, event)
-		if event == "PET_BATTLE_OVER" then
+		if event == "PET_BATTLE_CLOSE" then
 			Minimap:Show()
 		else
 			Minimap:Hide()
 		end
 	end)
 	f:RegisterEvent("PET_BATTLE_OPENING_START")
-	f:RegisterEvent("PET_BATTLE_OVER")
+	f:RegisterEvent("PET_BATTLE_CLOSE")
 end)
 
