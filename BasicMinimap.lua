@@ -211,7 +211,7 @@ BM.self:SetScript("OnEvent", function(f)
 	--Return minimap shape for other addons
 	if not BM.db.round then function GetMinimapShape() return "SQUARE" end end
 
-	LibStub("AceConfig-3.0"):RegisterOptionsTable(name, BM.options)
+	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(name, BM.options, true)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(name)
 
 	SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) end
