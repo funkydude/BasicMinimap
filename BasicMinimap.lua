@@ -33,6 +33,10 @@ BM.options = {
 			values = BM.buttonValues,
 		},
 		borderspacer = {
+			name = "\n",
+			order = 3.1, type = "description",
+		},
+		bordertitle = {
 			name = EMBLEM_BORDER, --Border
 			order = 4, type = "header",
 		},
@@ -86,12 +90,16 @@ BM.options = {
 			disabled = function() return BM.db.round end,
 		},
 		miscspacer = {
+			name = "\n",
+			order = 7.1, type = "description",
+		},
+		mischeader = {
 			name = MISCELLANEOUS,
 			order = 8, type = "header",
 		},
 		scale = {
 			name = BM.SCALE,
-			order = 9, type = "range", width = "full",
+			order = 9, type = "range",
 			min = 0.5, max = 2, step = 0.01,
 			get = function() return BM.db.scale or 1 end,
 			set = function(_, scale)
@@ -134,11 +142,26 @@ BM.options = {
 			end,
 			values = {square = RAID_TARGET_6, circular = RAID_TARGET_2}, --Square, Circle
 		},
-		autozoom = {
-			name = BM.AUTOZOOM,
+		zoom = {
+			name = ZOOM_IN.."/"..ZOOM_OUT,
 			order = 12, type = "toggle",
-			get = function() return BM.db.zoom end,
-			set = function(_, state) BM.db.zoom = state and true or nil end,
+			get = function() return BM.db.zoomBtn end,
+			set = function(_, state)
+				BM.db.zoomBtn = state
+				if state then
+					MinimapZoomIn:ClearAllPoints()
+					MinimapZoomIn:SetParent("Minimap")
+					MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", BM.db.round and 10 or 20, BM.db.round and -40 or -50)
+					MinimapZoomIn:Show()
+					MinimapZoomOut:ClearAllPoints()
+					MinimapZoomOut:SetParent("Minimap")
+					MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", BM.db.round and 40 or 50, BM.db.round and -10 or -20)
+					MinimapZoomOut:Show()
+				else
+					MinimapZoomIn:Hide()
+					MinimapZoomOut:Hide()
+				end
+			end,
 		},
 		raiddiff = {
 			name = RAID_DIFFICULTY,
@@ -184,9 +207,19 @@ BM.options = {
 				end
 			end,
 		},
+		autozoom = {
+			name = BM.AUTOZOOM,
+			order = 15, type = "toggle",
+			get = function() return BM.db.zoom end,
+			set = function(_, state) BM.db.zoom = state and true or nil end,
+		},
+		lockspacer = {
+			name = "\n",
+			order = 15.1, type = "description",
+		},
 		lock = {
 			name = LOCK,
-			order = 15, type = "toggle",
+			order = 16, type = "toggle",
 			get = function() return BM.db.lock end,
 			set = function(_, state) BM.db.lock = state and true or nil
 				if not state then state = true else state = false end
@@ -214,13 +247,23 @@ BM.self:SetScript("OnEvent", function(f)
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(name, BM.options, true)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(name)
 
-	SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) end
+	SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) InterfaceOptionsFrame_OpenToCategory(name) end
 	SLASH_BASICMINIMAP1 = "/bm"
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 
 	local Minimap = Minimap
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
+
+	local anim = Minimap:CreateAnimationGroup()
+	anim:SetScript("OnFinished", function()
+		for i = 1, 5 do
+			MinimapZoomOut:Click()
+		end
+	end)
+	local update = anim:CreateAnimation()
+	update:SetOrder(1)
+	update:SetDuration(4)
 
 	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
 	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = BM.db.borderSize or 3})
@@ -245,7 +288,7 @@ BM.self:SetScript("OnEvent", function(f)
 	Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
 	Minimap:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
-		local p, _, rp, x, y = Minimap:GetPoint()
+		local p, _, rp, x, y = self:GetPoint()
 		BM.db.point, BM.db.relpoint, BM.db.x, BM.db.y = p, rp, x, y
 	end)
 
@@ -263,8 +306,19 @@ BM.self:SetScript("OnEvent", function(f)
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 	end
 
-	MinimapZoomIn:Hide()
-	MinimapZoomOut:Hide()
+	if not BM.db.zoomBtn then
+		MinimapZoomIn:Hide()
+		MinimapZoomOut:Hide()
+	else
+		MinimapZoomIn:ClearAllPoints()
+		MinimapZoomIn:SetParent("Minimap")
+		MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", BM.db.round and 10 or 20, BM.db.round and -40 or -50)
+		MinimapZoomIn:Show()
+		MinimapZoomOut:ClearAllPoints()
+		MinimapZoomOut:SetParent("Minimap")
+		MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", BM.db.round and 40 or 50, BM.db.round and -10 or -20)
+		MinimapZoomOut:Show()
+	end
 
 	MiniMapVoiceChatFrame:SetScript("OnShow", BM.hide)
 	MiniMapVoiceChatFrame:Hide()
@@ -324,17 +378,6 @@ BM.self:SetScript("OnEvent", function(f)
 	lfg:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
 
 	Minimap:EnableMouseWheel(true)
-	local t = 0
-	local zoomfunc = function(_, e)
-		t = t + e
-		if t > 4 then
-			t = 0
-			for i = 1, 5 do
-				MinimapZoomOut:Click()
-			end
-			Minimap:SetScript("OnUpdate", nil)
-		end
-	end
 	Minimap:SetScript("OnMouseWheel", function(self, d)
 		if d > 0 then
 			MinimapZoomIn:Click()
@@ -342,8 +385,8 @@ BM.self:SetScript("OnEvent", function(f)
 			MinimapZoomOut:Click()
 		end
 		if BM.db.zoom then
-			t = 0
-			Minimap:SetScript("OnUpdate", zoomfunc)
+			anim:Stop()
+			anim:Play()
 		end
 	end)
 	Minimap:SetScript("OnMouseUp", function(self, btn)
@@ -355,6 +398,15 @@ BM.self:SetScript("OnEvent", function(f)
 			Minimap_OnClick(self)
 		end
 	end)
+
+	local zoomBtnFunc = function()
+		if BM.db.zoom then
+			anim:Stop()
+			anim:Play()
+		end
+	end
+	MinimapZoomIn:HookScript("OnClick", zoomBtnFunc)
+	MinimapZoomOut:HookScript("OnClick", zoomBtnFunc)
 
 	f:UnregisterEvent("PLAYER_LOGIN")
 
