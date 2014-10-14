@@ -12,7 +12,6 @@
 ## Author: Funkydude
 ## X-Category: Map
 ## X-License: All Rights Reserved
-## Version: 2.14
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
