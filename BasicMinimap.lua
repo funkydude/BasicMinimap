@@ -371,6 +371,11 @@ BM.self:SetScript("OnEvent", function(f)
 	GuildInstanceDifficulty:SetParent(Minimap)
 	GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
+	GarrisonLandingPageMinimapButton:SetSize(45, 45)
+	GarrisonLandingPageMinimapButton:ClearAllPoints()
+	GarrisonLandingPageMinimapButton:SetParent(Minimap)
+	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
+
 	if BM.db.hideraid then
 		MiniMapInstanceDifficulty:SetScript("OnShow", BM.hide)
 		MiniMapInstanceDifficulty:Hide()
