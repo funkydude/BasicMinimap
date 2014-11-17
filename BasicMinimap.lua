@@ -255,16 +255,6 @@ BM.self:SetScript("OnEvent", function(f)
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
 
-	local anim = Minimap:CreateAnimationGroup()
-	anim:SetScript("OnFinished", function()
-		for i = 1, 5 do
-			MinimapZoomOut:Click()
-		end
-	end)
-	local update = anim:CreateAnimation()
-	update:SetOrder(1)
-	update:SetDuration(4)
-
 	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
 	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = BM.db.borderSize or 3})
 	border:SetFrameStrata(BM.db.strata or "BACKGROUND")
@@ -387,6 +377,30 @@ BM.self:SetScript("OnEvent", function(f)
 	QueueStatusMinimapButton:SetParent(Minimap)
 	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
 
+	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.
+	-- We do this by using a simple counter, which saves us using the more expensive C_Timer.NewTimer API.
+	local started, current = 0, 0
+	--[[ Auto Zoom Out ]]--
+	local zoomOut = function()
+		current = current + 1
+		if started == current then
+			for i = 1, Minimap:GetZoom() or 0 do
+				Minimap_ZoomOutClick() -- Call it directly so we don't run our own hook
+			end
+			started, current = 0, 0
+		end
+	end
+
+	local zoomBtnFunc = function()
+		if BM.db.zoom then
+			started = started + 1
+			C_Timer.After(4, zoomOut)
+		end
+	end
+	zoomBtnFunc()
+	MinimapZoomIn:HookScript("OnClick", zoomBtnFunc)
+	MinimapZoomOut:HookScript("OnClick", zoomBtnFunc)
+
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", function(self, d)
 		if d > 0 then
@@ -394,11 +408,8 @@ BM.self:SetScript("OnEvent", function(f)
 		elseif d < 0 then
 			MinimapZoomOut:Click()
 		end
-		if BM.db.zoom then
-			anim:Stop()
-			anim:Play()
-		end
 	end)
+
 	Minimap:SetScript("OnMouseUp", function(self, btn)
 		if btn == (BM.db.calendar or "RightButton") then
 			GameTimeFrame:Click()
@@ -408,15 +419,6 @@ BM.self:SetScript("OnEvent", function(f)
 			Minimap_OnClick(self)
 		end
 	end)
-
-	local zoomBtnFunc = function()
-		if BM.db.zoom then
-			anim:Stop()
-			anim:Play()
-		end
-	end
-	MinimapZoomIn:HookScript("OnClick", zoomBtnFunc)
-	MinimapZoomOut:HookScript("OnClick", zoomBtnFunc)
 
 	f:UnregisterEvent("PLAYER_LOGIN")
 
