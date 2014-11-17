@@ -232,7 +232,7 @@ BM.options = {
 BM.self = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
 BM.self:RegisterEvent("PLAYER_LOGIN")
 BM.self:SetScript("OnEvent", function(f)
-	if not BasicMinimapDB or not BasicMinimapDB.borderR then
+	if not BasicMinimapDB then
 		BasicMinimapDB = {
 			x = 0, y = 0,
 			point = "CENTER", relpoint = "CENTER",
