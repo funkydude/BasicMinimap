@@ -28,6 +28,7 @@ Locales\ruRU.lua
 Locales\zhCN.lua
 Locales\esES.lua
 Locales\zhTW.lua
+Locales\ptBR.lua
 
 BasicMinimap.lua
 

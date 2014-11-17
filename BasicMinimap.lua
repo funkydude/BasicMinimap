@@ -371,7 +371,7 @@ BM.self:SetScript("OnEvent", function(f)
 	GuildInstanceDifficulty:SetParent(Minimap)
 	GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
-	GarrisonLandingPageMinimapButton:SetSize(45, 45)
+	GarrisonLandingPageMinimapButton:SetSize(38, 38)
 	GarrisonLandingPageMinimapButton:ClearAllPoints()
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
@@ -383,10 +383,9 @@ BM.self:SetScript("OnEvent", function(f)
 		GuildInstanceDifficulty:Hide()
 	end
 
-	local lfg = MiniMapLFGFrame or QueueStatusMinimapButton
-	lfg:ClearAllPoints()
-	lfg:SetParent(Minimap)
-	lfg:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
+	QueueStatusMinimapButton:ClearAllPoints()
+	QueueStatusMinimapButton:SetParent(Minimap)
+	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
 
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", function(self, d)
