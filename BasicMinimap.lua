@@ -1,11 +1,12 @@
 
 local name, BM = ...
 
-BM.buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
+local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 	Button4 = KEY_BUTTON4, Button5 = KEY_BUTTON5, Button6 = KEY_BUTTON6,
 	Button7 = KEY_BUTTON7, Button8 = KEY_BUTTON8, Button9 = KEY_BUTTON9,
 	Button10 = KEY_BUTTON10, Button11 = KEY_BUTTON11, Button12 = KEY_BUTTON12,
-	Button13 = KEY_BUTTON13, Button14 = KEY_BUTTON14, Button15 = KEY_BUTTON15
+	Button13 = KEY_BUTTON13, Button14 = KEY_BUTTON14, Button15 = KEY_BUTTON15,
+	None = NONE
 }
 
 BM.hide = function(frame) frame:Hide() end
@@ -23,14 +24,14 @@ BM.options = {
 			order = 2, type = "select",
 			get = function() return BM.db.calendar or "RightButton" end,
 			set = function(_, btn) BM.db.calendar = btn~="RightButton" and btn or nil end,
-			values = BM.buttonValues,
+			values = buttonValues,
 		},
 		trackingbtn = {
 			name = TRACKING,
 			order = 3, type = "select",
 			get = function() return BM.db.tracking or "MiddleButton" end,
 			set = function(_, btn) BM.db.tracking = btn~="MiddleButton" and btn or nil end,
-			values = BM.buttonValues,
+			values = buttonValues,
 		},
 		borderspacer = {
 			name = "\n",
