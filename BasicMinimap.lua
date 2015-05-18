@@ -9,9 +9,10 @@ local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 	None = NONE
 }
 
-BM.hide = function(frame) frame:Hide() end
+local hideFrame = function(frame) frame:Hide() end
+local db
 
-BM.options = {
+local options = {
 	type = "group",
 	name = name,
 	args = {
@@ -22,15 +23,15 @@ BM.options = {
 		calendarbtn = {
 			name = BM.CALENDAR,
 			order = 2, type = "select",
-			get = function() return BM.db.calendar or "RightButton" end,
-			set = function(_, btn) BM.db.calendar = btn~="RightButton" and btn or nil end,
+			get = function() return db.calendar or "RightButton" end,
+			set = function(_, btn) db.calendar = btn~="RightButton" and btn or nil end,
 			values = buttonValues,
 		},
 		trackingbtn = {
 			name = TRACKING,
 			order = 3, type = "select",
-			get = function() return BM.db.tracking or "MiddleButton" end,
-			set = function(_, btn) BM.db.tracking = btn~="MiddleButton" and btn or nil end,
+			get = function() return db.tracking or "MiddleButton" end,
+			set = function(_, btn) db.tracking = btn~="MiddleButton" and btn or nil end,
 			values = buttonValues,
 		},
 		borderspacer = {
@@ -44,51 +45,51 @@ BM.options = {
 		bordercolor = {
 			name = EMBLEM_BORDER_COLOR, --Border Color
 			order = 5, type = "color",
-			get = function() return BM.db.borderR, BM.db.borderG, BM.db.borderB end,
+			get = function() return db.borderR, db.borderG, db.borderB end,
 			set = function(_, r, g, b)
-				BM.db.borderR = r BM.db.borderG = g BM.db.borderB = b
+				db.borderR = r db.borderG = g db.borderB = b
 				BasicMinimapBorder:SetBackdropBorderColor(r, g, b)
 			end,
-			disabled = function() return BM.db.round or BM.db.ccolor end,
+			disabled = function() return db.round or db.ccolor end,
 		},
 		classcolor = {
 			name = BM.CLASSCOLORED,
 			order = 6, type = "toggle",
-			get = function() return BM.db.ccolor end,
+			get = function() return db.ccolor end,
 			set = function(_, state)
 				if state then
-					BM.db.ccolor = true
+					db.ccolor = true
 					local class = select(2, UnitClass("player"))
 					local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 					BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
 				else
-					BM.db.ccolor = nil
-					BasicMinimapBorder:SetBackdropBorderColor(BM.db.borderR, BM.db.borderG, BM.db.borderB)
+					db.ccolor = nil
+					BasicMinimapBorder:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
 				end
 			end,
-			disabled = function() return BM.db.round end,
+			disabled = function() return db.round end,
 		},
 		bordersize = {
 			name = BM.BORDERSIZE,
 			order = 7, type = "range", width = "full",
 			min = 0.5, max = 5, step = 0.5,
-			get = function() return BM.db.borderSize or 3 end,
-			set = function(_, s) BM.db.borderSize = s~=3 and s or nil
+			get = function() return db.borderSize or 3 end,
+			set = function(_, s) db.borderSize = s~=3 and s or nil
 				BasicMinimapBorder:SetBackdrop(
 					{edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false,
 					tileSize = 0, edgeSize = s,}
 				)
 				BasicMinimapBorder:SetWidth(Minimap:GetWidth()+s)
 				BasicMinimapBorder:SetHeight(Minimap:GetHeight()+s)
-				if BM.db.ccolor then
+				if db.ccolor then
 					local class = select(2, UnitClass("player"))
 					local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 					BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
 				else
-					BasicMinimapBorder:SetBackdropBorderColor(BM.db.borderR, BM.db.borderG, BM.db.borderB)
+					BasicMinimapBorder:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
 				end
 			end,
-			disabled = function() return BM.db.round end,
+			disabled = function() return db.round end,
 		},
 		miscspacer = {
 			name = "\n",
@@ -102,21 +103,21 @@ BM.options = {
 			name = BM.SCALE,
 			order = 9, type = "range",
 			min = 0.5, max = 2, step = 0.01,
-			get = function() return BM.db.scale or 1 end,
+			get = function() return db.scale or 1 end,
 			set = function(_, scale)
 				Minimap:SetScale(scale)
 				Minimap:ClearAllPoints()
-				local s = (BM.db.scale or 1)/scale
-				BM.db.x, BM.db.y = BM.db.x*s, BM.db.y*s
-				Minimap:SetPoint(BM.db.point, nil, BM.db.relpoint, BM.db.x, BM.db.y)
-				BM.db.scale = scale~=1 and scale or nil
+				local s = (db.scale or 1)/scale
+				db.x, db.y = db.x*s, db.y*s
+				Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
+				db.scale = scale~=1 and scale or nil
 			end,
 		},
 		strata = {
 			name = BM.STRATA,
 			order = 10, type = "select",
-			get = function() return BM.db.strata or "BACKGROUND" end,
-			set = function(_, strata) BM.db.strata = strata~="BACKGROUND" and strata or nil
+			get = function() return db.strata or "BACKGROUND" end,
+			set = function(_, strata) db.strata = strata~="BACKGROUND" and strata or nil
 				Minimap:SetFrameStrata(strata)
 				BasicMinimapBorder:SetFrameStrata(strata)
 			end,
@@ -127,15 +128,15 @@ BM.options = {
 		shape = {
 			name = BM.SHAPE,
 			order = 11, type = "select",
-			get = function() return BM.db.round and "circular" or "square" end,
+			get = function() return db.round and "circular" or "square" end,
 			set = function(_, shape)
 				if shape == "square" then
-					BM.db.round = nil
+					db.round = nil
 					Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 					BasicMinimapBorder:Show()
 					function GetMinimapShape() return "SQUARE" end
 				else
-					BM.db.round = true
+					db.round = true
 					Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
 					BasicMinimapBorder:Hide()
 					function GetMinimapShape() return "ROUND" end
@@ -146,17 +147,17 @@ BM.options = {
 		zoom = {
 			name = ZOOM_IN.."/"..ZOOM_OUT,
 			order = 12, type = "toggle",
-			get = function() return BM.db.zoomBtn end,
+			get = function() return db.zoomBtn end,
 			set = function(_, state)
-				BM.db.zoomBtn = state
+				db.zoomBtn = state
 				if state then
 					MinimapZoomIn:ClearAllPoints()
 					MinimapZoomIn:SetParent("Minimap")
-					MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", BM.db.round and 10 or 20, BM.db.round and -40 or -50)
+					MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", db.round and 10 or 20, db.round and -40 or -50)
 					MinimapZoomIn:Show()
 					MinimapZoomOut:ClearAllPoints()
 					MinimapZoomOut:SetParent("Minimap")
-					MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", BM.db.round and 40 or 50, BM.db.round and -10 or -20)
+					MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", db.round and 40 or 50, db.round and -10 or -20)
 					MinimapZoomOut:Show()
 				else
 					MinimapZoomIn:Hide()
@@ -167,10 +168,10 @@ BM.options = {
 		raiddiff = {
 			name = RAID_DIFFICULTY,
 			order = 13, type = "toggle",
-			get = function() if BM.db.hideraid then return false else return true end end,
+			get = function() if db.hideraid then return false else return true end end,
 			set = function(_, state)
 				if state then
-					BM.db.hideraid = nil
+					db.hideraid = nil
 					MiniMapInstanceDifficulty:SetScript("OnShow", nil)
 					GuildInstanceDifficulty:SetScript("OnShow", nil)
 					local z = select(2, IsInInstance())
@@ -179,10 +180,10 @@ BM.options = {
 						GuildInstanceDifficulty:Show()
 					end
 				else
-					BM.db.hideraid = true
-					MiniMapInstanceDifficulty:SetScript("OnShow", BM.hide)
+					db.hideraid = true
+					MiniMapInstanceDifficulty:SetScript("OnShow", hideFrame)
 					MiniMapInstanceDifficulty:Hide()
-					GuildInstanceDifficulty:SetScript("OnShow", BM.hide)
+					GuildInstanceDifficulty:SetScript("OnShow", hideFrame)
 					GuildInstanceDifficulty:Hide()
 				end
 			end,
@@ -190,9 +191,9 @@ BM.options = {
 		clock = {
 			name = TIMEMANAGER_TITLE,
 			order = 14, type = "toggle",
-			get = function() return BM.db.clock or BM.db.clock == nil and true end,
+			get = function() return db.clock or db.clock == nil and true end,
 			set = function(_, state)
-				BM.db.clock = state
+				db.clock = state
 				if state then
 					if TimeManagerClockButton.bmShow then
 						TimeManagerClockButton.Show = TimeManagerClockButton.bmShow
@@ -211,8 +212,8 @@ BM.options = {
 		autozoom = {
 			name = BM.AUTOZOOM,
 			order = 15, type = "toggle",
-			get = function() return BM.db.zoom end,
-			set = function(_, state) BM.db.zoom = state and true or nil end,
+			get = function() return db.zoom end,
+			set = function(_, state) db.zoom = state and true or nil end,
 		},
 		lockspacer = {
 			name = "\n",
@@ -221,8 +222,8 @@ BM.options = {
 		lock = {
 			name = LOCK,
 			order = 16, type = "toggle",
-			get = function() return BM.db.lock end,
-			set = function(_, state) BM.db.lock = state and true or nil
+			get = function() return db.lock end,
+			set = function(_, state) db.lock = state and true or nil
 				if not state then state = true else state = false end
 				Minimap:SetMovable(state)
 			end,
@@ -230,49 +231,65 @@ BM.options = {
 	},
 }
 
-BM.self = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
-BM.self:RegisterEvent("PLAYER_LOGIN")
-BM.self:SetScript("OnEvent", function(f)
-	if not BasicMinimapDB then
-		BasicMinimapDB = {
-			x = 0, y = 0,
-			point = "CENTER", relpoint = "CENTER",
-			borderR = 0.73, borderG = 0.75, borderB = 1
-		}
+LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(name, options, true)
+LibStub("AceConfigDialog-3.0"):AddToBlizOptions(name)
+SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) InterfaceOptionsFrame_OpenToCategory(name) end
+SLASH_BASICMINIMAP1 = "/bm"
+SLASH_BASICMINIMAP2 = "/basicminimap"
+
+local frame = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
+frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_LOGIN")
+frame:SetScript("OnEvent", function(f, event, ...)
+	f[event](f, event, ...)
+end)
+
+-- Init
+function frame:ADDON_LOADED(event, addon)
+	if addon == "BasicMinimap" then
+		self:UnregisterEvent(event)
+		self[event] = nil
+
+		if not BasicMinimapDB then
+			BasicMinimapDB = {
+				x = 0, y = 0,
+				point = "CENTER", relpoint = "CENTER",
+				borderR = 0.73, borderG = 0.75, borderB = 1
+			}
+		end
+		db = BasicMinimapDB
+
+		--Return minimap shape for other addons
+		if not db.round then function GetMinimapShape() return "SQUARE" end end
 	end
-	BM.db = BasicMinimapDB
+end
 
-	--Return minimap shape for other addons
-	if not BM.db.round then function GetMinimapShape() return "SQUARE" end end
-
-	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(name, BM.options, true)
-	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(name)
-
-	SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) InterfaceOptionsFrame_OpenToCategory(name) end
-	SLASH_BASICMINIMAP1 = "/bm"
-	SLASH_BASICMINIMAP2 = "/basicminimap"
+-- Enable
+function frame:PLAYER_LOGIN(event)
+	self:UnregisterEvent(event)
+	self[event] = nil
 
 	local Minimap = Minimap
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
 
 	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
-	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = BM.db.borderSize or 3})
-	border:SetFrameStrata(BM.db.strata or "BACKGROUND")
+	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize or 3})
+	border:SetFrameStrata(db.strata or "BACKGROUND")
 	border:SetPoint("CENTER", Minimap, "CENTER")
-	if BM.db.ccolor then
+	if db.ccolor then
 		local class = select(2, UnitClass("player"))
 		local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 		BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
 	else
-		border:SetBackdropBorderColor(BM.db.borderR, BM.db.borderG, BM.db.borderB)
+		border:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
 	end
-	border:SetWidth(Minimap:GetWidth()+(BM.db.borderSize or 3))
-	border:SetHeight(Minimap:GetHeight()+(BM.db.borderSize or 3))
+	border:SetWidth(Minimap:GetWidth()+(db.borderSize or 3))
+	border:SetHeight(Minimap:GetHeight()+(db.borderSize or 3))
 	border:Hide()
 
 	Minimap:ClearAllPoints()
-	Minimap:SetPoint(BM.db.point, nil, BM.db.relpoint, BM.db.x, BM.db.y)
+	Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
 	Minimap:RegisterForDrag("LeftButton")
 	Minimap:SetClampedToScreen(true)
 
@@ -280,19 +297,19 @@ BM.self:SetScript("OnEvent", function(f)
 	Minimap:SetScript("OnDragStop", function(self)
 		self:StopMovingOrSizing()
 		local p, _, rp, x, y = self:GetPoint()
-		BM.db.point, BM.db.relpoint, BM.db.x, BM.db.y = p, rp, x, y
+		db.point, db.relpoint, db.x, db.y = p, rp, x, y
 	end)
 
-	if not BM.db.lock then Minimap:SetMovable(true) end
+	if not db.lock then Minimap:SetMovable(true) end
 
-	Minimap:SetScale(BM.db.scale or 1)
-	Minimap:SetFrameStrata(BM.db.strata or "BACKGROUND")
+	Minimap:SetScale(db.scale or 1)
+	Minimap:SetFrameStrata(db.strata or "BACKGROUND")
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
-	if not BM.db.round then
+	if not db.round then
 		border:Show()
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 	end
@@ -303,25 +320,25 @@ BM.self:SetScript("OnEvent", function(f)
 	Minimap:SetQuestBlobRingScalar(0)
 	Minimap:SetQuestBlobRingAlpha(0)
 
-	if not BM.db.zoomBtn then
+	if not db.zoomBtn then
 		MinimapZoomIn:Hide()
 		MinimapZoomOut:Hide()
 	else
 		MinimapZoomIn:ClearAllPoints()
 		MinimapZoomIn:SetParent("Minimap")
-		MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", BM.db.round and 10 or 20, BM.db.round and -40 or -50)
+		MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", db.round and 10 or 20, db.round and -40 or -50)
 		MinimapZoomIn:Show()
 		MinimapZoomOut:ClearAllPoints()
 		MinimapZoomOut:SetParent("Minimap")
-		MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", BM.db.round and 40 or 50, BM.db.round and -10 or -20)
+		MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", db.round and 40 or 50, db.round and -10 or -20)
 		MinimapZoomOut:Show()
 	end
 
-	MiniMapVoiceChatFrame:SetScript("OnShow", BM.hide)
+	MiniMapVoiceChatFrame:SetScript("OnShow", hideFrame)
 	MiniMapVoiceChatFrame:Hide()
 	MiniMapVoiceChatFrame:UnregisterAllEvents()
 
-	if BM.db.clock == false then
+	if db.clock == false then
 		TimeManagerClockButton:Hide()
 		TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
 		TimeManagerClockButton.Show = function() end
@@ -342,15 +359,15 @@ BM.self:SetScript("OnEvent", function(f)
 		GameTimeFrame:Show()
 	end
 
-	MiniMapWorldMapButton:SetScript("OnShow", BM.hide)
+	MiniMapWorldMapButton:SetScript("OnShow", hideFrame)
 	MiniMapWorldMapButton:Hide()
 	MiniMapWorldMapButton:UnregisterAllEvents()
 
-	MinimapZoneTextButton:SetScript("OnShow", BM.hide)
+	MinimapZoneTextButton:SetScript("OnShow", hideFrame)
 	MinimapZoneTextButton:Hide()
 	MinimapZoneTextButton:UnregisterAllEvents()
 
-	MiniMapTracking:SetScript("OnShow", BM.hide)
+	MiniMapTracking:SetScript("OnShow", hideFrame)
 	MiniMapTracking:Hide()
 	MiniMapTracking:UnregisterAllEvents()
 
@@ -367,10 +384,10 @@ BM.self:SetScript("OnEvent", function(f)
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
 
-	if BM.db.hideraid then
-		MiniMapInstanceDifficulty:SetScript("OnShow", BM.hide)
+	if db.hideraid then
+		MiniMapInstanceDifficulty:SetScript("OnShow", hideFrame)
 		MiniMapInstanceDifficulty:Hide()
-		GuildInstanceDifficulty:SetScript("OnShow", BM.hide)
+		GuildInstanceDifficulty:SetScript("OnShow", hideFrame)
 		GuildInstanceDifficulty:Hide()
 	end
 
@@ -393,7 +410,7 @@ BM.self:SetScript("OnEvent", function(f)
 	end
 
 	local zoomBtnFunc = function()
-		if BM.db.zoom then
+		if db.zoom then
 			started = started + 1
 			C_Timer.After(4, zoomOut)
 		end
@@ -412,26 +429,23 @@ BM.self:SetScript("OnEvent", function(f)
 	end)
 
 	Minimap:SetScript("OnMouseUp", function(self, btn)
-		if btn == (BM.db.calendar or "RightButton") then
+		if btn == (db.calendar or "RightButton") then
 			GameTimeFrame:Click()
-		elseif btn == (BM.db.tracking or "MiddleButton") then
+		elseif btn == (db.tracking or "MiddleButton") then
 			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self)
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(self)
 		end
 	end)
 
-	f:UnregisterEvent("PLAYER_LOGIN")
-
-	-- Hide the Minimap during a pet battle
-	f:SetScript("OnEvent", function(_, event)
+	self:SetScript("OnEvent", function(_, event)
 		if event == "PET_BATTLE_CLOSE" then
 			Minimap:Show()
 		else
 			Minimap:Hide()
 		end
 	end)
-	f:RegisterEvent("PET_BATTLE_OPENING_START")
-	f:RegisterEvent("PET_BATTLE_CLOSE")
-end)
+	self:RegisterEvent("PET_BATTLE_OPENING_START")
+	self:RegisterEvent("PET_BATTLE_CLOSE")
+end
 
