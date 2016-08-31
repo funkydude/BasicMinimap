@@ -1,20 +1,25 @@
 ## Interface: 70000
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
-## Notes-frFR: Minicarte configurable comportant des options basiques.
-## Notes-deDE: Anpassbare Minimap mit grundliegenden Optionen.
 ## Notes-zhTW: 小地圖增強插件
 ## Notes-zhCN: 小地图增强插件
+## Notes-deDE: Anpassbare Minimap mit grundliegenden Optionen.
+## Notes-frFR: Minicarte configurable comportant des options basiques.
+## Notes-itIT: Configurable minimap with basic options.
 ## Notes-koKR: 미니맵의 간단한 옵션들을 설정할 수 있습니다.
 ## Notes-ruRU: Настраиваемая миникарта с базовыми возможностями.
+## Notes-ptBR: Configurable minimap with basic options.
 ## Notes-esES: Minimapa configurable con opciones básicas.
 ## Notes-esMX: Minimapa configurable con opciones básicas.
 ## Author: Funkydude
 ## X-Category: Map
-## X-License: All Rights Reserved
+## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
 ## SavedVariables: BasicMinimapDB
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
+## Version: @project-version@
+## X-Curse-Project-ID: basic-minimap
+## X-WoWI-ID: 9101
 
 embeds.xml
 
