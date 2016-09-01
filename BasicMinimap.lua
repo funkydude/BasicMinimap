@@ -351,9 +351,9 @@ function frame:PLAYER_LOGIN(event)
 	MiniMapWorldMapButton:Hide()
 	MiniMapWorldMapButton:UnregisterAllEvents()
 
-	MinimapZoneTextButton:SetScript("OnShow", hideFrame)
-	MinimapZoneTextButton:Hide()
-	MinimapZoneTextButton:UnregisterAllEvents()
+	MinimapZoneTextButton:ClearAllPoints()
+	MinimapZoneTextButton:SetParent(Minimap)
+	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[1], "TOP")
 
 	MiniMapTracking:SetScript("OnShow", hideFrame)
 	MiniMapTracking:Hide()
