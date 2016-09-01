@@ -50,29 +50,21 @@ local options = {
 			set = function(_, r, g, b)
 				db.borderR = r db.borderG = g db.borderB = b
 				for i = 1, 4 do
-					backdrops[i]:SetColorTexture(r, g, b, a)
+					backdrops[i]:SetColorTexture(r, g, b)
 				end
 			end,
-			disabled = function() return db.round or db.ccolor end,
+			disabled = function() return db.round end,
 		},
 		classcolor = {
 			name = BM.CLASSCOLORED,
-			order = 6, type = "toggle",
-			get = function() return db.ccolor end,
-			set = function(_, state)
-				if state then
-					db.ccolor = true
-					local class = select(2, UnitClass("player"))
-					local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-					for i = 1, 4 do
-						backdrops[i]:SetColorTexture(color.r, color.g, color.b)
-					end
-				else
-					db.ccolor = nil
-					for i = 1, 4 do
-						backdrops[i]:SetColorTexture(db.borderR, db.borderG, db.borderB)
-					end
+			order = 6, type = "execute",
+			func = function()
+				local _, class = UnitClass("player")
+				local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+				for i = 1, 4 do
+					backdrops[i]:SetColorTexture(color.r, color.g, color.b)
 				end
+				db.borderR, db.borderG, db.borderB = color.r, color.g, color.b
 			end,
 			disabled = function() return db.round end,
 		},
@@ -262,6 +254,7 @@ function frame:ADDON_LOADED(event, addon)
 			}
 		end
 		db = BasicMinimapDB
+		db.ccolor = nil -- XXX temp cleanup [7.0]
 
 		--Return minimap shape for other addons
 		if not db.round then function GetMinimapShape() return "SQUARE" end end
@@ -280,36 +273,20 @@ function frame:PLAYER_LOGIN(event)
 	MinimapCluster:EnableMouse(false)
 
 	-- Backdrops, creating the border cleanly
-	for i = 1, 4 do
-		backdrops[i] = Minimap:CreateTexture()
-		--backdrops[i]:SetBlendMode("ADD")
-		if db.ccolor then
-			local _, class = UnitClass("player")
-			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-			backdrops[i]:SetColorTexture(color.r, color.g, color.b)
-		else
-			backdrops[i]:SetColorTexture(db.borderR, db.borderG, db.borderB)
-		end
-	end
 	-- Clockwise: TOP, RIGHT, BOTTOM, LEFT
 	local b = db.borderSize or 3
 	local b2 = b*2
 	local w, h = Minimap:GetWidth()+b2, Minimap:GetHeight()+b2
+	for i = 1, 4 do
+		backdrops[i] = Minimap:CreateTexture()
+		backdrops[i]:SetColorTexture(db.borderR, db.borderG, db.borderB)
+		backdrops[i]:SetWidth(i%2==0 and b or w)
+		backdrops[i]:SetHeight(i%2==0 and h or b)
+	end
 	backdrops[1]:SetPoint("BOTTOM", Minimap, "TOP")
-	backdrops[1]:SetWidth(w)
-	backdrops[1]:SetHeight(b)
-
 	backdrops[2]:SetPoint("LEFT", Minimap, "RIGHT")
-	backdrops[2]:SetWidth(b)
-	backdrops[2]:SetHeight(h)
-
 	backdrops[3]:SetPoint("TOP", Minimap, "BOTTOM")
-	backdrops[3]:SetWidth(w)
-	backdrops[3]:SetHeight(b)
-
 	backdrops[4]:SetPoint("RIGHT", Minimap, "LEFT")
-	backdrops[4]:SetWidth(b)
-	backdrops[4]:SetHeight(h)
 
 	Minimap:ClearAllPoints()
 	Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
