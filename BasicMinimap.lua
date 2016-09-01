@@ -102,7 +102,7 @@ local options = {
 				Minimap:ClearAllPoints()
 				local s = (db.scale or 1)/scale
 				db.x, db.y = db.x*s, db.y*s
-				Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
+				Minimap:SetPoint(db.point, UIParent, db.relpoint, db.x, db.y)
 				db.scale = scale~=1 and scale or nil
 			end,
 		},
@@ -341,6 +341,12 @@ function frame:PLAYER_LOGIN(event)
 	MiniMapVoiceChatFrame:Hide()
 	MiniMapVoiceChatFrame:UnregisterAllEvents()
 
+	TimeManagerClockButton:ClearAllPoints()
+	TimeManagerClockButton:SetPoint("TOP", backdrops[3], "BOTTOM", 0, 6)
+	TimeManagerClockButton:SetWidth(100)
+	local a, b = WhiteNormalNumberFont:GetFont()
+	TimeManagerClockTicker:SetFont(a, b+1, "OUTLINE")
+	TimeManagerClockButton:GetRegions():Hide()
 	if db.clock == false then
 		TimeManagerClockButton:Hide()
 		TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
@@ -353,7 +359,9 @@ function frame:PLAYER_LOGIN(event)
 
 	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetParent(Minimap)
-	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[1], "TOP")
+	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[1], "TOP", 0, 4)
+	local a, b = GameFontNormal:GetFont()
+	MinimapZoneText:SetFont(a, b, "OUTLINE")
 
 	MiniMapTracking:SetScript("OnShow", hideFrame)
 	MiniMapTracking:Hide()
