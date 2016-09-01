@@ -10,6 +10,7 @@ local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 }
 
 local hideFrame = function(frame) frame:Hide() end
+local noop = function() end
 local backdrops = {}
 local db
 
@@ -151,7 +152,7 @@ local options = {
 				else
 					if not TimeManagerClockButton.bmShow then
 						TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
-						TimeManagerClockButton.Show = function() end
+						TimeManagerClockButton.Show = noop
 					end
 					TimeManagerClockButton:Hide()
 				end
@@ -172,23 +173,44 @@ local options = {
 				else
 					if not MinimapZoneTextButton.bmShow then
 						MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
-						MinimapZoneTextButton.Show = function() end
+						MinimapZoneTextButton.Show = noop
 					end
 					MinimapZoneTextButton:Hide()
 				end
 			end,
 		},
+		classHall = {
+			name = BM.CLASSHALL,
+			order = 13, type = "toggle",
+			get = function() return db.classHall or db.classHall == nil and true end,
+			set = function(_, state)
+				db.classHall = state
+				if state then
+					if GarrisonLandingPageMinimapButton.bmShow then
+						GarrisonLandingPageMinimapButton.Show = GarrisonLandingPageMinimapButton.bmShow
+						GarrisonLandingPageMinimapButton.bmShow = nil
+					end
+					GarrisonLandingPageMinimapButton:Show()
+				else
+					if not GarrisonLandingPageMinimapButton.bmShow then
+						GarrisonLandingPageMinimapButton.bmShow = GarrisonLandingPageMinimapButton.Show
+						GarrisonLandingPageMinimapButton.Show = noop
+					end
+					GarrisonLandingPageMinimapButton:Hide()
+				end
+			end,
+		},
 		miscspacer = {
 			name = "\n",
-			order = 12.1, type = "description",
+			order = 13.1, type = "description",
 		},
 		mischeader = {
 			name = MISCELLANEOUS,
-			order = 13, type = "header",
+			order = 14, type = "header",
 		},
 		scale = {
 			name = BM.SCALE,
-			order = 14, type = "range",
+			order = 15, type = "range",
 			min = 0.5, max = 2, step = 0.01,
 			get = function() return db.scale or 1 end,
 			set = function(_, scale)
@@ -213,7 +235,7 @@ local options = {
 		--},
 		shape = {
 			name = BM.SHAPE,
-			order = 15, type = "select",
+			order = 16, type = "select",
 			get = function() return db.round and "circular" or "square" end,
 			set = function(_, shape)
 				if shape == "square" then
@@ -236,13 +258,10 @@ local options = {
 		},
 		autozoom = {
 			name = BM.AUTOZOOM,
-			order = 16, type = "toggle",
+			order = 17, type = "toggle",
+			width = "full",
 			get = function() return db.zoom end,
 			set = function(_, state) db.zoom = state and true or nil end,
-		},
-		lockspacer = {
-			name = "\n",
-			order = 17, type = "description",
 		},
 		lock = {
 			name = LOCK,
@@ -257,7 +276,7 @@ local options = {
 }
 
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(name, options, true)
-LibStub("AceConfigDialog-3.0"):SetDefaultSize(options.name, 400, 520)
+LibStub("AceConfigDialog-3.0"):SetDefaultSize(options.name, 400, 540)
 SlashCmdList.BASICMINIMAP = function() LibStub("AceConfigDialog-3.0"):Open(name) end
 SLASH_BASICMINIMAP1 = "/bm"
 SLASH_BASICMINIMAP2 = "/basicminimap"
@@ -379,7 +398,7 @@ function frame:PLAYER_LOGIN(event)
 	if db.clock == false then
 		TimeManagerClockButton:Hide()
 		TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
-		TimeManagerClockButton.Show = function() end
+		TimeManagerClockButton.Show = noop
 	end
 
 	MiniMapWorldMapButton:SetScript("OnShow", hideFrame)
@@ -394,7 +413,13 @@ function frame:PLAYER_LOGIN(event)
 	if db.zoneText == false then
 		MinimapZoneTextButton:Hide()
 		MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
-		MinimapZoneTextButton.Show = function() end
+		MinimapZoneTextButton.Show = noop
+	end
+
+	if db.classHall == false then
+		GarrisonLandingPageMinimapButton:Hide()
+		GarrisonLandingPageMinimapButton.bmShow = GarrisonLandingPageMinimapButton.Show
+		GarrisonLandingPageMinimapButton.Show = noop
 	end
 
 	MiniMapTracking:SetScript("OnShow", hideFrame)

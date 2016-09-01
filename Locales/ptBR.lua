@@ -7,6 +7,7 @@ local _, BM = ...
 --BM.BUTTONDESC = "Choose the buttons for opening the Calendar and Tracking menu."
 --BM.CALENDAR = "Calendar"
 --BM.CLASSCOLORED = "Class Colored"
+--BM.CLASSHALL = "Class Hall"
 --BM.SCALE = "Scale"
 --BM.SHAPE = "Shape"
 --BM.STRATA = "Strata"
