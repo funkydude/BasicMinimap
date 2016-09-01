@@ -281,9 +281,7 @@ SlashCmdList.BASICMINIMAP = function() LibStub("AceConfigDialog-3.0"):Open(name)
 SLASH_BASICMINIMAP1 = "/bm"
 SLASH_BASICMINIMAP2 = "/basicminimap"
 
-local frame = CreateFrame("Frame", "BasicMinimap", InterfaceOptionsFramePanelContainer)
-frame:RegisterEvent("ADDON_LOADED")
-frame:RegisterEvent("PLAYER_LOGIN")
+local frame = CreateFrame("Frame")
 frame:SetScript("OnEvent", function(f, event, ...)
 	f[event](f, event, ...)
 end)
@@ -308,6 +306,7 @@ function frame:ADDON_LOADED(event, addon)
 		if not db.round then function GetMinimapShape() return "SQUARE" end end
 	end
 end
+frame:RegisterEvent("ADDON_LOADED")
 
 -- Enable
 function frame:PLAYER_LOGIN(event)
@@ -493,6 +492,7 @@ function frame:PLAYER_LOGIN(event)
 		end
 	end)
 end
+frame:RegisterEvent("PLAYER_LOGIN")
 
 function frame:CALENDAR_ACTION_PENDING()
 	if CalendarGetNumPendingInvites() < 1 then
