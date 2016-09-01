@@ -10,6 +10,7 @@ local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 }
 
 local hideFrame = function(frame) frame:Hide() end
+local backdrops = {}
 local db
 
 local options = {
@@ -48,7 +49,9 @@ local options = {
 			get = function() return db.borderR, db.borderG, db.borderB end,
 			set = function(_, r, g, b)
 				db.borderR = r db.borderG = g db.borderB = b
-				BasicMinimapBorder:SetBackdropBorderColor(r, g, b)
+				for i = 1, 4 do
+					backdrops[i]:SetColorTexture(r, g, b, a)
+				end
 			end,
 			disabled = function() return db.round or db.ccolor end,
 		},
@@ -61,10 +64,14 @@ local options = {
 					db.ccolor = true
 					local class = select(2, UnitClass("player"))
 					local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-					BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
+					for i = 1, 4 do
+						backdrops[i]:SetColorTexture(color.r, color.g, color.b)
+					end
 				else
 					db.ccolor = nil
-					BasicMinimapBorder:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
+					for i = 1, 4 do
+						backdrops[i]:SetColorTexture(db.borderR, db.borderG, db.borderB)
+					end
 				end
 			end,
 			disabled = function() return db.round end,
@@ -72,21 +79,15 @@ local options = {
 		bordersize = {
 			name = BM.BORDERSIZE,
 			order = 7, type = "range", width = "full",
-			min = 0.5, max = 5, step = 0.5,
+			min = 1, max = 10, step = 1,
 			get = function() return db.borderSize or 3 end,
-			set = function(_, s) db.borderSize = s~=3 and s or nil
-				BasicMinimapBorder:SetBackdrop(
-					{edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false,
-					tileSize = 0, edgeSize = s,}
-				)
-				BasicMinimapBorder:SetWidth(Minimap:GetWidth()+s)
-				BasicMinimapBorder:SetHeight(Minimap:GetHeight()+s)
-				if db.ccolor then
-					local class = select(2, UnitClass("player"))
-					local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-					BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
-				else
-					BasicMinimapBorder:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
+			set = function(_, b) db.borderSize = b~=3 and b or nil
+				-- Clockwise: TOP, RIGHT, BOTTOM, LEFT
+				local b2 = b*2
+				local w, h = Minimap:GetWidth()+b2, Minimap:GetHeight()+b2
+				for i = 1, 4 do
+					backdrops[i]:SetWidth(i%2==0 and b or w)
+					backdrops[i]:SetHeight(i%2==0 and h or b)
 				end
 			end,
 			disabled = function() return db.round end,
@@ -119,7 +120,6 @@ local options = {
 			get = function() return db.strata or "BACKGROUND" end,
 			set = function(_, strata) db.strata = strata~="BACKGROUND" and strata or nil
 				Minimap:SetFrameStrata(strata)
-				BasicMinimapBorder:SetFrameStrata(strata)
 			end,
 			values = {TOOLTIP = BM.TOOLTIP, HIGH = HIGH, MEDIUM = AUCTION_TIME_LEFT2,
 				LOW = LOW, BACKGROUND = BACKGROUND
@@ -132,13 +132,17 @@ local options = {
 			set = function(_, shape)
 				if shape == "square" then
 					db.round = nil
-					Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
-					BasicMinimapBorder:Show()
+					Minimap:SetMaskTexture(130871) -- Interface\\BUTTONS\\WHITE8X8
+					for i = 1, 4 do
+						backdrops[i]:Show()
+					end
 					function GetMinimapShape() return "SQUARE" end
 				else
 					db.round = true
 					Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
-					BasicMinimapBorder:Hide()
+					for i = 1, 4 do
+						backdrops[i]:Hide()
+					end
 					function GetMinimapShape() return "ROUND" end
 				end
 			end,
@@ -254,7 +258,7 @@ function frame:ADDON_LOADED(event, addon)
 			BasicMinimapDB = {
 				x = 0, y = 0,
 				point = "CENTER", relpoint = "CENTER",
-				borderR = 0.73, borderG = 0.75, borderB = 1
+				borderR = 0, borderG = 0.6, borderB = 0
 			}
 		end
 		db = BasicMinimapDB
@@ -269,24 +273,43 @@ function frame:PLAYER_LOGIN(event)
 	self:UnregisterEvent(event)
 	self[event] = nil
 
+	self:CALENDAR_UPDATE_PENDING_INVITES()
+
 	local Minimap = Minimap
 	Minimap:SetParent(UIParent)
 	MinimapCluster:EnableMouse(false)
 
-	local border = CreateFrame("Frame", "BasicMinimapBorder", Minimap)
-	border:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = false, tileSize = 0, edgeSize = db.borderSize or 3})
-	border:SetFrameStrata(db.strata or "BACKGROUND")
-	border:SetPoint("CENTER", Minimap, "CENTER")
-	if db.ccolor then
-		local class = select(2, UnitClass("player"))
-		local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-		BasicMinimapBorder:SetBackdropBorderColor(color.r, color.g, color.b)
-	else
-		border:SetBackdropBorderColor(db.borderR, db.borderG, db.borderB)
+	-- Backdrops, creating the border cleanly
+	for i = 1, 4 do
+		backdrops[i] = Minimap:CreateTexture()
+		--backdrops[i]:SetBlendMode("ADD")
+		if db.ccolor then
+			local _, class = UnitClass("player")
+			local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+			backdrops[i]:SetColorTexture(color.r, color.g, color.b)
+		else
+			backdrops[i]:SetColorTexture(db.borderR, db.borderG, db.borderB)
+		end
 	end
-	border:SetWidth(Minimap:GetWidth()+(db.borderSize or 3))
-	border:SetHeight(Minimap:GetHeight()+(db.borderSize or 3))
-	border:Hide()
+	-- Clockwise: TOP, RIGHT, BOTTOM, LEFT
+	local b = db.borderSize or 3
+	local b2 = b*2
+	local w, h = Minimap:GetWidth()+b2, Minimap:GetHeight()+b2
+	backdrops[1]:SetPoint("BOTTOM", Minimap, "TOP")
+	backdrops[1]:SetWidth(w)
+	backdrops[1]:SetHeight(b)
+
+	backdrops[2]:SetPoint("LEFT", Minimap, "RIGHT")
+	backdrops[2]:SetWidth(b)
+	backdrops[2]:SetHeight(h)
+
+	backdrops[3]:SetPoint("TOP", Minimap, "BOTTOM")
+	backdrops[3]:SetWidth(w)
+	backdrops[3]:SetHeight(b)
+
+	backdrops[4]:SetPoint("RIGHT", Minimap, "LEFT")
+	backdrops[4]:SetWidth(b)
+	backdrops[4]:SetHeight(h)
 
 	Minimap:ClearAllPoints()
 	Minimap:SetPoint(db.point, nil, db.relpoint, db.x, db.y)
@@ -310,8 +333,11 @@ function frame:PLAYER_LOGIN(event)
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
 	if not db.round then
-		border:Show()
-		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
+		Minimap:SetMaskTexture(130871) -- Interface\\BUTTONS\\WHITE8X8
+	else
+		for i = 1, 4 do
+			backdrops[i]:Hide()
+		end
 	end
 
 	-- Removes the circular "waffle-like" texture that shows when using a non-circular minimap in the blue quest objective area.
@@ -342,21 +368,6 @@ function frame:PLAYER_LOGIN(event)
 		TimeManagerClockButton:Hide()
 		TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
 		TimeManagerClockButton.Show = function() end
-	end
-
-	border:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-	border:RegisterEvent("CALENDAR_ACTION_PENDING")
-	border:SetScript("OnEvent", function()
-		if CalendarGetNumPendingInvites() < 1 then
-			GameTimeFrame:Hide()
-		else
-			GameTimeFrame:Show()
-		end
-	end)
-	if CalendarGetNumPendingInvites() < 1 then
-		GameTimeFrame:Hide()
-	else
-		GameTimeFrame:Show()
 	end
 
 	MiniMapWorldMapButton:SetScript("OnShow", hideFrame)
@@ -437,15 +448,26 @@ function frame:PLAYER_LOGIN(event)
 			Minimap_OnClick(self)
 		end
 	end)
-
-	self:SetScript("OnEvent", function(_, event)
-		if event == "PET_BATTLE_CLOSE" then
-			Minimap:Show()
-		else
-			Minimap:Hide()
-		end
-	end)
-	self:RegisterEvent("PET_BATTLE_OPENING_START")
-	self:RegisterEvent("PET_BATTLE_CLOSE")
 end
+
+function frame:CALENDAR_ACTION_PENDING()
+	if CalendarGetNumPendingInvites() < 1 then
+		GameTimeFrame:Hide()
+	else
+		GameTimeFrame:Show()
+	end
+end
+frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
+frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+frame:RegisterEvent("CALENDAR_ACTION_PENDING")
+
+function frame:PET_BATTLE_OPENING_START()
+	Minimap:Hide()
+end
+frame:RegisterEvent("PET_BATTLE_OPENING_START")
+
+function frame:PET_BATTLE_CLOSE()
+	Minimap:Show()
+end
+frame:RegisterEvent("PET_BATTLE_CLOSE")
 
