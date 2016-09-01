@@ -228,8 +228,8 @@ local options = {
 }
 
 LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(name, options, true)
-LibStub("AceConfigDialog-3.0"):AddToBlizOptions(name)
-SlashCmdList.BASICMINIMAP = function() InterfaceOptionsFrame_OpenToCategory(name) InterfaceOptionsFrame_OpenToCategory(name) end
+LibStub("AceConfigDialog-3.0"):SetDefaultSize(options.name, 400, 520)
+SlashCmdList.BASICMINIMAP = function() LibStub("AceConfigDialog-3.0"):Open(name) end
 SLASH_BASICMINIMAP1 = "/bm"
 SLASH_BASICMINIMAP2 = "/basicminimap"
 
