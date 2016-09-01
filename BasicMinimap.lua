@@ -205,19 +205,32 @@ local options = {
 				end
 			end,
 		},
+		zoneText = {
+			name = BM.ZONETEXT,
+			order = 15, type = "toggle",
+			get = function() return db.zoneText or db.zoneText == nil and true end,
+			set = function(_, state)
+				db.zoneText = state
+				if state then
+					MinimapZoneTextButton:Show()
+				else
+					MinimapZoneTextButton:Hide()
+				end
+			end,
+		},
 		autozoom = {
 			name = BM.AUTOZOOM,
-			order = 15, type = "toggle",
+			order = 16, type = "toggle",
 			get = function() return db.zoom end,
 			set = function(_, state) db.zoom = state and true or nil end,
 		},
 		lockspacer = {
 			name = "\n",
-			order = 15.1, type = "description",
+			order = 17, type = "description",
 		},
 		lock = {
 			name = LOCK,
-			order = 16, type = "toggle",
+			order = 18, type = "toggle",
 			get = function() return db.lock end,
 			set = function(_, state) db.lock = state and true or nil
 				if not state then state = true else state = false end

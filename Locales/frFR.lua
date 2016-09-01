@@ -10,4 +10,4 @@ BM["SCALE"] = "Échelle"
 BM["SHAPE"] = "Forme"
 BM["STRATA"] = "Couche"
 BM["TOOLTIP"] = "Bulle d'aide"
-
+--BM.ZONETEXT = "Zone Text"

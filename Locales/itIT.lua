@@ -10,4 +10,4 @@ BM.SCALE = "Proporzione"
 BM.SHAPE = "Forma"
 BM.STRATA = "Posizione"
 BM.TOOLTIP = "Tooltip"
-
+--BM.ZONETEXT = "Zone Text"

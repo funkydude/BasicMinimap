@@ -10,4 +10,4 @@ BM["SCALE"] = "大小比例"
 BM["SHAPE"] = "形狀"
 BM["STRATA"] = "層級"
 BM["TOOLTIP"] = "提示"
-
+--BM.ZONETEXT = "Zone Text"
