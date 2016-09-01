@@ -84,65 +84,17 @@ local options = {
 			end,
 			disabled = function() return db.round end,
 		},
-		miscspacer = {
+		buttonsspacer = {
 			name = "\n",
 			order = 7.1, type = "description",
 		},
-		mischeader = {
-			name = MISCELLANEOUS,
+		buttonsheader = {
+			name = BM.BUTTONS,
 			order = 8, type = "header",
-		},
-		scale = {
-			name = BM.SCALE,
-			order = 9, type = "range",
-			min = 0.5, max = 2, step = 0.01,
-			get = function() return db.scale or 1 end,
-			set = function(_, scale)
-				Minimap:SetScale(scale)
-				Minimap:ClearAllPoints()
-				local s = (db.scale or 1)/scale
-				db.x, db.y = db.x*s, db.y*s
-				Minimap:SetPoint(db.point, UIParent, db.relpoint, db.x, db.y)
-				db.scale = scale~=1 and scale or nil
-			end,
-		},
-		strata = {
-			name = BM.STRATA,
-			order = 10, type = "select",
-			get = function() return db.strata or "BACKGROUND" end,
-			set = function(_, strata) db.strata = strata~="BACKGROUND" and strata or nil
-				Minimap:SetFrameStrata(strata)
-			end,
-			values = {TOOLTIP = BM.TOOLTIP, HIGH = HIGH, MEDIUM = AUCTION_TIME_LEFT2,
-				LOW = LOW, BACKGROUND = BACKGROUND
-			},
-		},
-		shape = {
-			name = BM.SHAPE,
-			order = 11, type = "select",
-			get = function() return db.round and "circular" or "square" end,
-			set = function(_, shape)
-				if shape == "square" then
-					db.round = nil
-					Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
-					for i = 1, 4 do
-						backdrops[i]:Show()
-					end
-					function GetMinimapShape() return "SQUARE" end
-				else
-					db.round = true
-					Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
-					for i = 1, 4 do
-						backdrops[i]:Hide()
-					end
-					function GetMinimapShape() return "ROUND" end
-				end
-			end,
-			values = {square = RAID_TARGET_6, circular = RAID_TARGET_2}, --Square, Circle
 		},
 		zoom = {
 			name = ZOOM_IN.."/"..ZOOM_OUT,
-			order = 12, type = "toggle",
+			order = 9, type = "toggle",
 			get = function() return db.zoomBtn end,
 			set = function(_, state)
 				db.zoomBtn = state
@@ -163,7 +115,7 @@ local options = {
 		},
 		raiddiff = {
 			name = RAID_DIFFICULTY,
-			order = 13, type = "toggle",
+			order = 10, type = "toggle",
 			get = function() if db.hideraid then return false else return true end end,
 			set = function(_, state)
 				if state then
@@ -186,7 +138,7 @@ local options = {
 		},
 		clock = {
 			name = TIMEMANAGER_TITLE,
-			order = 14, type = "toggle",
+			order = 11, type = "toggle",
 			get = function() return db.clock or db.clock == nil and true end,
 			set = function(_, state)
 				db.clock = state
@@ -207,7 +159,7 @@ local options = {
 		},
 		zoneText = {
 			name = BM.ZONETEXT,
-			order = 15, type = "toggle",
+			order = 12, type = "toggle",
 			get = function() return db.zoneText or db.zoneText == nil and true end,
 			set = function(_, state)
 				db.zoneText = state
@@ -225,6 +177,62 @@ local options = {
 					MinimapZoneTextButton:Hide()
 				end
 			end,
+		},
+		miscspacer = {
+			name = "\n",
+			order = 12.1, type = "description",
+		},
+		mischeader = {
+			name = MISCELLANEOUS,
+			order = 13, type = "header",
+		},
+		scale = {
+			name = BM.SCALE,
+			order = 14, type = "range",
+			min = 0.5, max = 2, step = 0.01,
+			get = function() return db.scale or 1 end,
+			set = function(_, scale)
+				Minimap:SetScale(scale)
+				Minimap:ClearAllPoints()
+				local s = (db.scale or 1)/scale
+				db.x, db.y = db.x*s, db.y*s
+				Minimap:SetPoint(db.point, UIParent, db.relpoint, db.x, db.y)
+				db.scale = scale~=1 and scale or nil
+			end,
+		},
+		--strata = {
+		--	name = BM.STRATA,
+		--	order = 10, type = "select",
+		--	get = function() return db.strata or "BACKGROUND" end,
+		--	set = function(_, strata) db.strata = strata~="BACKGROUND" and strata or nil
+		--		Minimap:SetFrameStrata(strata)
+		--	end,
+		--	values = {TOOLTIP = BM.TOOLTIP, HIGH = HIGH, MEDIUM = AUCTION_TIME_LEFT2,
+		--		LOW = LOW, BACKGROUND = BACKGROUND
+		--	},
+		--},
+		shape = {
+			name = BM.SHAPE,
+			order = 15, type = "select",
+			get = function() return db.round and "circular" or "square" end,
+			set = function(_, shape)
+				if shape == "square" then
+					db.round = nil
+					Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
+					for i = 1, 4 do
+						backdrops[i]:Show()
+					end
+					function GetMinimapShape() return "SQUARE" end
+				else
+					db.round = true
+					Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
+					for i = 1, 4 do
+						backdrops[i]:Hide()
+					end
+					function GetMinimapShape() return "ROUND" end
+				end
+			end,
+			values = {square = RAID_TARGET_6, circular = RAID_TARGET_2}, --Square, Circle
 		},
 		autozoom = {
 			name = BM.AUTOZOOM,
@@ -324,7 +332,7 @@ function frame:PLAYER_LOGIN(event)
 	if not db.lock then Minimap:SetMovable(true) end
 
 	Minimap:SetScale(db.scale or 1)
-	Minimap:SetFrameStrata(db.strata or "BACKGROUND")
+	--Minimap:SetFrameStrata(db.strata or "BACKGROUND")
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
 

@@ -3,6 +3,7 @@ if GetLocale() ~= "deDE" then return end
 local _, BM = ...
 BM.AUTOZOOM = "Automatisch herauszoomen"
 BM.BORDERSIZE = "Rahmengröße"
+--BM.BUTTONS = "Buttons"
 BM.BUTTONDESC = "Tastenauswahl zum Öffnen des Kalenders und der Aufspüroptionen."
 BM.CALENDAR = "Kalender"
 BM.CLASSCOLORED = "Nach Klasse gefärbt"
