@@ -212,8 +212,16 @@ local options = {
 			set = function(_, state)
 				db.zoneText = state
 				if state then
+					if MinimapZoneTextButton.bmShow then
+						MinimapZoneTextButton.Show = MinimapZoneTextButton.bmShow
+						MinimapZoneTextButton.bmShow = nil
+					end
 					MinimapZoneTextButton:Show()
 				else
+					if not MinimapZoneTextButton.bmShow then
+						MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
+						MinimapZoneTextButton.Show = function() end
+					end
 					MinimapZoneTextButton:Hide()
 				end
 			end,
@@ -375,6 +383,11 @@ function frame:PLAYER_LOGIN(event)
 	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[1], "TOP", 0, 4)
 	local a, b = GameFontNormal:GetFont()
 	MinimapZoneText:SetFont(a, b, "OUTLINE")
+	if db.zoneText == false then
+		MinimapZoneTextButton:Hide()
+		MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
+		MinimapZoneTextButton.Show = function() end
+	end
 
 	MiniMapTracking:SetScript("OnShow", hideFrame)
 	MiniMapTracking:Hide()
