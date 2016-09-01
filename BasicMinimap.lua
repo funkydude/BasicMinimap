@@ -124,7 +124,7 @@ local options = {
 			set = function(_, shape)
 				if shape == "square" then
 					db.round = nil
-					Minimap:SetMaskTexture(130871) -- Interface\\BUTTONS\\WHITE8X8
+					Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 					for i = 1, 4 do
 						backdrops[i]:Show()
 					end
@@ -323,7 +323,7 @@ function frame:PLAYER_LOGIN(event)
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
 	if not db.round then
-		Minimap:SetMaskTexture(130871) -- Interface\\BUTTONS\\WHITE8X8
+		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 	else
 		for i = 1, 4 do
 			backdrops[i]:Hide()
