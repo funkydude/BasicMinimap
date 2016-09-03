@@ -9,7 +9,5 @@ BM.CLASSCOLORED = "Class Colored"
 BM.CLASSHALL = "Class Hall"
 BM.SCALE = "Scale"
 BM.SHAPE = "Shape"
-BM.STRATA = "Strata"
-BM.TOOLTIP = "Tooltip"
 BM.ZONETEXT = "Zone Text"
 

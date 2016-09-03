@@ -222,17 +222,6 @@ local options = {
 				db.scale = scale~=1 and scale or nil
 			end,
 		},
-		--strata = {
-		--	name = BM.STRATA,
-		--	order = 10, type = "select",
-		--	get = function() return db.strata or "BACKGROUND" end,
-		--	set = function(_, strata) db.strata = strata~="BACKGROUND" and strata or nil
-		--		Minimap:SetFrameStrata(strata)
-		--	end,
-		--	values = {TOOLTIP = BM.TOOLTIP, HIGH = HIGH, MEDIUM = AUCTION_TIME_LEFT2,
-		--		LOW = LOW, BACKGROUND = BACKGROUND
-		--	},
-		--},
 		shape = {
 			name = BM.SHAPE,
 			order = 16, type = "select",
@@ -350,7 +339,6 @@ function frame:PLAYER_LOGIN(event)
 	if not db.lock then Minimap:SetMovable(true) end
 
 	Minimap:SetScale(db.scale or 1)
-	--Minimap:SetFrameStrata(db.strata or "BACKGROUND")
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
 
