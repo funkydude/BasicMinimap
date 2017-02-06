@@ -18,7 +18,7 @@
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 ## Version: @project-version@
-## X-Curse-Project-ID: basic-minimap
+## X-Curse-Project-ID: 13506
 ## X-WoWI-ID: 9101
 
 embeds.xml
