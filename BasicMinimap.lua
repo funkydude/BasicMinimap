@@ -289,7 +289,6 @@ function frame:ADDON_LOADED(event, addon)
 			}
 		end
 		db = BasicMinimapDB
-		db.ccolor = nil -- XXX temp cleanup [7.0]
 
 		--Return minimap shape for other addons
 		if not db.round then function GetMinimapShape() return "SQUARE" end end
