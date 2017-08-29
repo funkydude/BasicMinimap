@@ -1,4 +1,4 @@
-## Interface: 70200
+## Interface: 70300
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-zhTW: 小地圖增強插件
