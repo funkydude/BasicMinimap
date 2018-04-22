@@ -371,9 +371,11 @@ function frame:PLAYER_LOGIN(event)
 		MinimapZoomOut:Show()
 	end
 
-	MiniMapVoiceChatFrame:SetScript("OnShow", hideFrame)
-	MiniMapVoiceChatFrame:Hide()
-	MiniMapVoiceChatFrame:UnregisterAllEvents()
+	if MiniMapVoiceChatFrame then -- XXX removed in 8.0
+		MiniMapVoiceChatFrame:SetScript("OnShow", hideFrame)
+		MiniMapVoiceChatFrame:Hide()
+		MiniMapVoiceChatFrame:UnregisterAllEvents()
+	end
 
 	TimeManagerClockButton:ClearAllPoints()
 	TimeManagerClockButton:SetPoint("TOP", backdrops[3], "BOTTOM", 0, 6)
