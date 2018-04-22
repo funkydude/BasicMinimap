@@ -28,7 +28,6 @@ Locales\deDE.lua
 Locales\koKR.lua
 Locales\frFR.lua
 Locales\itIT.lua
-Locales\esMX.lua
 Locales\ruRU.lua
 Locales\zhCN.lua
 Locales\esES.lua
