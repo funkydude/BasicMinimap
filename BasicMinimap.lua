@@ -484,7 +484,7 @@ end
 frame:RegisterEvent("PLAYER_LOGIN")
 
 function frame:CALENDAR_ACTION_PENDING()
-	if CalendarGetNumPendingInvites() < 1 then
+	if (CalendarGetNumPendingInvites and CalendarGetNumPendingInvites() or C_Calendar.GetNumPendingInvites()) < 1 then -- XXX 8.0
 		GameTimeFrame:Hide()
 	else
 		GameTimeFrame:Show()
