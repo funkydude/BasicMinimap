@@ -371,12 +371,6 @@ function frame:PLAYER_LOGIN(event)
 		MinimapZoomOut:Show()
 	end
 
-	if MiniMapVoiceChatFrame then -- XXX removed in 8.0
-		MiniMapVoiceChatFrame:SetScript("OnShow", hideFrame)
-		MiniMapVoiceChatFrame:Hide()
-		MiniMapVoiceChatFrame:UnregisterAllEvents()
-	end
-
 	TimeManagerClockButton:ClearAllPoints()
 	TimeManagerClockButton:SetPoint("TOP", backdrops[3], "BOTTOM", 0, 6)
 	TimeManagerClockButton:SetWidth(100)
@@ -484,7 +478,7 @@ end
 frame:RegisterEvent("PLAYER_LOGIN")
 
 function frame:CALENDAR_ACTION_PENDING()
-	if (CalendarGetNumPendingInvites and CalendarGetNumPendingInvites() or C_Calendar.GetNumPendingInvites()) < 1 then -- XXX 8.0
+	if C_Calendar.GetNumPendingInvites() < 1 then
 		GameTimeFrame:Hide()
 	else
 		GameTimeFrame:Show()
