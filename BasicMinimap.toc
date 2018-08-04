@@ -24,17 +24,4 @@
 ## X-WoWI-ID: 9101
 
 embeds.xml
-
-Locales\enUS.lua
-Locales\deDE.lua
-Locales\koKR.lua
-Locales\frFR.lua
-Locales\itIT.lua
-Locales\ruRU.lua
-Locales\zhCN.lua
-Locales\esES.lua
-Locales\zhTW.lua
-Locales\ptBR.lua
-
 modules.xml
-
