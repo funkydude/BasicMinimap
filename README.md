@@ -19,4 +19,4 @@ BasicMinimap is a basic solution to a clean, square minimap.
 * /basicminimap
 
 ## Download
-https://mods.curse.com/addons/wow/basic-minimap
+<https://www.curseforge.com/wow/addons/basic-minimap>
