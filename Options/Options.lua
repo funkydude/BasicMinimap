@@ -282,5 +282,5 @@ local acOptions = {
 acOptions.args.profiles.order = 2
 
 acr:RegisterOptionsTable(acOptions.name, acOptions, true)
-acd:SetDefaultSize(acOptions.name, 400, 540)
+acd:SetDefaultSize(acOptions.name, 430, 570)
 
