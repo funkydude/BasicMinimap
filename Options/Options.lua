@@ -23,9 +23,10 @@ local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 	None = NONE
 }
 
-acOptions = {
+local acOptions = {
 	name = "BasicMinimap",
-	childGroups = "tab", type = "group",
+	childGroups = "tab",
+	type = "group",
 	args = {
 		main = {
 			name = _G["MISCELLANEOUS"],
@@ -274,6 +275,7 @@ acOptions = {
 						Minimap:SetMovable(state)
 					end,
 				},
+			},
 		},
 		profiles = adbo:GetOptionsTable(BasicMinimap.db),
 	},
