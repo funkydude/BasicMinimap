@@ -1,5 +1,5 @@
 
-local name, BM = ...
+local name = ...
 
 local hideFrame = function(frame) frame:Hide() end
 local noop = function() end
@@ -219,7 +219,7 @@ function frame:PLAYER_LOGIN(event)
 	MinimapZoomOut:HookScript("OnClick", zoomBtnFunc)
 
 	Minimap:EnableMouseWheel(true)
-	Minimap:SetScript("OnMouseWheel", function(self, d)
+	Minimap:SetScript("OnMouseWheel", function(_, d)
 		if d > 0 then
 			MinimapZoomIn:Click()
 		elseif d < 0 then

@@ -25,8 +25,7 @@ local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 
 local acOptions = {
 	name = "BasicMinimap",
-	childGroups = "tab",
-	type = "group",
+	type = "group", childGroups = "tab",
 	args = {
 		main = {
 			name = _G["MISCELLANEOUS"],
