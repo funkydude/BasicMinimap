@@ -1,4 +1,5 @@
 ## Interface: 80000
+## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-zhTW: 小地圖增強插件
@@ -12,12 +13,13 @@
 ## Notes-esES: Minimapa configurable con opciones básicas.
 ## Notes-esMX: Minimapa configurable con opciones básicas.
 ## Author: Funkydude
-## X-Category: Map
-## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
 ## SavedVariables: BasicMinimapDB
-## OptionalDeps: Ace3
-## X-Embeds: Ace3
-## Version: @project-version@
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0
+
+## X-Embeds: Ace3, LibSharedMedia-3.0, LibDDI-1.0
+## X-Category: Minimap
+## X-Website: https://github.com/funkydude/BasicMinimap
+## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
 ## X-Curse-Project-ID: 13506
 ## X-WoWI-ID: 9101
 
@@ -34,5 +36,5 @@ Locales\esES.lua
 Locales\zhTW.lua
 Locales\ptBR.lua
 
-BasicMinimap.lua
+modules.xml
 
