@@ -275,10 +275,10 @@ acOptions = {
 					end,
 				},
 		},
-		--profiles = adbo:GetOptionsTable(map.db),
+		profiles = adbo:GetOptionsTable(BasicMinimap.db),
 	},
 }
---acOptions.args.profiles.order = 2
+acOptions.args.profiles.order = 2
 
 acr:RegisterOptionsTable(acOptions.name, acOptions, true)
 acd:SetDefaultSize(acOptions.name, 400, 540)

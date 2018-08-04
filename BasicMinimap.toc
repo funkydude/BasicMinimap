@@ -13,7 +13,7 @@
 ## Notes-esES: Minimapa configurable con opciones básicas.
 ## Notes-esMX: Minimapa configurable con opciones básicas.
 ## Author: Funkydude
-## SavedVariables: BasicMinimapDB
+## SavedVariables: BasicMinimapDB, TempBasicMinimapDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0
 
 ## X-Embeds: Ace3, LibSharedMedia-3.0, LibDDI-1.0

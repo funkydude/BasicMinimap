@@ -17,7 +17,7 @@ do
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 end
 
-local frame = CreateFrame("Frame")
+local frame = CreateFrame("Frame", name)
 frame:SetScript("OnEvent", function(f, event, ...)
 	f[event](f, event, ...)
 end)
@@ -27,6 +27,18 @@ function frame:ADDON_LOADED(event, addon)
 	if addon == "BasicMinimap" then
 		self:UnregisterEvent(event)
 		self[event] = nil
+
+		local defaults = {
+			profile = {
+				lock = false,
+				position = {"CENTER", "CENTER", 0, 0},
+				--shadow = true,
+				--outline = "NONE",
+				--font = media:GetDefault("font"),
+				colorBorder = {0,0.6,0,1},
+			}
+		}
+		self.db = LibStub("AceDB-3.0"):New("TempBasicMinimapDB", defaults, true)
 
 		if not BasicMinimapDB then
 			BasicMinimapDB = {
