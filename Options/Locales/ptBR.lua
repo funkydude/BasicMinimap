@@ -30,3 +30,5 @@ local L = tbl.L
 --L.thin = "Thin"
 --L.thick = "Thick"
 --L.fontHeader = "Configure the font options for the Clock/Zone Text:"
+--L.hideAddons = "Hide Addon Buttons"
+--L.hideAddonsDesc = "Only show addon buttons when mousing over the minimap."

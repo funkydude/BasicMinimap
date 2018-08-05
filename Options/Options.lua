@@ -148,8 +148,20 @@ local acOptions = {
 			name = L.BUTTONS,
 			order = 2, type = "group",
 			args = {
+				hideAddons = {
+					name = L.hideAddons,
+					desc = L.hideAddonsDesc,
+					order = 0, type = "toggle",
+					width = "full",
+					set = function(_, value)
+						map.db.profile.hideAddons = value
+						for k,v in next, map.addonButtons do
+							v:SetAlpha(value and 0 or 1)
+						end
+					end,
+				},
 				buttonShowDesc = {
-					name = L.buttonHeader,
+					name = "\n\n".. L.buttonHeader,
 					order = 1, type = "description",
 				},
 				zoomBtn = {
@@ -346,5 +358,5 @@ local acOptions = {
 acOptions.args.profiles.order = 3
 
 acr:RegisterOptionsTable(acOptions.name, acOptions, true)
-acd:SetDefaultSize(acOptions.name, 430, 500)
+acd:SetDefaultSize(acOptions.name, 430, 520)
 

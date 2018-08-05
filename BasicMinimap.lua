@@ -5,6 +5,7 @@ local media = LibStub("LibSharedMedia-3.0")
 local hideFrame = function(frame) frame:Hide() end
 local noop = function() end
 local backdrops = {}
+local addonButtons = {}
 
 do
 	local function openOpts()
@@ -22,6 +23,7 @@ frame:SetScript("OnEvent", function(f, event, ...)
 	f[event](f, event, ...)
 end)
 frame.backdrops = backdrops
+frame.addonButtons = addonButtons
 
 -- Init
 function frame:ADDON_LOADED(event, addon)
@@ -39,6 +41,7 @@ function frame:ADDON_LOADED(event, addon)
 				raidDiffIcon = true,
 				zoomBtn = false,
 				autoZoom = true,
+				hideAddons = true,
 				position = {"CENTER", "CENTER", 0, 0},
 				borderSize = 3,
 				size = 140,
@@ -276,6 +279,58 @@ function frame:PLAYER_LOGIN(event)
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(self)
 		end
+	end)
+
+	C_Timer.After(2, function()
+		local dragging = false
+		local function OnEnter()
+			if frame.db.profile.hideAddons then
+				for k,v in next, addonButtons do
+					v:SetAlpha(1)
+				end
+			end
+		end
+		local function OnLeave()
+			if frame.db.profile.hideAddons and not dragging then
+				for k,v in next, addonButtons do
+					v:SetAlpha(0)
+				end
+			end
+		end
+		local function OnDragStart()
+			if frame.db.profile.hideAddons then
+				dragging = true
+				OnEnter()
+			end
+		end
+		local function OnDragStop()
+			if frame.db.profile.hideAddons then
+				dragging = false
+				OnLeave()
+			end
+		end
+		local function grab(...)
+			for i=1, select("#", ...) do
+				local f = select(i, ...)
+				if type(f) == "table" and f.GetName then
+					local n = f:GetName()
+					if n then
+						n = n:match("^LibDBIcon10_(.+)$")
+						if n then
+							addonButtons[n] = f
+							f:SetAlpha(0)
+							f:HookScript("OnEnter", OnEnter)
+							f:HookScript("OnLeave", OnLeave)
+							f:HookScript("OnDragStart", OnDragStart)
+							f:HookScript("OnDragStop", OnDragStop)
+						end
+					end
+				end
+			end
+		end
+		grab(Minimap:GetChildren())
+		Minimap:HookScript("OnEnter", OnEnter)
+		Minimap:HookScript("OnLeave", OnLeave)
 	end)
 end
 frame:RegisterEvent("PLAYER_LOGIN")
