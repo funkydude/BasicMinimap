@@ -8,10 +8,10 @@ local L = tbl.L
 --L.BUTTONS = "Buttons"
 --L.CALENDAR = "Calendar"
 --L.CLASSCOLORED = "Class Colored"
---L.SCALE = "Scale"
 --L.SHAPE = "Shape"
 --L.ZONETEXT = "Zone Text"
 
+--L.size = "Minimap Size"
 --L.minimapClicks = "Configure what the different minimap clicks do:"
 --L.missions = "Missions"
 --L.openCalendar = "Open Calendar"

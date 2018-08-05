@@ -41,7 +41,7 @@ function frame:ADDON_LOADED(event, addon)
 				autoZoom = true,
 				position = {"CENTER", "CENTER", 0, 0},
 				borderSize = 3,
-				scale = 1,
+				size = 140,
 				--shadow = true,
 				--outline = "NONE",
 				--font = media:GetDefault("font"),
@@ -76,30 +76,26 @@ function frame:PLAYER_LOGIN(event)
 	MinimapCluster:EnableMouse(false)
 
 	-- Backdrops, creating the border cleanly
-	-- Clockwise: TOP, RIGHT, BOTTOM, LEFT
 	local size = self.db.profile.borderSize
-	local w, h = Minimap:GetWidth(), Minimap:GetHeight()
 	local r, g, b, a = unpack(self.db.profile.colorBorder)
-	for i = 1, 4 do
-		backdrops[i] = Minimap:CreateTexture()
-		backdrops[i]:SetColorTexture(r, g, b, a)
-		backdrops[i]:SetWidth(i%2==0 and size or w)
-		backdrops[i]:SetHeight(i%2==0 and h or size)
-	end
-	backdrops[1]:SetPoint("BOTTOM", Minimap, "TOP")
-	backdrops[2]:SetPoint("LEFT", Minimap, "RIGHT")
-	backdrops[3]:SetPoint("TOP", Minimap, "BOTTOM")
-	backdrops[4]:SetPoint("RIGHT", Minimap, "LEFT")
-	for i = 5, 8 do
+	for i = 1, 8 do
 		backdrops[i] = Minimap:CreateTexture()
 		backdrops[i]:SetColorTexture(r, g, b, a)
 		backdrops[i]:SetWidth(size)
 		backdrops[i]:SetHeight(size)
 	end
-	backdrops[5]:SetPoint("BOTTOMRIGHT", Minimap, "TOPLEFT")
-	backdrops[6]:SetPoint("BOTTOMLEFT", Minimap, "TOPRIGHT")
-	backdrops[7]:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT")
-	backdrops[8]:SetPoint("TOPLEFT", Minimap, "BOTTOMRIGHT")
+	backdrops[1]:SetPoint("BOTTOMRIGHT", Minimap, "TOPLEFT") -- Top-left corner
+	backdrops[2]:SetPoint("BOTTOMLEFT", Minimap, "TOPRIGHT") -- Top-right corner
+	backdrops[3]:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT") -- Bottom-left corner
+	backdrops[4]:SetPoint("TOPLEFT", Minimap, "BOTTOMRIGHT") -- Bottom-right corner
+	backdrops[5]:SetPoint("TOPLEFT", backdrops[1], "TOPRIGHT") -- Top border
+	backdrops[5]:SetPoint("BOTTOMRIGHT", backdrops[2], "BOTTOMLEFT")
+	backdrops[6]:SetPoint("TOPLEFT", backdrops[2], "BOTTOMLEFT") -- Right border
+	backdrops[6]:SetPoint("BOTTOMRIGHT", backdrops[4], "TOPRIGHT")
+	backdrops[7]:SetPoint("TOPLEFT", backdrops[3], "TOPRIGHT") -- Bottom border
+	backdrops[7]:SetPoint("BOTTOMRIGHT", backdrops[4], "BOTTOMLEFT")
+	backdrops[8]:SetPoint("TOPLEFT", backdrops[1], "BOTTOMLEFT") -- Left border
+	backdrops[8]:SetPoint("BOTTOMRIGHT", backdrops[3], "TOPRIGHT")
 
 	Minimap:ClearAllPoints()
 	Minimap:SetPoint(self.db.profile.position[1], UIParent, self.db.profile.position[2], self.db.profile.position[3], self.db.profile.position[4])
@@ -120,7 +116,17 @@ function frame:PLAYER_LOGIN(event)
 		Minimap:SetMovable(true)
 	end
 
-	Minimap:SetScale(self.db.profile.scale)
+	if self.db.profile.size ~= 140 then -- Non-default
+		Minimap:SetSize(self.db.profile.size, self.db.profile.size)
+		-- I'm not sure of a better way to update the render layer to the new size
+		if Minimap:GetZoom() ~= 5 then
+			Minimap_ZoomInClick()
+			Minimap_ZoomOutClick()
+		else
+			Minimap_ZoomOutClick()
+			Minimap_ZoomInClick()
+		end
+	end
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
 
@@ -129,7 +135,7 @@ function frame:PLAYER_LOGIN(event)
 	if not self.db.profile.round then
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 	else
-		for i = 1, 4 do
+		for i = 1, 8 do
 			backdrops[i]:Hide()
 		end
 	end
@@ -155,7 +161,7 @@ function frame:PLAYER_LOGIN(event)
 	end
 
 	TimeManagerClockButton:ClearAllPoints()
-	TimeManagerClockButton:SetPoint("TOP", backdrops[3], "BOTTOM", 0, 6)
+	TimeManagerClockButton:SetPoint("TOP", backdrops[7], "BOTTOM", 0, 6)
 	TimeManagerClockButton:SetWidth(100)
 	local a, b = WhiteNormalNumberFont:GetFont()
 	TimeManagerClockTicker:SetFont(a, b+1, "OUTLINE")
@@ -172,7 +178,7 @@ function frame:PLAYER_LOGIN(event)
 
 	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetParent(Minimap)
-	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[1], "TOP", 0, 4)
+	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[5], "TOP", 0, 4)
 	local a, b = GameFontNormal:GetFont()
 	MinimapZoneText:SetFont(a, b, "OUTLINE")
 	if not self.db.profile.zoneText then

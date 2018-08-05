@@ -68,13 +68,7 @@ local acOptions = {
 					min = 1, max = 10, step = 1,
 					set = function(_, value)
 						map.db.profile.borderSize = value
-						-- Clockwise: TOP, RIGHT, BOTTOM, LEFT
-						local w, h = Minimap:GetWidth(), Minimap:GetHeight()
 						for i = 1, 4 do
-							map.backdrops[i]:SetWidth(i%2==0 and value or w)
-							map.backdrops[i]:SetHeight(i%2==0 and h or value)
-						end
-						for i = 5, 8 do
 							map.backdrops[i]:SetWidth(value)
 							map.backdrops[i]:SetHeight(value)
 						end
@@ -82,29 +76,42 @@ local acOptions = {
 					disabled = function() return map.db.profile.round end,
 				},
 				miscspacer = {
-					name = "\n",
+					name = "\n\n",
 					order = 4, type = "description",
 				},
-				mischeader = {
-					name = MISCELLANEOUS,
-					order = 5, type = "header",
-				},
-				scale = {
-					name = L.SCALE,
-					order = 6, type = "range",
-					min = 0.5, max = 2, step = 0.01,
+				lock = {
+					name = LOCK,
+					order = 5, type = "toggle",
 					set = function(_, value)
-						Minimap:SetScale(value)
-						Minimap:ClearAllPoints()
-						local s = map.db.profile.scale/value
-						map.db.profile.position[3], map.db.profile.position[4] = map.db.profile.position[3]*s, map.db.profile.position[4]*s
-						Minimap:SetPoint(map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
-						map.db.profile.scale = value
+						map.db.profile.lock = value
+						Minimap:SetMovable(not value)
+					end,
+				},
+				autoZoom = {
+					name = L.AUTOZOOM,
+					order = 6,
+					type = "toggle",
+				},
+				size = {
+					name = L.size,
+					order = 7, type = "range",
+					min = 140, max = 240, step = 5,
+					set = function(_, value)
+						map.db.profile.size = value
+						Minimap:SetSize(value, value)
+						-- I'm not sure of a better way to update the render layer to the new size
+						if Minimap:GetZoom() ~= 5 then
+							Minimap_ZoomInClick()
+							Minimap_ZoomOutClick()
+						else
+							Minimap_ZoomOutClick()
+							Minimap_ZoomInClick()
+						end
 					end,
 				},
 				round = {
 					name = L.SHAPE,
-					order = 9, type = "toggle",
+					order = 8, type = "toggle",
 					set = function(_, value)
 						map.db.profile.round = value
 						if not value then
@@ -120,19 +127,6 @@ local acOptions = {
 							end
 							function GetMinimapShape() return "ROUND" end
 						end
-					end,
-				},
-				autoZoom = {
-					name = L.AUTOZOOM,
-					order = 10, type = "toggle",
-					width = "full",
-				},
-				lock = {
-					name = LOCK,
-					order = 11, type = "toggle",
-					set = function(_, value)
-						map.db.profile.lock = value
-						Minimap:SetMovable(not value)
 					end,
 				},
 			},
