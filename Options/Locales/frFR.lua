@@ -13,3 +13,8 @@ L.CLASSCOLORED = "Coloration par classe"
 L.SCALE = "Échelle"
 L.SHAPE = "Forme"
 --L.ZONETEXT = "Zone Text"
+
+--L.openCalendar = "Open Calendar"
+--L.openTracking = "Open Tracking"
+--L.openMissions = "Open Missions"
+--L.openMap = "Open Map"

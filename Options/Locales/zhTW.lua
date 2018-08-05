@@ -13,3 +13,8 @@ L.CLASSCOLORED = "職業著色"
 L.SCALE = "大小比例"
 L.SHAPE = "形狀"
 --L.ZONETEXT = "Zone Text"
+
+--L.openCalendar = "Open Calendar"
+--L.openTracking = "Open Tracking"
+--L.openMissions = "Open Missions"
+--L.openMap = "Open Map"

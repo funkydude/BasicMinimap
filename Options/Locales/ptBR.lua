@@ -13,3 +13,8 @@ local L = tbl.L
 --L.SCALE = "Scale"
 --L.SHAPE = "Shape"
 --L.ZONETEXT = "Zone Text"
+
+--L.openCalendar = "Open Calendar"
+--L.openTracking = "Open Tracking"
+--L.openMissions = "Open Missions"
+--L.openMap = "Open Map"

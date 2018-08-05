@@ -48,6 +48,8 @@ function frame:ADDON_LOADED(event, addon)
 				colorBorder = {0,0.6,0,1},
 				calendarBtn = "RightButton",
 				trackingBtn = "MiddleButton",
+				missionsBtn = "None",
+				mapBtn = "None",
 			}
 		}
 		self.db = LibStub("AceDB-3.0"):New("TempBasicMinimapDB", defaults, true)
@@ -228,7 +230,7 @@ function frame:PLAYER_LOGIN(event)
 	end
 
 	local zoomBtnFunc = function()
-		if self.db.profile.autoZoom then
+		if frame.db.profile.autoZoom then
 			started = started + 1
 			C_Timer.After(4, zoomOut)
 		end
@@ -247,10 +249,14 @@ function frame:PLAYER_LOGIN(event)
 	end)
 
 	Minimap:SetScript("OnMouseUp", function(self, btn)
-		if btn == self.db.profile.calendarBtn then
+		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
-		elseif btn == self.db.profile.trackingBtn then
+		elseif btn == frame.db.profile.trackingBtn then
 			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self)
+		elseif btn == frame.db.profile.missionsBtn then
+			GarrisonLandingPageMinimapButton:Click()
+		elseif btn == frame.db.profile.mapBtn then
+			MiniMapWorldMapButton:Click()
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(self)
 		end

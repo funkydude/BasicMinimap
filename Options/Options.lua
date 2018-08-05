@@ -246,13 +246,23 @@ local acOptions = {
 					order = 6, type = "description",
 				},
 				calendarBtn = {
-					name = L.CALENDAR,
+					name = L.openCalendar,
 					order = 7, type = "select",
 					values = buttonValues,
 				},
 				trackingBtn = {
-					name = TRACKING,
+					name = L.openTracking,
 					order = 8, type = "select",
+					values = buttonValues,
+				},
+				missionsBtn = {
+					name = L.openMissions,
+					order = 9, type = "select",
+					values = buttonValues,
+				},
+				mapBtn = {
+					name = L.openMap,
+					order = 10, type = "select",
 					values = buttonValues,
 				},
 			},

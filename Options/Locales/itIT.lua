@@ -13,3 +13,8 @@ L.CLASSHALL = "Enclave di Classe"
 L.SCALE = "Proporzione"
 L.SHAPE = "Forma"
 L.ZONETEXT = "Testo della Zona"
+
+--L.openCalendar = "Open Calendar"
+--L.openTracking = "Open Tracking"
+--L.openMissions = "Open Missions"
+--L.openMap = "Open Map"
