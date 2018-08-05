@@ -53,7 +53,7 @@ function frame:ADDON_LOADED(event, addon)
 				mapBtn = "None",
 			}
 		}
-		self.db = LibStub("AceDB-3.0"):New("TempBasicMinimapDB", defaults, true)
+		self.db = LibStub("AceDB-3.0"):New("BasicMinimapSV", defaults, true)
 
 		-- Return minimap shape for other addons
 		if self.db.profile.shape ~= "ROUND" then
