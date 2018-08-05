@@ -133,6 +133,8 @@ function frame:PLAYER_LOGIN(event)
 	end
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
+	MinimapCompassTexture.Show = MinimapCompassTexture.Hide
+	MinimapCompassTexture:Hide()
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
