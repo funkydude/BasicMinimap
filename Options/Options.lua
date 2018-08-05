@@ -22,6 +22,18 @@ local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
 	None = NONE
 }
 
+local function updateFlags()
+	local flags = nil
+	if map.db.profile.monochrome and map.db.profile.outline ~= "NONE" then
+		flags = "MONOCHROME," .. map.db.profile.outline
+	elseif map.db.profile.monochrome then
+		flags = "MONOCHROME"
+	elseif map.db.profile.outline ~= "NONE" then
+		flags = map.db.profile.outline
+	end
+	return flags
+end
+
 local acOptions = {
 	name = "BasicMinimap",
 	type = "group", childGroups = "tab",
@@ -237,7 +249,7 @@ local acOptions = {
 					end,
 				},
 				clickHeaderDesc = {
-					name = "\n".. L.minimapClicks,
+					name = "\n\n".. L.minimapClicks,
 					order = 6, type = "description",
 				},
 				calendarBtn = {
@@ -259,6 +271,67 @@ local acOptions = {
 					name = L.openMap,
 					order = 10, type = "select",
 					values = buttonValues,
+				},
+				fontHeaderDesc = {
+					name = "\n\n".. L.fontHeader,
+					order = 11, type = "description",
+				},
+				font = {
+					type = "select",
+					name = L.font,
+					order = 12,
+					values = media:List("font"),
+					itemControl = "DDI-Font",
+					get = function()
+						for i, v in next, media:List("font") do
+							if v == map.db.profile.font then return i end
+						end
+					end,
+					set = function(_, value)
+						local list = media:List("font")
+						local font = list[value]
+						map.db.profile.font = font
+						MinimapZoneText:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
+						TimeManagerClockTicker:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
+					end,
+				},
+				fontSize = {
+					type = "range",
+					name = L.fontSize,
+					order = 13,
+					max = 200,
+					min = 1,
+					step = 1,
+					set = function(_, value)
+						map.db.profile.fontSize = value
+						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
+						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
+					end,
+				},
+				monochrome = {
+					type = "toggle",
+					name = L.monochrome,
+					order = 14,
+					set = function(_, value)
+						map.db.profile.monochrome = value
+						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
+						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
+					end,
+				},
+				outline = {
+					type = "select",
+					name = L.outline,
+					order = 15,
+					values = {
+						NONE = L.none,
+						OUTLINE = L.thin,
+						THICKOUTLINE = L.thick,
+					},
+					set = function(_, value)
+						map.db.profile.outline = value
+						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
+						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
+					end,
 				},
 			},
 		},

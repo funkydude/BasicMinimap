@@ -42,9 +42,10 @@ function frame:ADDON_LOADED(event, addon)
 				position = {"CENTER", "CENTER", 0, 0},
 				borderSize = 3,
 				size = 140,
-				--shadow = true,
-				--outline = "NONE",
-				--font = media:GetDefault("font"),
+				fontSize = 12,
+				outline = "OUTLINE",
+				monochrome = false,
+				font = media:GetDefault("font"),
 				colorBorder = {0,0.6,0,1},
 				calendarBtn = "RightButton",
 				trackingBtn = "MiddleButton",
@@ -160,11 +161,21 @@ function frame:PLAYER_LOGIN(event)
 		MinimapZoomOut:Show()
 	end
 
+	-- Create font flag
+	local flags = nil
+	if self.db.profile.monochrome and self.db.profile.outline ~= "NONE" then
+		flags = "MONOCHROME," .. self.db.profile.outline
+	elseif self.db.profile.monochrome then
+		flags = "MONOCHROME"
+	elseif self.db.profile.outline ~= "NONE" then
+		flags = self.db.profile.outline
+	end
+	--
+
 	TimeManagerClockButton:ClearAllPoints()
 	TimeManagerClockButton:SetPoint("TOP", backdrops[7], "BOTTOM", 0, 6)
 	TimeManagerClockButton:SetWidth(100)
-	local a, b = WhiteNormalNumberFont:GetFont()
-	TimeManagerClockTicker:SetFont(a, b+1, "OUTLINE")
+	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	TimeManagerClockButton:GetRegions():Hide()
 	if not self.db.profile.clock then
 		TimeManagerClockButton:Hide()
@@ -179,8 +190,7 @@ function frame:PLAYER_LOGIN(event)
 	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetParent(Minimap)
 	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[5], "TOP", 0, 4)
-	local a, b = GameFontNormal:GetFont()
-	MinimapZoneText:SetFont(a, b, "OUTLINE")
+	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	if not self.db.profile.zoneText then
 		MinimapZoneTextButton:Hide()
 		MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
