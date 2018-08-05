@@ -54,10 +54,11 @@ local acOptions = {
 					func = function()
 						local _, class = UnitClass("player")
 						local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-						for i = 1, 4 do
-							map.backdrops[i]:SetColorTexture(color.r, color.g, color.b)
+						local a = map.db.profile.colorBorder[4]
+						map.db.profile.colorBorder = {color.r, color.g, color.b, a}
+						for i = 1, 8 do
+							map.backdrops[i]:SetColorTexture(color.r, color.g, color.b, a)
 						end
-						map.db.profile.borderR, map.db.profile.borderG, map.db.profile.borderB = color.r, color.g, color.b
 					end,
 					disabled = function() return map.db.profile.round end,
 				},
@@ -222,7 +223,7 @@ local acOptions = {
 					end,
 				},
 				missions = {
-					name = L.CLASSHALL,
+					name = L.missions,
 					order = 5, type = "toggle",
 					set = function(_, value)
 						map.db.profile.missions = value
@@ -242,7 +243,7 @@ local acOptions = {
 					end,
 				},
 				clickHeaderDesc = {
-					name = "\n".. L.BUTTONDESC,
+					name = "\n".. L.minimapClicks,
 					order = 6, type = "description",
 				},
 				calendarBtn = {

@@ -79,10 +79,10 @@ function frame:PLAYER_LOGIN(event)
 	-- Clockwise: TOP, RIGHT, BOTTOM, LEFT
 	local size = self.db.profile.borderSize
 	local w, h = Minimap:GetWidth(), Minimap:GetHeight()
-	local r, b, g, a = unpack(self.db.profile.colorBorder)
+	local r, g, b, a = unpack(self.db.profile.colorBorder)
 	for i = 1, 4 do
 		backdrops[i] = Minimap:CreateTexture()
-		backdrops[i]:SetColorTexture(r, b, g, a)
+		backdrops[i]:SetColorTexture(r, g, b, a)
 		backdrops[i]:SetWidth(i%2==0 and size or w)
 		backdrops[i]:SetHeight(i%2==0 and h or size)
 	end
@@ -92,7 +92,7 @@ function frame:PLAYER_LOGIN(event)
 	backdrops[4]:SetPoint("RIGHT", Minimap, "LEFT")
 	for i = 5, 8 do
 		backdrops[i] = Minimap:CreateTexture()
-		backdrops[i]:SetColorTexture(r, b, g, a)
+		backdrops[i]:SetColorTexture(r, g, b, a)
 		backdrops[i]:SetWidth(size)
 		backdrops[i]:SetHeight(size)
 	end
