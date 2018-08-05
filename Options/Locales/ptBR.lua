@@ -11,6 +11,10 @@ local L = tbl.L
 --L.SHAPE = "Shape"
 --L.ZONETEXT = "Zone Text"
 
+--L.general = "General"
+--L.square = "Square"
+--L.round = "Round"
+--L.buttonHeader = "Configure what buttons to show/hide:"
 --L.size = "Minimap Size"
 --L.minimapClicks = "Configure what the different minimap clicks do:"
 --L.missions = "Missions"

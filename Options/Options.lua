@@ -45,7 +45,7 @@ local acOptions = {
 	end,
 	args = {
 		main = {
-			name = _G["MISCELLANEOUS"],
+			name = L.general,
 			order = 1, type = "group",
 			args = {
 				colorBorder = {
@@ -58,7 +58,7 @@ local acOptions = {
 							map.backdrops[i]:SetColorTexture(r, g, b, a)
 						end
 					end,
-					disabled = function() return map.db.profile.round end,
+					disabled = function() return map.db.profile.shape == "ROUND" end,
 				},
 				classcolor = {
 					name = L.CLASSCOLORED,
@@ -72,7 +72,7 @@ local acOptions = {
 							map.backdrops[i]:SetColorTexture(color.r, color.g, color.b, a)
 						end
 					end,
-					disabled = function() return map.db.profile.round end,
+					disabled = function() return map.db.profile.shape == "ROUND" end,
 				},
 				borderSize = {
 					name = L.BORDERSIZE,
@@ -85,7 +85,7 @@ local acOptions = {
 							map.backdrops[i]:SetHeight(value)
 						end
 					end,
-					disabled = function() return map.db.profile.round end,
+					disabled = function() return map.db.profile.shape == "ROUND" end,
 				},
 				miscspacer = {
 					name = "\n\n",
@@ -121,12 +121,13 @@ local acOptions = {
 						end
 					end,
 				},
-				round = {
+				shape = {
 					name = L.SHAPE,
-					order = 8, type = "toggle",
+					order = 8, type = "select",
+					values = {SQUARE = L.square, ROUND = L.round},
 					set = function(_, value)
-						map.db.profile.round = value
-						if not value then
+						map.db.profile.shape = value
+						if value == "SQUARE" then
 							Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 							for i = 1, 8 do
 								map.backdrops[i]:Show()
@@ -147,19 +148,23 @@ local acOptions = {
 			name = L.BUTTONS,
 			order = 2, type = "group",
 			args = {
+				buttonShowDesc = {
+					name = L.buttonHeader,
+					order = 1, type = "description",
+				},
 				zoomBtn = {
 					name = ZOOM_IN.."/"..ZOOM_OUT,
-					order = 1, type = "toggle",
+					order = 2, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoomBtn = value
 						if value then
 							MinimapZoomIn:ClearAllPoints()
 							MinimapZoomIn:SetParent("Minimap")
-							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", map.db.profile.round and 10 or 20, map.db.profile.round and -40 or -50)
+							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", map.db.profile.shape == "ROUND" and 10 or 20, map.db.profile.shape == "ROUND" and -40 or -50)
 							MinimapZoomIn:Show()
 							MinimapZoomOut:ClearAllPoints()
 							MinimapZoomOut:SetParent("Minimap")
-							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", map.db.profile.round and 40 or 50, map.db.profile.round and -10 or -20)
+							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", map.db.profile.shape == "ROUND" and 40 or 50, map.db.profile.shape == "ROUND" and -10 or -20)
 							MinimapZoomOut:Show()
 						else
 							MinimapZoomIn:Hide()
@@ -169,7 +174,7 @@ local acOptions = {
 				},
 				raidDiffIcon = {
 					name = RAID_DIFFICULTY,
-					order = 2, type = "toggle",
+					order = 3, type = "toggle",
 					set = function(_, value)
 						map.db.profile.raidDiffIcon = value
 						if value then
@@ -190,7 +195,7 @@ local acOptions = {
 				},
 				clock = {
 					name = TIMEMANAGER_TITLE,
-					order = 3, type = "toggle",
+					order = 4, type = "toggle",
 					set = function(_, value)
 						map.db.profile.clock = value
 						if value then
@@ -210,7 +215,7 @@ local acOptions = {
 				},
 				zoneText = {
 					name = L.ZONETEXT,
-					order = 4, type = "toggle",
+					order = 5, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoneText = value
 						if value then
@@ -230,7 +235,7 @@ local acOptions = {
 				},
 				missions = {
 					name = L.missions,
-					order = 5, type = "toggle",
+					order = 6, type = "toggle",
 					set = function(_, value)
 						map.db.profile.missions = value
 						if value then
@@ -250,36 +255,36 @@ local acOptions = {
 				},
 				clickHeaderDesc = {
 					name = "\n\n".. L.minimapClicks,
-					order = 6, type = "description",
+					order = 7, type = "description",
 				},
 				calendarBtn = {
 					name = L.openCalendar,
-					order = 7, type = "select",
+					order = 8, type = "select",
 					values = buttonValues,
 				},
 				trackingBtn = {
 					name = L.openTracking,
-					order = 8, type = "select",
+					order = 9, type = "select",
 					values = buttonValues,
 				},
 				missionsBtn = {
 					name = L.openMissions,
-					order = 9, type = "select",
+					order = 10, type = "select",
 					values = buttonValues,
 				},
 				mapBtn = {
 					name = L.openMap,
-					order = 10, type = "select",
+					order = 11, type = "select",
 					values = buttonValues,
 				},
 				fontHeaderDesc = {
 					name = "\n\n".. L.fontHeader,
-					order = 11, type = "description",
+					order = 12, type = "description",
 				},
 				font = {
 					type = "select",
 					name = L.font,
-					order = 12,
+					order = 13,
 					values = media:List("font"),
 					itemControl = "DDI-Font",
 					get = function()
@@ -298,7 +303,7 @@ local acOptions = {
 				fontSize = {
 					type = "range",
 					name = L.fontSize,
-					order = 13,
+					order = 14,
 					max = 200,
 					min = 1,
 					step = 1,
@@ -311,7 +316,7 @@ local acOptions = {
 				monochrome = {
 					type = "toggle",
 					name = L.monochrome,
-					order = 14,
+					order = 15,
 					set = function(_, value)
 						map.db.profile.monochrome = value
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
@@ -321,7 +326,7 @@ local acOptions = {
 				outline = {
 					type = "select",
 					name = L.outline,
-					order = 15,
+					order = 16,
 					values = {
 						NONE = L.none,
 						OUTLINE = L.thin,
@@ -341,5 +346,5 @@ local acOptions = {
 acOptions.args.profiles.order = 3
 
 acr:RegisterOptionsTable(acOptions.name, acOptions, true)
-acd:SetDefaultSize(acOptions.name, 430, 570)
+acd:SetDefaultSize(acOptions.name, 430, 500)
 

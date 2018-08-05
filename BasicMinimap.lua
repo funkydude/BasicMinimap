@@ -32,7 +32,7 @@ function frame:ADDON_LOADED(event, addon)
 		local defaults = {
 			profile = {
 				lock = false,
-				round = false,
+				shape = "SQUARE",
 				clock = true,
 				zoneText = true,
 				missions = true,
@@ -56,7 +56,7 @@ function frame:ADDON_LOADED(event, addon)
 		self.db = LibStub("AceDB-3.0"):New("TempBasicMinimapDB", defaults, true)
 
 		-- Return minimap shape for other addons
-		if not self.db.profile.round then
+		if self.db.profile.shape ~= "ROUND" then
 			function GetMinimapShape()
 				return "SQUARE"
 			end
@@ -133,7 +133,7 @@ function frame:PLAYER_LOGIN(event)
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
-	if not self.db.profile.round then
+	if self.db.profile.shape == "SQUARE" then
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 	else
 		for i = 1, 8 do
@@ -153,11 +153,11 @@ function frame:PLAYER_LOGIN(event)
 	else
 		MinimapZoomIn:ClearAllPoints()
 		MinimapZoomIn:SetParent("Minimap")
-		MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", self.db.profile.round and 10 or 20, self.db.profile.round and -40 or -50)
+		MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", self.db.profile.shape == "ROUND" and 10 or 20, self.db.profile.shape == "ROUND" and -40 or -50)
 		MinimapZoomIn:Show()
 		MinimapZoomOut:ClearAllPoints()
 		MinimapZoomOut:SetParent("Minimap")
-		MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", self.db.profile.round and 40 or 50, self.db.profile.round and -10 or -20)
+		MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", self.db.profile.shape == "ROUND" and 40 or 50, self.db.profile.shape == "ROUND" and -10 or -20)
 		MinimapZoomOut:Show()
 	end
 
