@@ -320,7 +320,9 @@ function frame:PLAYER_LOGIN(event)
 						n = n:match("^LibDBIcon10_(.+)$")
 						if n then
 							addonButtons[n] = f
-							f:SetAlpha(0)
+							if frame.db.profile.hideAddons then
+								f:SetAlpha(0)
+							end
 							f:HookScript("OnEnter", OnEnter)
 							f:HookScript("OnLeave", OnLeave)
 							f:HookScript("OnDragStart", OnDragStart)
