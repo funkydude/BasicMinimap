@@ -94,6 +94,7 @@ local acOptions = {
 				lock = {
 					name = LOCK,
 					order = 5, type = "toggle",
+					width = "full",
 					set = function(_, value)
 						map.db.profile.lock = value
 						Minimap:SetMovable(not value)
@@ -104,26 +105,9 @@ local acOptions = {
 					order = 6,
 					type = "toggle",
 				},
-				size = {
-					name = L.size,
-					order = 7, type = "range",
-					min = 70, max = 400, step = 5,
-					set = function(_, value)
-						map.db.profile.size = value
-						Minimap:SetSize(value, value)
-						-- I'm not sure of a better way to update the render layer to the new size
-						if Minimap:GetZoom() ~= 5 then
-							Minimap_ZoomInClick()
-							Minimap_ZoomOutClick()
-						else
-							Minimap_ZoomOutClick()
-							Minimap_ZoomInClick()
-						end
-					end,
-				},
 				shape = {
 					name = L.SHAPE,
-					order = 8, type = "select",
+					order = 7, type = "select",
 					values = {SQUARE = L.square, ROUND = L.round},
 					set = function(_, value)
 						map.db.profile.shape = value
@@ -140,6 +124,40 @@ local acOptions = {
 							end
 							function GetMinimapShape() return "ROUND" end
 						end
+					end,
+				},
+				sizeDesc = {
+					name = "\n\n".. L.sizeHeader,
+					order = 8, type = "description", fontSize = "medium",
+				},
+				size = {
+					name = L.size,
+					order = 9, type = "range",
+					min = 70, max = 400, step = 5,
+					set = function(_, value)
+						map.db.profile.size = value
+						Minimap:SetSize(value, value)
+						-- I'm not sure of a better way to update the render layer to the new size
+						if Minimap:GetZoom() ~= 5 then
+							Minimap_ZoomInClick()
+							Minimap_ZoomOutClick()
+						else
+							Minimap_ZoomOutClick()
+							Minimap_ZoomInClick()
+						end
+					end,
+				},
+				scale = {
+					name = L.scale,
+					order = 10, type = "range",
+					min = 0.5, max = 2, step = 0.01,
+					set = function(_, value)
+						Minimap:SetScale(value)
+						Minimap:ClearAllPoints()
+						local s = map.db.profile.scale/value
+						map.db.profile.position[3], map.db.profile.position[4] = map.db.profile.position[3]*s, map.db.profile.position[4]*s
+						Minimap:SetPoint(map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
+						map.db.profile.scale = value
 					end,
 				},
 			},

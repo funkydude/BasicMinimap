@@ -11,6 +11,8 @@ L.CLASSCOLORED = "Colore di Classe"
 L.SHAPE = "Forma"
 L.ZONETEXT = "Testo della Zona"
 
+--L.sizeHeader = "Change the minimap size if you want to leave the minimap buttons and mimimap blips untouched. Change the minimap scale if you want to change the size of everything, including the buttons and blips."
+--L.scale = "Minimap Scale"
 --L.general = "General"
 --L.square = "Square"
 --L.round = "Round"

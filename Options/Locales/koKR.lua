@@ -11,6 +11,8 @@ L.CLASSCOLORED = "직업 색상"
 L.SHAPE = "모양"
 --L.ZONETEXT = "Zone Text"
 
+--L.sizeHeader = "Change the minimap size if you want to leave the minimap buttons and mimimap blips untouched. Change the minimap scale if you want to change the size of everything, including the buttons and blips."
+--L.scale = "Minimap Scale"
 --L.general = "General"
 --L.square = "Square"
 --L.round = "Round"

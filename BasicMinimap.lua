@@ -45,6 +45,7 @@ function frame:ADDON_LOADED(event, addon)
 				position = {"CENTER", "CENTER", 0, 0},
 				borderSize = 3,
 				size = 140,
+				scale = 1,
 				fontSize = 12,
 				outline = "OUTLINE",
 				monochrome = false,
@@ -120,6 +121,9 @@ function frame:PLAYER_LOGIN(event)
 		Minimap:SetMovable(true)
 	end
 
+	if self.db.profile.scale ~= 1 then -- Non-default
+		Minimap:SetScale(self.db.profile.scale)
+	end
 	if self.db.profile.size ~= 140 then -- Non-default
 		Minimap:SetSize(self.db.profile.size, self.db.profile.size)
 		-- I'm not sure of a better way to update the render layer to the new size
