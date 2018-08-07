@@ -3,6 +3,7 @@ local acr = LibStub("AceConfigRegistry-3.0")
 local acd = LibStub("AceConfigDialog-3.0")
 local media = LibStub("LibSharedMedia-3.0")
 local adbo = LibStub("AceDBOptions-3.0")
+local ldbi = LibStub("LibDBIcon-1.0")
 local map = BasicMinimap
 
 local hideFrame = function(frame) frame:Hide() end
@@ -173,8 +174,14 @@ local acOptions = {
 					width = "full",
 					set = function(_, value)
 						map.db.profile.hideAddons = value
-						for k,v in next, map.addonButtons do
-							v:SetAlpha(value and 0 or 1)
+						local tbl = ldbi:GetButtonList()
+						for i = 1, #tbl do
+							ldbi:ShowOnEnter(tbl[i], value)
+						end
+						if value then
+							ldbi.RegisterCallback(map, "LibDBIcon_IconCreated", "HideButtons")
+						else
+							ldbi.UnregisterCallback(map, "LibDBIcon_IconCreated")
 						end
 					end,
 				},
