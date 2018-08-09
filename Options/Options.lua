@@ -134,7 +134,7 @@ local acOptions = {
 				size = {
 					name = L.size,
 					order = 9, type = "range",
-					min = 70, max = 400, step = 5,
+					min = 70, max = 400, step = 1, bigStep = 5,
 					set = function(_, value)
 						map.db.profile.size = value
 						Minimap:SetSize(value, value)
