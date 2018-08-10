@@ -125,6 +125,10 @@ local acOptions = {
 							end
 							function GetMinimapShape() return "ROUND" end
 						end
+						local tbl = ldbi:GetButtonList()
+						for i = 1, #tbl do
+							ldbi:Refresh(tbl[i])
+						end
 					end,
 				},
 				sizeDesc = {
@@ -145,6 +149,10 @@ local acOptions = {
 						else
 							Minimap_ZoomOutClick()
 							Minimap_ZoomInClick()
+						end
+						local tbl = ldbi:GetButtonList()
+						for i = 1, #tbl do
+							ldbi:Refresh(tbl[i])
 						end
 					end,
 				},
