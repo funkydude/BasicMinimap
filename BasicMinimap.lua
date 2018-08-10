@@ -50,6 +50,7 @@ function frame:ADDON_LOADED(event, addon)
 				size = 140,
 				scale = 1,
 				fontSize = 12,
+				radius = 5,
 				outline = "OUTLINE",
 				monochrome = false,
 				font = media:GetDefault("font"),
@@ -146,10 +147,7 @@ function frame:PLAYER_LOGIN(event)
 			Minimap_ZoomInClick()
 		end
 	end
-	local tbl = ldbi:GetButtonList()
-	for i = 1, #tbl do
-		ldbi:Refresh(tbl[i])
-	end
+	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
 	MinimapCompassTexture.Show = MinimapCompassTexture.Hide

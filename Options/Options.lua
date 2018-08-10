@@ -178,8 +178,7 @@ local acOptions = {
 				hideAddons = {
 					name = L.hideAddons,
 					desc = L.hideAddonsDesc,
-					order = 0, type = "toggle",
-					width = "full",
+					order = 1, type = "toggle",
 					set = function(_, value)
 						map.db.profile.hideAddons = value
 						local tbl = ldbi:GetButtonList()
@@ -193,13 +192,26 @@ local acOptions = {
 						end
 					end,
 				},
+				radius = {
+					type = "range",
+					name = L.radiusAddons,
+					desc = L.radiusAddonsDesc,
+					order = 2,
+					max = 50,
+					min = -50,
+					step = 1,
+					set = function(_, value)
+						map.db.profile.radius = value
+						ldbi:SetButtonRadius(value)
+					end,
+				},
 				buttonShowDesc = {
 					name = "\n\n".. L.buttonHeader,
-					order = 1, type = "description",
+					order = 3, type = "description",
 				},
 				zoomBtn = {
 					name = ZOOM_IN.."/"..ZOOM_OUT,
-					order = 2, type = "toggle",
+					order = 4, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoomBtn = value
 						if value then
@@ -219,7 +231,7 @@ local acOptions = {
 				},
 				raidDiffIcon = {
 					name = RAID_DIFFICULTY,
-					order = 3, type = "toggle",
+					order = 5, type = "toggle",
 					set = function(_, value)
 						map.db.profile.raidDiffIcon = value
 						if value then
@@ -240,7 +252,7 @@ local acOptions = {
 				},
 				clock = {
 					name = TIMEMANAGER_TITLE,
-					order = 4, type = "toggle",
+					order = 6, type = "toggle",
 					set = function(_, value)
 						map.db.profile.clock = value
 						if value then
@@ -260,7 +272,7 @@ local acOptions = {
 				},
 				zoneText = {
 					name = L.ZONETEXT,
-					order = 5, type = "toggle",
+					order = 7, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoneText = value
 						if value then
@@ -280,7 +292,7 @@ local acOptions = {
 				},
 				missions = {
 					name = L.missions,
-					order = 6, type = "toggle",
+					order = 8, type = "toggle",
 					set = function(_, value)
 						map.db.profile.missions = value
 						if value then
@@ -298,38 +310,14 @@ local acOptions = {
 						end
 					end,
 				},
-				clickHeaderDesc = {
-					name = "\n\n".. L.minimapClicks,
-					order = 7, type = "description",
-				},
-				calendarBtn = {
-					name = L.openCalendar,
-					order = 8, type = "select",
-					values = buttonValues,
-				},
-				trackingBtn = {
-					name = L.openTracking,
-					order = 9, type = "select",
-					values = buttonValues,
-				},
-				missionsBtn = {
-					name = L.openMissions,
-					order = 10, type = "select",
-					values = buttonValues,
-				},
-				mapBtn = {
-					name = L.openMap,
-					order = 11, type = "select",
-					values = buttonValues,
-				},
 				fontHeaderDesc = {
 					name = "\n\n".. L.fontHeader,
-					order = 12, type = "description",
+					order = 9, type = "description",
 				},
 				font = {
 					type = "select",
 					name = L.font,
-					order = 13,
+					order = 10,
 					values = media:List("font"),
 					itemControl = "DDI-Font",
 					get = function()
@@ -348,7 +336,7 @@ local acOptions = {
 				fontSize = {
 					type = "range",
 					name = L.fontSize,
-					order = 14,
+					order = 11,
 					max = 200,
 					min = 1,
 					step = 1,
@@ -361,7 +349,7 @@ local acOptions = {
 				monochrome = {
 					type = "toggle",
 					name = L.monochrome,
-					order = 15,
+					order = 12,
 					set = function(_, value)
 						map.db.profile.monochrome = value
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
@@ -371,7 +359,7 @@ local acOptions = {
 				outline = {
 					type = "select",
 					name = L.outline,
-					order = 16,
+					order = 13,
 					values = {
 						NONE = L.none,
 						OUTLINE = L.thin,
@@ -385,11 +373,41 @@ local acOptions = {
 				},
 			},
 		},
+		clicks = {
+			name = L.clicks,
+			order = 3, type = "group",
+			args = {
+				clickHeaderDesc = {
+					name = "\n".. L.minimapClicks,
+					order = 1, type = "description",
+				},
+				calendarBtn = {
+					name = L.openCalendar,
+					order = 2, type = "select",
+					values = buttonValues,
+				},
+				trackingBtn = {
+					name = L.openTracking,
+					order = 3, type = "select",
+					values = buttonValues,
+				},
+				missionsBtn = {
+					name = L.openMissions,
+					order = 4, type = "select",
+					values = buttonValues,
+				},
+				mapBtn = {
+					name = L.openMap,
+					order = 5, type = "select",
+					values = buttonValues,
+				},
+			},
+		},
 		profiles = adbo:GetOptionsTable(BasicMinimap.db),
 	},
 }
-acOptions.args.profiles.order = 3
+acOptions.args.profiles.order = 4
 
 acr:RegisterOptionsTable(acOptions.name, acOptions, true)
-acd:SetDefaultSize(acOptions.name, 430, 520)
+acd:SetDefaultSize(acOptions.name, 430, 500)
 
