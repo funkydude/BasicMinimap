@@ -146,6 +146,10 @@ function frame:PLAYER_LOGIN(event)
 			Minimap_ZoomInClick()
 		end
 	end
+	local tbl = ldbi:GetButtonList()
+	for i = 1, #tbl do
+		ldbi:Refresh(tbl[i])
+	end
 	MinimapNorthTag.Show = MinimapNorthTag.Hide
 	MinimapNorthTag:Hide()
 	MinimapCompassTexture.Show = MinimapCompassTexture.Hide
