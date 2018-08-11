@@ -214,13 +214,16 @@ function frame:PLAYER_LOGIN(event)
 
 	MiniMapTracking:SetParent(self)
 
+	-- Difficulty indicators
 	MiniMapInstanceDifficulty:SetParent(Minimap)
 	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
-
 	GuildInstanceDifficulty:SetParent(Minimap)
 	GuildInstanceDifficulty:ClearAllPoints()
 	GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
+	MiniMapChallengeMode:SetParent(Minimap)
+	MiniMapChallengeMode:ClearAllPoints()
+	MiniMapChallengeMode:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetSize(38, 38)
@@ -230,6 +233,7 @@ function frame:PLAYER_LOGIN(event)
 	if not self.db.profile.raidDiffIcon then
 		MiniMapInstanceDifficulty:SetParent(self)
 		GuildInstanceDifficulty:SetParent(self)
+		MiniMapChallengeMode:SetParent(self)
 	end
 
 	QueueStatusMinimapButton:SetParent(Minimap)

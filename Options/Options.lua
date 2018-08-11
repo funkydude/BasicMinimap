@@ -231,9 +231,11 @@ local acOptions = {
 						if value then
 							MiniMapInstanceDifficulty:SetParent(Minimap)
 							GuildInstanceDifficulty:SetParent(Minimap)
+							MiniMapChallengeMode:SetParent(Minimap)
 						else
 							MiniMapInstanceDifficulty:SetParent(map)
 							GuildInstanceDifficulty:SetParent(map)
+							MiniMapChallengeMode:SetParent(map)
 						end
 					end,
 				},
