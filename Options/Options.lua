@@ -201,8 +201,8 @@ local acOptions = {
 				},
 				radius = {
 					type = "range",
-					name = L.radiusAddons,
-					desc = L.radiusAddonsDesc,
+					name = L.radius,
+					desc = L.radiusDesc,
 					order = 2,
 					max = 50,
 					min = -50,
