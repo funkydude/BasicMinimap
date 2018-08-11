@@ -12,12 +12,12 @@ do
 	L = mod.L
 end
 
-local buttonValues = {RightButton = KEY_BUTTON2, MiddleButton = KEY_BUTTON3,
-	Button4 = KEY_BUTTON4, Button5 = KEY_BUTTON5, Button6 = KEY_BUTTON6,
-	Button7 = KEY_BUTTON7, Button8 = KEY_BUTTON8, Button9 = KEY_BUTTON9,
-	Button10 = KEY_BUTTON10, Button11 = KEY_BUTTON11, Button12 = KEY_BUTTON12,
-	Button13 = KEY_BUTTON13, Button14 = KEY_BUTTON14, Button15 = KEY_BUTTON15,
-	None = NONE
+local buttonValues = {RightButton = L.rightMouseButton, MiddleButton = L.middleMouse,
+	Button4 = L.mouseButton:format(4), Button5 = L.mouseButton:format(5), Button6 = L.mouseButton:format(6),
+	Button7 = L.mouseButton:format(7), Button8 = L.mouseButton:format(8), Button9 = L.mouseButton:format(9),
+	Button10 = L.mouseButton:format(10), Button11 = L.mouseButton:format(11), Button12 = L.mouseButton:format(12),
+	Button13 = L.mouseButton:format(13), Button14 = L.mouseButton:format(14), Button15 = L.mouseButton:format(15),
+	None = L.none
 }
 
 local function updateFlags()
@@ -47,7 +47,7 @@ local acOptions = {
 			order = 1, type = "group",
 			args = {
 				colorBorder = {
-					name = EMBLEM_BORDER_COLOR, --Border Color
+					name = L.borderColor,
 					order = 1, type = "color", hasAlpha = true,
 					get = function() return unpack(map.db.profile.colorBorder) end,
 					set = function(_, r, g, b, a)
@@ -90,7 +90,7 @@ local acOptions = {
 					order = 4, type = "description",
 				},
 				lock = {
-					name = LOCK,
+					name = L.lock,
 					order = 5, type = "toggle",
 					width = "full",
 					set = function(_, value)
@@ -207,7 +207,7 @@ local acOptions = {
 					order = 3, type = "description",
 				},
 				zoomBtn = {
-					name = ZOOM_IN.."/"..ZOOM_OUT,
+					name = L.zoomInZoomOut,
 					order = 4, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoomBtn = value
@@ -221,7 +221,7 @@ local acOptions = {
 					end,
 				},
 				raidDiffIcon = {
-					name = RAID_DIFFICULTY,
+					name = L.difficultyIndicator,
 					order = 5, type = "toggle",
 					set = function(_, value)
 						map.db.profile.raidDiffIcon = value
@@ -237,7 +237,7 @@ local acOptions = {
 					end,
 				},
 				clock = {
-					name = TIMEMANAGER_TITLE,
+					name = L.clock,
 					order = 6, type = "toggle",
 					set = function(_, value)
 						map.db.profile.clock = value
