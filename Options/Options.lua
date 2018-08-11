@@ -215,17 +215,11 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.zoomBtn = value
 						if value then
-							MinimapZoomIn:ClearAllPoints()
-							MinimapZoomIn:SetParent("Minimap")
-							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", map.db.profile.shape == "ROUND" and 10 or 20, map.db.profile.shape == "ROUND" and -40 or -50)
-							MinimapZoomIn:Show()
-							MinimapZoomOut:ClearAllPoints()
-							MinimapZoomOut:SetParent("Minimap")
-							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", map.db.profile.shape == "ROUND" and 40 or 50, map.db.profile.shape == "ROUND" and -10 or -20)
-							MinimapZoomOut:Show()
+							MinimapZoomIn:SetParent(Minimap)
+							MinimapZoomOut:SetParent(Minimap)
 						else
-							MinimapZoomIn:Hide()
-							MinimapZoomOut:Hide()
+							MinimapZoomIn:SetParent(map)
+							MinimapZoomOut:SetParent(map)
 						end
 					end,
 				},
@@ -235,18 +229,11 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.raidDiffIcon = value
 						if value then
-							MiniMapInstanceDifficulty:SetScript("OnShow", nil)
-							GuildInstanceDifficulty:SetScript("OnShow", nil)
-							local _, z = IsInInstance()
-							if z and (z == "party" or z == "raid") and (IsInRaid() or IsInGroup()) then
-								MiniMapInstanceDifficulty:Show()
-								GuildInstanceDifficulty:Show()
-							end
+							MiniMapInstanceDifficulty:SetParent(Minimap)
+							GuildInstanceDifficulty:SetParent(Minimap)
 						else
-							MiniMapInstanceDifficulty:SetScript("OnShow", hideFrame)
-							MiniMapInstanceDifficulty:Hide()
-							GuildInstanceDifficulty:SetScript("OnShow", hideFrame)
-							GuildInstanceDifficulty:Hide()
+							MiniMapInstanceDifficulty:SetParent(map)
+							GuildInstanceDifficulty:SetParent(map)
 						end
 					end,
 				},
@@ -256,17 +243,9 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.clock = value
 						if value then
-							if TimeManagerClockButton.bmShow then
-								TimeManagerClockButton.Show = TimeManagerClockButton.bmShow
-								TimeManagerClockButton.bmShow = nil
-							end
-							TimeManagerClockButton:Show()
+							TimeManagerClockButton:SetParent(Minimap)
 						else
-							if not TimeManagerClockButton.bmShow then
-								TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
-								TimeManagerClockButton.Show = noop
-							end
-							TimeManagerClockButton:Hide()
+							TimeManagerClockButton:SetParent(map)
 						end
 					end,
 				},
@@ -276,17 +255,9 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.zoneText = value
 						if value then
-							if MinimapZoneTextButton.bmShow then
-								MinimapZoneTextButton.Show = MinimapZoneTextButton.bmShow
-								MinimapZoneTextButton.bmShow = nil
-							end
-							MinimapZoneTextButton:Show()
+							MinimapZoneTextButton:SetParent(Minimap)
 						else
-							if not MinimapZoneTextButton.bmShow then
-								MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
-								MinimapZoneTextButton.Show = noop
-							end
-							MinimapZoneTextButton:Hide()
+							MinimapZoneTextButton:SetParent(map)
 						end
 					end,
 				},
@@ -296,17 +267,9 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.missions = value
 						if value then
-							if GarrisonLandingPageMinimapButton.bmShow then
-								GarrisonLandingPageMinimapButton.Show = GarrisonLandingPageMinimapButton.bmShow
-								GarrisonLandingPageMinimapButton.bmShow = nil
-							end
-							GarrisonLandingPageMinimapButton:Show()
+							GarrisonLandingPageMinimapButton:SetParent(Minimap)
 						else
-							if not GarrisonLandingPageMinimapButton.bmShow then
-								GarrisonLandingPageMinimapButton.bmShow = GarrisonLandingPageMinimapButton.Show
-								GarrisonLandingPageMinimapButton.Show = noop
-							end
-							GarrisonLandingPageMinimapButton:Hide()
+							GarrisonLandingPageMinimapButton:SetParent(map)
 						end
 					end,
 				},

@@ -3,8 +3,6 @@ local name = ...
 local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 
-local hideFrame = function(frame) frame:Hide() end
-local noop = function() end
 local backdrops = {}
 
 do
@@ -19,6 +17,7 @@ do
 end
 
 local frame = CreateFrame("Frame", name)
+frame:Hide()
 frame:SetScript("OnEvent", function(f, event, ...)
 	f[event](f, event, ...)
 end)
@@ -148,10 +147,8 @@ function frame:PLAYER_LOGIN(event)
 		end
 	end
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
-	MinimapNorthTag.Show = MinimapNorthTag.Hide
-	MinimapNorthTag:Hide()
-	MinimapCompassTexture.Show = MinimapCompassTexture.Hide
-	MinimapCompassTexture:Hide()
+	MinimapNorthTag:SetParent(self)
+	MinimapCompassTexture:SetParent(self)
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
@@ -169,19 +166,17 @@ function frame:PLAYER_LOGIN(event)
 	Minimap:SetQuestBlobRingScalar(0)
 	Minimap:SetQuestBlobRingAlpha(0)
 
+	MinimapZoomIn:SetParent(Minimap)
+	MinimapZoomIn:ClearAllPoints()
+	MinimapZoomIn:SetPoint("RIGHT", Minimap, "RIGHT", self.db.profile.shape == "ROUND" and 10 or 20, self.db.profile.shape == "ROUND" and -40 or -50)
+	MinimapZoomOut:SetParent(Minimap)
+	MinimapZoomOut:ClearAllPoints()
+	MinimapZoomOut:SetPoint("BOTTOM", Minimap, "BOTTOM", self.db.profile.shape == "ROUND" and 40 or 50, self.db.profile.shape == "ROUND" and -10 or -20)
+
 	if not self.db.profile.zoomBtn then
-		MinimapZoomIn:Hide()
-		MinimapZoomOut:Hide()
+		MinimapZoomIn:SetParent(self)
+		MinimapZoomOut:SetParent(self)
 	else
-		MinimapZoomIn:ClearAllPoints()
-		MinimapZoomIn:SetParent("Minimap")
-		MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", self.db.profile.shape == "ROUND" and 10 or 20, self.db.profile.shape == "ROUND" and -40 or -50)
-		MinimapZoomIn:Show()
-		MinimapZoomOut:ClearAllPoints()
-		MinimapZoomOut:SetParent("Minimap")
-		MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", self.db.profile.shape == "ROUND" and 40 or 50, self.db.profile.shape == "ROUND" and -10 or -20)
-		MinimapZoomOut:Show()
-	end
 
 	-- Create font flag
 	local flags = nil
@@ -198,59 +193,47 @@ function frame:PLAYER_LOGIN(event)
 	TimeManagerClockButton:SetPoint("TOP", backdrops[7], "BOTTOM", 0, 6)
 	TimeManagerClockButton:SetWidth(100)
 	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
-	TimeManagerClockButton:GetRegions():Hide()
+	TimeManagerClockButton:GetRegions():Hide() -- Hide the border
 	if not self.db.profile.clock then
-		TimeManagerClockButton:Hide()
-		TimeManagerClockButton.bmShow = TimeManagerClockButton.Show
-		TimeManagerClockButton.Show = noop
+		TimeManagerClockButton:SetParent(self)
 	end
 
-	MiniMapWorldMapButton:SetScript("OnShow", hideFrame)
-	MiniMapWorldMapButton:Hide()
-	MiniMapWorldMapButton:UnregisterAllEvents()
+	MiniMapWorldMapButton:SetParent(self)
 
-	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetParent(Minimap)
+	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[5], "TOP", 0, 4)
 	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	if not self.db.profile.zoneText then
-		MinimapZoneTextButton:Hide()
-		MinimapZoneTextButton.bmShow = MinimapZoneTextButton.Show
-		MinimapZoneTextButton.Show = noop
+		MinimapZoneTextButton:SetParent(self)
 	end
 
 	if not self.db.profile.missions then
-		GarrisonLandingPageMinimapButton:Hide()
-		GarrisonLandingPageMinimapButton.bmShow = GarrisonLandingPageMinimapButton.Show
-		GarrisonLandingPageMinimapButton.Show = noop
+		GarrisonLandingPageMinimapButton:SetParent(self)
 	end
 
-	MiniMapTracking:SetScript("OnShow", hideFrame)
-	MiniMapTracking:Hide()
-	MiniMapTracking:UnregisterAllEvents()
+	MiniMapTracking:SetParent(self)
 
-	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetParent(Minimap)
+	MiniMapInstanceDifficulty:ClearAllPoints()
 	MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
-	GuildInstanceDifficulty:ClearAllPoints()
 	GuildInstanceDifficulty:SetParent(Minimap)
+	GuildInstanceDifficulty:ClearAllPoints()
 	GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 
+	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetSize(38, 38)
 	GarrisonLandingPageMinimapButton:ClearAllPoints()
-	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
 
 	if not self.db.profile.raidDiffIcon then
-		MiniMapInstanceDifficulty:SetScript("OnShow", hideFrame)
-		MiniMapInstanceDifficulty:Hide()
-		GuildInstanceDifficulty:SetScript("OnShow", hideFrame)
-		GuildInstanceDifficulty:Hide()
+		MiniMapInstanceDifficulty:SetParent(self)
+		GuildInstanceDifficulty:SetParent(self)
 	end
 
-	QueueStatusMinimapButton:ClearAllPoints()
 	QueueStatusMinimapButton:SetParent(Minimap)
+	QueueStatusMinimapButton:ClearAllPoints()
 	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
 
 	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.
