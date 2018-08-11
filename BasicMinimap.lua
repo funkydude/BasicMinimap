@@ -127,7 +127,7 @@ function frame:PLAYER_LOGIN(event)
 		frame.db.profile.position[3] = c
 		frame.db.profile.position[4] = d
 	end)
-	Minimap:SetMovable(self.db.profile.lock)
+	Minimap:SetMovable(not self.db.profile.lock)
 
 	if self.db.profile.scale ~= 1 then -- Non-default
 		Minimap:SetScale(self.db.profile.scale)
