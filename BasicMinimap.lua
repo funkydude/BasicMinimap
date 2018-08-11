@@ -92,6 +92,7 @@ function frame:PLAYER_LOGIN(event)
 	MinimapCluster:EnableMouse(false)
 
 	-- Backdrops, creating the border cleanly
+	-- Square Border
 	local size = self.db.profile.borderSize
 	local r, g, b, a = unpack(self.db.profile.colorBorder)
 	for i = 1, 8 do
@@ -112,6 +113,16 @@ function frame:PLAYER_LOGIN(event)
 	backdrops[7]:SetPoint("BOTTOMRIGHT", backdrops[4], "BOTTOMLEFT")
 	backdrops[8]:SetPoint("TOPLEFT", backdrops[1], "BOTTOMLEFT") -- Left border
 	backdrops[8]:SetPoint("BOTTOMRIGHT", backdrops[3], "TOPRIGHT")
+	-- Circular Border
+	backdrops[9] = Minimap:CreateTexture(nil, "BACKGROUND")
+	backdrops[9]:SetPoint("CENTER", Minimap, "CENTER")
+	backdrops[9]:SetSize(self.db.profile.size+size, self.db.profile.size+size)
+	backdrops[9]:SetColorTexture(r, g, b, a)
+	local circularMask = frame:CreateMaskTexture()
+	circularMask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
+	circularMask:SetAllPoints(backdrops[9])
+	circularMask:SetParent(Minimap)
+	backdrops[9]:AddMaskTexture(circularMask)
 
 	Minimap:ClearAllPoints()
 	Minimap:SetPoint(self.db.profile.position[1], UIParent, self.db.profile.position[2], self.db.profile.position[3], self.db.profile.position[4])
@@ -146,11 +157,13 @@ function frame:PLAYER_LOGIN(event)
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
 	MinimapNorthTag:SetParent(self) -- North tag (static minimap)
 	MinimapCompassTexture:SetParent(self) -- North tag & compass (when rotating minimap is enabled)
+	MinimapBorderTop:SetParent(self) -- Zone text border
+	MinimapBorder:SetParent(self) -- Zone text border
 
-	MinimapBorder:Hide()
-	MinimapBorderTop:Hide()
-	if self.db.profile.shape == "SQUARE" then
+	local shape = self.db.profile.shape
+	if shape == "SQUARE" then
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
+		backdrops[9]:Hide()
 	else
 		for i = 1, 8 do
 			backdrops[i]:Hide()
@@ -166,10 +179,10 @@ function frame:PLAYER_LOGIN(event)
 	-- Zoom buttons
 	MinimapZoomIn:SetParent(Minimap)
 	MinimapZoomIn:ClearAllPoints()
-	MinimapZoomIn:SetPoint("RIGHT", Minimap, "RIGHT", self.db.profile.shape == "ROUND" and 10 or 20, self.db.profile.shape == "ROUND" and -40 or -50)
+	MinimapZoomIn:SetPoint("RIGHT", Minimap, "RIGHT", shape == "ROUND" and 10 or 20, shape == "ROUND" and -40 or -50)
 	MinimapZoomOut:SetParent(Minimap)
 	MinimapZoomOut:ClearAllPoints()
-	MinimapZoomOut:SetPoint("BOTTOM", Minimap, "BOTTOM", self.db.profile.shape == "ROUND" and 40 or 50, self.db.profile.shape == "ROUND" and -10 or -20)
+	MinimapZoomOut:SetPoint("BOTTOM", Minimap, "BOTTOM", shape == "ROUND" and 40 or 50, shape == "ROUND" and -10 or -20)
 	if not self.db.profile.zoomBtn then
 		MinimapZoomIn:SetParent(self)
 		MinimapZoomOut:SetParent(self)

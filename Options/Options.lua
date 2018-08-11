@@ -52,11 +52,10 @@ local acOptions = {
 					get = function() return unpack(map.db.profile.colorBorder) end,
 					set = function(_, r, g, b, a)
 						map.db.profile.colorBorder = {r, g, b, a}
-						for i = 1, 8 do
+						for i = 1, 9 do
 							map.backdrops[i]:SetColorTexture(r, g, b, a)
 						end
 					end,
-					disabled = function() return map.db.profile.shape == "ROUND" end,
 				},
 				classcolor = {
 					name = L.CLASSCOLORED,
@@ -66,11 +65,10 @@ local acOptions = {
 						local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 						local a = map.db.profile.colorBorder[4]
 						map.db.profile.colorBorder = {color.r, color.g, color.b, a}
-						for i = 1, 8 do
+						for i = 1, 9 do
 							map.backdrops[i]:SetColorTexture(color.r, color.g, color.b, a)
 						end
 					end,
-					disabled = function() return map.db.profile.shape == "ROUND" end,
 				},
 				borderSize = {
 					name = L.BORDERSIZE,
@@ -79,11 +77,10 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.borderSize = value
 						for i = 1, 4 do
-							map.backdrops[i]:SetWidth(value)
-							map.backdrops[i]:SetHeight(value)
+							map.backdrops[i]:SetSize(value, value)
 						end
+						map.backdrops[9]:SetSize(map.db.profile.size+value, map.db.profile.size+value)
 					end,
-					disabled = function() return map.db.profile.shape == "ROUND" end,
 				},
 				miscspacer = {
 					name = "\n\n",
@@ -114,13 +111,23 @@ local acOptions = {
 							for i = 1, 8 do
 								map.backdrops[i]:Show()
 							end
+							map.backdrops[9]:Hide()
 							function GetMinimapShape() return "SQUARE" end
+							MinimapZoomIn:ClearAllPoints()
+							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", 20, -50)
+							MinimapZoomOut:ClearAllPoints()
+							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", 50, -20)
 						else
 							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
 							for i = 1, 8 do
 								map.backdrops[i]:Hide()
 							end
+							map.backdrops[9]:Show()
 							function GetMinimapShape() return "ROUND" end
+							MinimapZoomIn:ClearAllPoints()
+							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", 10, -40)
+							MinimapZoomOut:ClearAllPoints()
+							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", 40, -10)
 						end
 						local tbl = ldbi:GetButtonList()
 						for i = 1, #tbl do
@@ -147,6 +154,7 @@ local acOptions = {
 							Minimap_ZoomOutClick()
 							Minimap_ZoomInClick()
 						end
+						map.backdrops[9]:SetSize(value+map.db.profile.borderSize, value+map.db.profile.borderSize)
 						local tbl = ldbi:GetButtonList()
 						for i = 1, #tbl do
 							ldbi:Refresh(tbl[i])
