@@ -113,10 +113,6 @@ local acOptions = {
 							end
 							map.backdrops[9]:Hide()
 							function GetMinimapShape() return "SQUARE" end
-							MinimapZoomIn:ClearAllPoints()
-							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", 20, -50)
-							MinimapZoomOut:ClearAllPoints()
-							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", 50, -20)
 						else
 							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
 							for i = 1, 8 do
@@ -124,14 +120,15 @@ local acOptions = {
 							end
 							map.backdrops[9]:Show()
 							function GetMinimapShape() return "ROUND" end
-							MinimapZoomIn:ClearAllPoints()
-							MinimapZoomIn:SetPoint("RIGHT", "Minimap", "RIGHT", 10, -40)
-							MinimapZoomOut:ClearAllPoints()
-							MinimapZoomOut:SetPoint("BOTTOM", "Minimap", "BOTTOM", 40, -10)
 						end
 						local tbl = ldbi:GetButtonList()
 						for i = 1, #tbl do
 							ldbi:Refresh(tbl[i])
+						end
+						-- Update all blizz button positions
+						for position, button in next, map.blizzButtonPositions do
+							button:ClearAllPoints()
+							ldbi:SetButtonToPosition(button, position)
 						end
 					end,
 				},
@@ -158,6 +155,11 @@ local acOptions = {
 						local tbl = ldbi:GetButtonList()
 						for i = 1, #tbl do
 							ldbi:Refresh(tbl[i])
+						end
+						-- Update all blizz button positions
+						for position, button in next, map.blizzButtonPositions do
+							button:ClearAllPoints()
+							ldbi:SetButtonToPosition(button, position)
 						end
 					end,
 				},
@@ -208,6 +210,11 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.radius = value
 						ldbi:SetButtonRadius(value)
+						-- Update all blizz button positions
+						for position, button in next, map.blizzButtonPositions do
+							button:ClearAllPoints()
+							ldbi:SetButtonToPosition(button, position)
+						end
 					end,
 				},
 				buttonShowDesc = {

@@ -4,6 +4,17 @@ local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 
 local backdrops = {}
+local blizzButtonPositions = {
+	[328] = MinimapZoomIn,
+	[302] = MinimapZoomOut,
+	[190] = GarrisonLandingPageMinimapButton,
+	[230] = QueueStatusMinimapButton,
+	[140] = MiniMapInstanceDifficulty,
+	[141] = GuildInstanceDifficulty,
+	[142] = MiniMapChallengeMode,
+	[44] = GameTimeFrame,
+	[20] = MiniMapMailFrame,
+}
 
 do
 	local function openOpts()
@@ -22,6 +33,7 @@ frame:SetScript("OnEvent", function(f, event, ...)
 	f[event](f, event, ...)
 end)
 frame.backdrops = backdrops
+frame.blizzButtonPositions = blizzButtonPositions
 
 function frame:HideButtons(_, _, name)
 	ldbi:ShowOnEnter(name, true)
@@ -96,7 +108,7 @@ function frame:PLAYER_LOGIN(event)
 	local size = self.db.profile.borderSize
 	local r, g, b, a = unpack(self.db.profile.colorBorder)
 	for i = 1, 8 do
-		backdrops[i] = Minimap:CreateTexture()
+		backdrops[i] = Minimap:CreateTexture(nil, "BACKGROUND")
 		backdrops[i]:SetColorTexture(r, g, b, a)
 		backdrops[i]:SetWidth(size)
 		backdrops[i]:SetHeight(size)
@@ -158,7 +170,7 @@ function frame:PLAYER_LOGIN(event)
 	MinimapNorthTag:SetParent(self) -- North tag (static minimap)
 	MinimapCompassTexture:SetParent(self) -- North tag & compass (when rotating minimap is enabled)
 	MinimapBorderTop:SetParent(self) -- Zone text border
-	MinimapBorder:SetParent(self) -- Zone text border
+	MinimapBorder:SetParent(self) -- Minimap border
 
 	local shape = self.db.profile.shape
 	if shape == "SQUARE" then
@@ -178,11 +190,7 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Zoom buttons
 	MinimapZoomIn:SetParent(Minimap)
-	MinimapZoomIn:ClearAllPoints()
-	MinimapZoomIn:SetPoint("RIGHT", Minimap, "RIGHT", shape == "ROUND" and 10 or 20, shape == "ROUND" and -40 or -50)
 	MinimapZoomOut:SetParent(Minimap)
-	MinimapZoomOut:ClearAllPoints()
-	MinimapZoomOut:SetPoint("BOTTOM", Minimap, "BOTTOM", shape == "ROUND" and 40 or 50, shape == "ROUND" and -10 or -20)
 	if not self.db.profile.zoomBtn then
 		MinimapZoomIn:SetParent(self)
 		MinimapZoomOut:SetParent(self)
@@ -226,14 +234,8 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Difficulty indicators
 	MiniMapInstanceDifficulty:SetParent(Minimap)
-	MiniMapInstanceDifficulty:ClearAllPoints()
-	MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 	GuildInstanceDifficulty:SetParent(Minimap)
-	GuildInstanceDifficulty:ClearAllPoints()
-	GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 	MiniMapChallengeMode:SetParent(Minimap)
-	MiniMapChallengeMode:ClearAllPoints()
-	MiniMapChallengeMode:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
 	if not self.db.profile.raidDiffIcon then
 		MiniMapInstanceDifficulty:SetParent(self)
 		GuildInstanceDifficulty:SetParent(self)
@@ -243,16 +245,18 @@ function frame:PLAYER_LOGIN(event)
 	-- Missions button
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
 	GarrisonLandingPageMinimapButton:SetSize(38, 38)
-	GarrisonLandingPageMinimapButton:ClearAllPoints()
-	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
 	if not self.db.profile.missions then
 		GarrisonLandingPageMinimapButton:SetParent(self)
 	end
 
 	-- PvE/PvP Queue button
 	QueueStatusMinimapButton:SetParent(Minimap)
-	QueueStatusMinimapButton:ClearAllPoints()
-	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
+
+	-- Update all blizz button positions
+	for position, button in next, blizzButtonPositions do
+		button:ClearAllPoints()
+		ldbi:SetButtonToPosition(button, position)
+	end
 
 	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.
 	-- We do this by using a simple counter, which saves us using the more expensive C_Timer.NewTimer API.
