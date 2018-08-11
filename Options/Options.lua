@@ -6,9 +6,6 @@ local adbo = LibStub("AceDBOptions-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 local map = BasicMinimap
 
-local hideFrame = function(frame) frame:Hide() end
-local noop = function() end
-
 local L
 do
 	local _, mod = ...

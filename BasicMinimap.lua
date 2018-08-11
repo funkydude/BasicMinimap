@@ -127,10 +127,7 @@ function frame:PLAYER_LOGIN(event)
 		frame.db.profile.position[3] = c
 		frame.db.profile.position[4] = d
 	end)
-
-	if not self.db.profile.lock then
-		Minimap:SetMovable(true)
-	end
+	Minimap:SetMovable(self.db.profile.lock)
 
 	if self.db.profile.scale ~= 1 then -- Non-default
 		Minimap:SetScale(self.db.profile.scale)
@@ -147,8 +144,8 @@ function frame:PLAYER_LOGIN(event)
 		end
 	end
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
-	MinimapNorthTag:SetParent(self)
-	MinimapCompassTexture:SetParent(self)
+	MinimapNorthTag:SetParent(self) -- North tag (static minimap)
+	MinimapCompassTexture:SetParent(self) -- North tag & compass (when rotating minimap is enabled)
 
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
@@ -166,17 +163,17 @@ function frame:PLAYER_LOGIN(event)
 	Minimap:SetQuestBlobRingScalar(0)
 	Minimap:SetQuestBlobRingAlpha(0)
 
+	-- Zoom buttons
 	MinimapZoomIn:SetParent(Minimap)
 	MinimapZoomIn:ClearAllPoints()
 	MinimapZoomIn:SetPoint("RIGHT", Minimap, "RIGHT", self.db.profile.shape == "ROUND" and 10 or 20, self.db.profile.shape == "ROUND" and -40 or -50)
 	MinimapZoomOut:SetParent(Minimap)
 	MinimapZoomOut:ClearAllPoints()
 	MinimapZoomOut:SetPoint("BOTTOM", Minimap, "BOTTOM", self.db.profile.shape == "ROUND" and 40 or 50, self.db.profile.shape == "ROUND" and -10 or -20)
-
 	if not self.db.profile.zoomBtn then
 		MinimapZoomIn:SetParent(self)
 		MinimapZoomOut:SetParent(self)
-	else
+	end
 
 	-- Create font flag
 	local flags = nil
@@ -189,6 +186,7 @@ function frame:PLAYER_LOGIN(event)
 	end
 	--
 
+	-- Clock
 	TimeManagerClockButton:ClearAllPoints()
 	TimeManagerClockButton:SetPoint("TOP", backdrops[7], "BOTTOM", 0, 6)
 	TimeManagerClockButton:SetWidth(100)
@@ -198,8 +196,10 @@ function frame:PLAYER_LOGIN(event)
 		TimeManagerClockButton:SetParent(self)
 	end
 
+	-- World map button
 	MiniMapWorldMapButton:SetParent(self)
 
+	-- Zone text
 	MinimapZoneTextButton:SetParent(Minimap)
 	MinimapZoneTextButton:ClearAllPoints()
 	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[5], "TOP", 0, 4)
@@ -208,10 +208,7 @@ function frame:PLAYER_LOGIN(event)
 		MinimapZoneTextButton:SetParent(self)
 	end
 
-	if not self.db.profile.missions then
-		GarrisonLandingPageMinimapButton:SetParent(self)
-	end
-
+	-- Tracking button
 	MiniMapTracking:SetParent(self)
 
 	-- Difficulty indicators
@@ -224,18 +221,22 @@ function frame:PLAYER_LOGIN(event)
 	MiniMapChallengeMode:SetParent(Minimap)
 	MiniMapChallengeMode:ClearAllPoints()
 	MiniMapChallengeMode:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -20, 0)
-
-	GarrisonLandingPageMinimapButton:SetParent(Minimap)
-	GarrisonLandingPageMinimapButton:SetSize(38, 38)
-	GarrisonLandingPageMinimapButton:ClearAllPoints()
-	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
-
 	if not self.db.profile.raidDiffIcon then
 		MiniMapInstanceDifficulty:SetParent(self)
 		GuildInstanceDifficulty:SetParent(self)
 		MiniMapChallengeMode:SetParent(self)
 	end
 
+	-- Missions button
+	GarrisonLandingPageMinimapButton:SetParent(Minimap)
+	GarrisonLandingPageMinimapButton:SetSize(38, 38)
+	GarrisonLandingPageMinimapButton:ClearAllPoints()
+	GarrisonLandingPageMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -23, 15)
+	if not self.db.profile.missions then
+		GarrisonLandingPageMinimapButton:SetParent(self)
+	end
+
+	-- PvE/PvP Queue button
 	QueueStatusMinimapButton:SetParent(Minimap)
 	QueueStatusMinimapButton:ClearAllPoints()
 	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", -10, -10)
