@@ -244,7 +244,8 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Missions button
 	GarrisonLandingPageMinimapButton:SetParent(Minimap)
-	-- We now need to hook this as Blizz likes to fiddle with its size
+	GarrisonLandingPageMinimapButton:SetSize(36, 36) -- Shrink the missions button
+	-- We also need to hook this as Blizz likes to fiddle with its size
 	hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
 		frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
 	end)
