@@ -92,7 +92,7 @@ local acOptions = {
 					width = "full",
 					set = function(_, value)
 						map.db.profile.lock = value
-						Minimap:SetMovable(not value)
+						map.SetMovable(Minimap, not value)
 					end,
 				},
 				autoZoom = {
@@ -127,7 +127,7 @@ local acOptions = {
 						end
 						-- Update all blizz button positions
 						for position, button in next, map.blizzButtonPositions do
-							button:ClearAllPoints()
+							map.ClearAllPoints(button)
 							ldbi:SetButtonToPosition(button, position)
 						end
 					end,
@@ -142,7 +142,7 @@ local acOptions = {
 					min = 70, max = 400, step = 1, bigStep = 5,
 					set = function(_, value)
 						map.db.profile.size = value
-						Minimap:SetSize(value, value)
+						map.SetSize(Minimap, value, value)
 						-- I'm not sure of a better way to update the render layer to the new size
 						if Minimap:GetZoom() ~= 5 then
 							Minimap_ZoomInClick()
@@ -158,7 +158,7 @@ local acOptions = {
 						end
 						-- Update all blizz button positions
 						for position, button in next, map.blizzButtonPositions do
-							button:ClearAllPoints()
+							map.ClearAllPoints(button)
 							ldbi:SetButtonToPosition(button, position)
 						end
 					end,
@@ -168,11 +168,11 @@ local acOptions = {
 					order = 10, type = "range",
 					min = 0.5, max = 2, step = 0.01,
 					set = function(_, value)
-						Minimap:SetScale(value)
-						Minimap:ClearAllPoints()
+						map.SetScale(Minimap, value)
+						map.ClearAllPoints(Minimap)
 						local s = map.db.profile.scale/value
 						map.db.profile.position[3], map.db.profile.position[4] = map.db.profile.position[3]*s, map.db.profile.position[4]*s
-						Minimap:SetPoint(map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
+						map.SetPoint(Minimap, map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
 						map.db.profile.scale = value
 					end,
 				},
@@ -212,7 +212,7 @@ local acOptions = {
 						ldbi:SetButtonRadius(value)
 						-- Update all blizz button positions
 						for position, button in next, map.blizzButtonPositions do
-							button:ClearAllPoints()
+							map.ClearAllPoints(button)
 							ldbi:SetButtonToPosition(button, position)
 						end
 					end,
@@ -227,11 +227,11 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.zoomBtn = value
 						if value then
-							MinimapZoomIn:SetParent(Minimap)
-							MinimapZoomOut:SetParent(Minimap)
+							map.SetParent(MinimapZoomIn, Minimap)
+							map.SetParent(MinimapZoomOut, Minimap)
 						else
-							MinimapZoomIn:SetParent(map)
-							MinimapZoomOut:SetParent(map)
+							map.SetParent(MinimapZoomIn, map)
+							map.SetParent(MinimapZoomOut, map)
 						end
 					end,
 				},
@@ -241,13 +241,13 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.raidDiffIcon = value
 						if value then
-							MiniMapInstanceDifficulty:SetParent(Minimap)
-							GuildInstanceDifficulty:SetParent(Minimap)
-							MiniMapChallengeMode:SetParent(Minimap)
+							map.SetParent(MiniMapInstanceDifficulty, Minimap)
+							map.SetParent(GuildInstanceDifficulty, Minimap)
+							map.SetParent(MiniMapChallengeMode, Minimap)
 						else
-							MiniMapInstanceDifficulty:SetParent(map)
-							GuildInstanceDifficulty:SetParent(map)
-							MiniMapChallengeMode:SetParent(map)
+							map.SetParent(MiniMapInstanceDifficulty, map)
+							map.SetParent(GuildInstanceDifficulty, map)
+							map.SetParent(MiniMapChallengeMode, map)
 						end
 					end,
 				},
@@ -256,11 +256,7 @@ local acOptions = {
 					order = 6, type = "toggle",
 					set = function(_, value)
 						map.db.profile.clock = value
-						if value then
-							TimeManagerClockButton:SetParent(Minimap)
-						else
-							TimeManagerClockButton:SetParent(map)
-						end
+						map.SetParent(TimeManagerClockButton, value and Minimap or map)
 					end,
 				},
 				zoneText = {
@@ -268,11 +264,7 @@ local acOptions = {
 					order = 7, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoneText = value
-						if value then
-							MinimapZoneTextButton:SetParent(Minimap)
-						else
-							MinimapZoneTextButton:SetParent(map)
-						end
+						map.SetParent(MinimapZoneTextButton, value and Minimap or map)
 					end,
 				},
 				missions = {
@@ -280,11 +272,7 @@ local acOptions = {
 					order = 8, type = "toggle",
 					set = function(_, value)
 						map.db.profile.missions = value
-						if value then
-							GarrisonLandingPageMinimapButton:SetParent(Minimap)
-						else
-							GarrisonLandingPageMinimapButton:SetParent(map)
-						end
+						map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
 					end,
 				},
 				fontHeaderDesc = {

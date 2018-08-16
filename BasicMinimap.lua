@@ -100,15 +100,15 @@ function frame:PLAYER_LOGIN(event)
 	self:CALENDAR_UPDATE_PENDING_INVITES()
 
 	local Minimap = Minimap
-	Minimap:SetParent(UIParent)
-	MinimapCluster:EnableMouse(false)
+	self.SetParent(Minimap, UIParent)
+	self.EnableMouse(MinimapCluster, false)
 
 	-- Backdrops, creating the border cleanly
 	-- Square Border
 	local size = self.db.profile.borderSize
 	local r, g, b, a = unpack(self.db.profile.colorBorder)
 	for i = 1, 8 do
-		backdrops[i] = Minimap:CreateTexture(nil, "BACKGROUND")
+		backdrops[i] = self.CreateTexture(Minimap, nil, "BACKGROUND")
 		backdrops[i]:SetColorTexture(r, g, b, a)
 		backdrops[i]:SetWidth(size)
 		backdrops[i]:SetHeight(size)
@@ -126,37 +126,37 @@ function frame:PLAYER_LOGIN(event)
 	backdrops[8]:SetPoint("TOPLEFT", backdrops[1], "BOTTOMLEFT") -- Left border
 	backdrops[8]:SetPoint("BOTTOMRIGHT", backdrops[3], "TOPRIGHT")
 	-- Circular Border
-	backdrops[9] = Minimap:CreateTexture(nil, "BACKGROUND")
+	backdrops[9] = self.CreateTexture(Minimap, nil, "BACKGROUND")
 	backdrops[9]:SetPoint("CENTER", Minimap, "CENTER")
 	backdrops[9]:SetSize(self.db.profile.size+size, self.db.profile.size+size)
 	backdrops[9]:SetColorTexture(r, g, b, a)
-	local circularMask = frame:CreateMaskTexture()
+	local circularMask = self:CreateMaskTexture()
 	circularMask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
 	circularMask:SetAllPoints(backdrops[9])
 	circularMask:SetParent(Minimap)
 	backdrops[9]:AddMaskTexture(circularMask)
 
-	Minimap:ClearAllPoints()
-	Minimap:SetPoint(self.db.profile.position[1], UIParent, self.db.profile.position[2], self.db.profile.position[3], self.db.profile.position[4])
-	Minimap:RegisterForDrag("LeftButton")
-	Minimap:SetClampedToScreen(true)
+	self.ClearAllPoints(Minimap)
+	self.SetPoint(Minimap, self.db.profile.position[1], UIParent, self.db.profile.position[2], self.db.profile.position[3], self.db.profile.position[4])
+	self.RegisterForDrag(Minimap, "LeftButton")
+	self.SetClampedToScreen(Minimap, true)
 
-	Minimap:SetScript("OnDragStart", function(self) if self:IsMovable() then self:StartMoving() end end)
-	Minimap:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
-		local a, _, b, c, d = self:GetPoint()
+	self.SetScript(Minimap, "OnDragStart", function(self) if frame.IsMovable(self) then frame.StartMoving(self) end end)
+	self.SetScript(Minimap, "OnDragStop", function(self)
+		frame.StopMovingOrSizing(self)
+		local a, _, b, c, d = frame.GetPoint(self)
 		frame.db.profile.position[1] = a
 		frame.db.profile.position[2] = b
 		frame.db.profile.position[3] = c
 		frame.db.profile.position[4] = d
 	end)
-	Minimap:SetMovable(not self.db.profile.lock)
+	self.SetMovable(Minimap, not self.db.profile.lock)
 
 	if self.db.profile.scale ~= 1 then -- Non-default
-		Minimap:SetScale(self.db.profile.scale)
+		self.SetScale(Minimap, self.db.profile.scale)
 	end
 	if self.db.profile.size ~= 140 then -- Non-default
-		Minimap:SetSize(self.db.profile.size, self.db.profile.size)
+		self.SetSize(Minimap, self.db.profile.size, self.db.profile.size)
 		-- I'm not sure of a better way to update the render layer to the new size
 		if Minimap:GetZoom() ~= 5 then
 			Minimap_ZoomInClick()
@@ -167,10 +167,10 @@ function frame:PLAYER_LOGIN(event)
 		end
 	end
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
-	MinimapNorthTag:SetParent(self) -- North tag (static minimap)
-	MinimapCompassTexture:SetParent(self) -- North tag & compass (when rotating minimap is enabled)
-	MinimapBorderTop:SetParent(self) -- Zone text border
-	MinimapBorder:SetParent(self) -- Minimap border
+	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
+	self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
+	self.SetParent(MinimapBorderTop, self) -- Zone text border
+	self.SetParent(MinimapBorder, self) -- Minimap border
 
 	local shape = self.db.profile.shape
 	if shape == "SQUARE" then
@@ -189,11 +189,12 @@ function frame:PLAYER_LOGIN(event)
 	Minimap:SetQuestBlobRingAlpha(0)
 
 	-- Zoom buttons
-	MinimapZoomIn:SetParent(Minimap)
-	MinimapZoomOut:SetParent(Minimap)
 	if not self.db.profile.zoomBtn then
-		MinimapZoomIn:SetParent(self)
-		MinimapZoomOut:SetParent(self)
+		self.SetParent(MinimapZoomIn, self)
+		self.SetParent(MinimapZoomOut, self)
+	else
+		self.SetParent(MinimapZoomIn, Minimap)
+		self.SetParent(MinimapZoomOut, Minimap)
 	end
 
 	-- Create font flag
@@ -208,57 +209,59 @@ function frame:PLAYER_LOGIN(event)
 	--
 
 	-- Clock
-	TimeManagerClockButton:ClearAllPoints()
-	TimeManagerClockButton:SetPoint("TOP", backdrops[7], "BOTTOM", 0, 6)
-	TimeManagerClockButton:SetWidth(100)
+	self.ClearAllPoints(TimeManagerClockButton)
+	self.SetPoint(TimeManagerClockButton, "TOP", backdrops[7], "BOTTOM", 0, 6)
+	self.SetWidth(TimeManagerClockButton, 100)
 	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
-	TimeManagerClockButton:GetRegions():Hide() -- Hide the border
+	local clockBorder = self.GetRegions(TimeManagerClockButton)
+	self.SetParent(clockBorder, self) -- Hide the border
 	if not self.db.profile.clock then
-		TimeManagerClockButton:SetParent(self)
+		self.SetParent(TimeManagerClockButton, self)
 	end
 
 	-- World map button
-	MiniMapWorldMapButton:SetParent(self)
+	self.SetParent(MiniMapWorldMapButton, self)
 
 	-- Zone text
-	MinimapZoneTextButton:SetParent(Minimap)
-	MinimapZoneTextButton:ClearAllPoints()
-	MinimapZoneTextButton:SetPoint("BOTTOM", backdrops[5], "TOP", 0, 4)
+	self.SetParent(MinimapZoneTextButton, Minimap)
+	self.ClearAllPoints(MinimapZoneTextButton)
+	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrops[5], "TOP", 0, 4)
 	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	if not self.db.profile.zoneText then
-		MinimapZoneTextButton:SetParent(self)
+		self.SetParent(MinimapZoneTextButton, self)
 	end
 
 	-- Tracking button
-	MiniMapTracking:SetParent(self)
+	self.SetParent(MiniMapTracking, self)
 
 	-- Difficulty indicators
-	MiniMapInstanceDifficulty:SetParent(Minimap)
-	GuildInstanceDifficulty:SetParent(Minimap)
-	MiniMapChallengeMode:SetParent(Minimap)
 	if not self.db.profile.raidDiffIcon then
-		MiniMapInstanceDifficulty:SetParent(self)
-		GuildInstanceDifficulty:SetParent(self)
-		MiniMapChallengeMode:SetParent(self)
+		self.SetParent(MiniMapInstanceDifficulty, self)
+		self.SetParent(GuildInstanceDifficulty, self)
+		self.SetParent(MiniMapChallengeMode, self)
+	else
+		self.SetParent(MiniMapInstanceDifficulty, Minimap)
+		self.SetParent(GuildInstanceDifficulty, Minimap)
+		self.SetParent(MiniMapChallengeMode, Minimap)
 	end
 
 	-- Missions button
-	GarrisonLandingPageMinimapButton:SetParent(Minimap)
-	GarrisonLandingPageMinimapButton:SetSize(36, 36) -- Shrink the missions button
+	self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
+	self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
 	-- We also need to hook this as Blizz likes to fiddle with its size
 	hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
 		frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
 	end)
 	if not self.db.profile.missions then
-		GarrisonLandingPageMinimapButton:SetParent(self)
+		self.SetParent(GarrisonLandingPageMinimapButton, self)
 	end
 
 	-- PvE/PvP Queue button
-	QueueStatusMinimapButton:SetParent(Minimap)
+	self.SetParent(QueueStatusMinimapButton, Minimap)
 
 	-- Update all blizz button positions
 	for position, button in next, blizzButtonPositions do
-		button:ClearAllPoints()
+		self.ClearAllPoints(button)
 		ldbi:SetButtonToPosition(button, position)
 	end
 
@@ -283,11 +286,11 @@ function frame:PLAYER_LOGIN(event)
 		end
 	end
 	zoomBtnFunc()
-	MinimapZoomIn:HookScript("OnClick", zoomBtnFunc)
-	MinimapZoomOut:HookScript("OnClick", zoomBtnFunc)
+	self.HookScript(MinimapZoomIn, "OnClick", zoomBtnFunc)
+	self.HookScript(MinimapZoomOut, "OnClick", zoomBtnFunc)
 
-	Minimap:EnableMouseWheel(true)
-	Minimap:SetScript("OnMouseWheel", function(_, d)
+	self.EnableMouseWheel(Minimap, true)
+	self.SetScript(Minimap, "OnMouseWheel", function(_, d)
 		if d > 0 then
 			MinimapZoomIn:Click()
 		elseif d < 0 then
@@ -295,7 +298,7 @@ function frame:PLAYER_LOGIN(event)
 		end
 	end)
 
-	Minimap:SetScript("OnMouseUp", function(self, btn)
+	self.SetScript(Minimap, "OnMouseUp", function(self, btn)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
@@ -313,9 +316,9 @@ frame:RegisterEvent("PLAYER_LOGIN")
 
 function frame:CALENDAR_ACTION_PENDING()
 	if C_Calendar.GetNumPendingInvites() < 1 then
-		GameTimeFrame:Hide()
+		frame.Hide(GameTimeFrame)
 	else
-		GameTimeFrame:Show()
+		frame.Show(GameTimeFrame)
 	end
 end
 frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
@@ -323,12 +326,12 @@ frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
 frame:RegisterEvent("CALENDAR_ACTION_PENDING")
 
 function frame:PET_BATTLE_OPENING_START()
-	Minimap:Hide()
+	frame.Hide(Minimap)
 end
 frame:RegisterEvent("PET_BATTLE_OPENING_START")
 
 function frame:PET_BATTLE_CLOSE()
-	Minimap:Show()
+	frame.Show(Minimap)
 end
 frame:RegisterEvent("PET_BATTLE_CLOSE")
 
