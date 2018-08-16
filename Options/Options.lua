@@ -52,9 +52,7 @@ local acOptions = {
 					get = function() return unpack(map.db.profile.colorBorder) end,
 					set = function(_, r, g, b, a)
 						map.db.profile.colorBorder = {r, g, b, a}
-						for i = 1, 9 do
-							map.backdrops[i]:SetColorTexture(r, g, b, a)
-						end
+						map.backdrop:SetColorTexture(r, g, b, a)
 					end,
 				},
 				classcolor = {
@@ -65,21 +63,16 @@ local acOptions = {
 						local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 						local a = map.db.profile.colorBorder[4]
 						map.db.profile.colorBorder = {color.r, color.g, color.b, a}
-						for i = 1, 9 do
-							map.backdrops[i]:SetColorTexture(color.r, color.g, color.b, a)
-						end
+						map.backdrop:SetColorTexture(color.r, color.g, color.b, a)
 					end,
 				},
 				borderSize = {
 					name = L.BORDERSIZE,
 					order = 3, type = "range", width = "full",
-					min = 1, max = 10, step = 1,
+					min = 1, max = 30, step = 1,
 					set = function(_, value)
 						map.db.profile.borderSize = value
-						for i = 1, 4 do
-							map.backdrops[i]:SetSize(value, value)
-						end
-						map.backdrops[9]:SetSize(map.db.profile.size+value, map.db.profile.size+value)
+						map.backdrop:SetSize(map.db.profile.size+value, map.db.profile.size+value)
 					end,
 				},
 				miscspacer = {
@@ -108,17 +101,11 @@ local acOptions = {
 						map.db.profile.shape = value
 						if value == "SQUARE" then
 							Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
-							for i = 1, 8 do
-								map.backdrops[i]:Show()
-							end
-							map.backdrops[9]:Hide()
+							map.mask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
 							function GetMinimapShape() return "SQUARE" end
 						else
 							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
-							for i = 1, 8 do
-								map.backdrops[i]:Hide()
-							end
-							map.backdrops[9]:Show()
+							map.mask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
 							function GetMinimapShape() return "ROUND" end
 						end
 						local tbl = ldbi:GetButtonList()
@@ -151,7 +138,7 @@ local acOptions = {
 							Minimap_ZoomOutClick()
 							Minimap_ZoomInClick()
 						end
-						map.backdrops[9]:SetSize(value+map.db.profile.borderSize, value+map.db.profile.borderSize)
+						map.backdrop:SetSize(value+map.db.profile.borderSize, value+map.db.profile.borderSize)
 						local tbl = ldbi:GetButtonList()
 						for i = 1, #tbl do
 							ldbi:Refresh(tbl[i])

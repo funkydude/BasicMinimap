@@ -3,7 +3,6 @@ local name = ...
 local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 
-local backdrops = {}
 local blizzButtonPositions = {
 	[328] = MinimapZoomIn,
 	[302] = MinimapZoomOut,
@@ -32,7 +31,6 @@ frame:Hide()
 frame:SetScript("OnEvent", function(f, event, ...)
 	f[event](f, event, ...)
 end)
-frame.backdrops = backdrops
 frame.blizzButtonPositions = blizzButtonPositions
 
 function frame:HideButtons(_, _, name)
@@ -103,38 +101,17 @@ function frame:PLAYER_LOGIN(event)
 	self.SetParent(Minimap, UIParent)
 	self.EnableMouse(MinimapCluster, false)
 
-	-- Backdrops, creating the border cleanly
-	-- Square Border
-	local size = self.db.profile.borderSize
-	local r, g, b, a = unpack(self.db.profile.colorBorder)
-	for i = 1, 8 do
-		backdrops[i] = self.CreateTexture(Minimap, nil, "BACKGROUND")
-		backdrops[i]:SetColorTexture(r, g, b, a)
-		backdrops[i]:SetWidth(size)
-		backdrops[i]:SetHeight(size)
-	end
-	backdrops[1]:SetPoint("BOTTOMRIGHT", Minimap, "TOPLEFT") -- Top-left corner
-	backdrops[2]:SetPoint("BOTTOMLEFT", Minimap, "TOPRIGHT") -- Top-right corner
-	backdrops[3]:SetPoint("TOPRIGHT", Minimap, "BOTTOMLEFT") -- Bottom-left corner
-	backdrops[4]:SetPoint("TOPLEFT", Minimap, "BOTTOMRIGHT") -- Bottom-right corner
-	backdrops[5]:SetPoint("TOPLEFT", backdrops[1], "TOPRIGHT") -- Top border
-	backdrops[5]:SetPoint("BOTTOMRIGHT", backdrops[2], "BOTTOMLEFT")
-	backdrops[6]:SetPoint("TOPLEFT", backdrops[2], "BOTTOMLEFT") -- Right border
-	backdrops[6]:SetPoint("BOTTOMRIGHT", backdrops[4], "TOPRIGHT")
-	backdrops[7]:SetPoint("TOPLEFT", backdrops[3], "TOPRIGHT") -- Bottom border
-	backdrops[7]:SetPoint("BOTTOMRIGHT", backdrops[4], "BOTTOMLEFT")
-	backdrops[8]:SetPoint("TOPLEFT", backdrops[1], "BOTTOMLEFT") -- Left border
-	backdrops[8]:SetPoint("BOTTOMRIGHT", backdrops[3], "TOPRIGHT")
-	-- Circular Border
-	backdrops[9] = self.CreateTexture(Minimap, nil, "BACKGROUND")
-	backdrops[9]:SetPoint("CENTER", Minimap, "CENTER")
-	backdrops[9]:SetSize(self.db.profile.size+size, self.db.profile.size+size)
-	backdrops[9]:SetColorTexture(r, g, b, a)
-	local circularMask = self:CreateMaskTexture()
-	circularMask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
-	circularMask:SetAllPoints(backdrops[9])
-	circularMask:SetParent(Minimap)
-	backdrops[9]:AddMaskTexture(circularMask)
+	-- Backdrop, creating the border cleanly
+	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
+	backdrop:SetPoint("CENTER", Minimap, "CENTER")
+	backdrop:SetSize(self.db.profile.size + self.db.profile.borderSize, self.db.profile.size + self.db.profile.borderSize)
+	backdrop:SetColorTexture(unpack(self.db.profile.colorBorder))
+	local mask = self:CreateMaskTexture()
+	mask:SetAllPoints(backdrop)
+	mask:SetParent(Minimap)
+	backdrop:AddMaskTexture(mask)
+	frame.backdrop = backdrop
+	frame.mask = mask
 
 	self.ClearAllPoints(Minimap)
 	self.SetPoint(Minimap, self.db.profile.position[1], UIParent, self.db.profile.position[2], self.db.profile.position[3], self.db.profile.position[4])
@@ -175,11 +152,10 @@ function frame:PLAYER_LOGIN(event)
 	local shape = self.db.profile.shape
 	if shape == "SQUARE" then
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
-		backdrops[9]:Hide()
+		mask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
 	else
-		for i = 1, 8 do
-			backdrops[i]:Hide()
-		end
+		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
+		mask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
 	end
 
 	-- Removes the circular "waffle-like" texture that shows when using a non-circular minimap in the blue quest objective area.
@@ -210,7 +186,7 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Clock
 	self.ClearAllPoints(TimeManagerClockButton)
-	self.SetPoint(TimeManagerClockButton, "TOP", backdrops[7], "BOTTOM", 0, 6)
+	self.SetPoint(TimeManagerClockButton, "TOP", backdrop, "BOTTOM", 0, 6)
 	self.SetWidth(TimeManagerClockButton, 100)
 	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	local clockBorder = self.GetRegions(TimeManagerClockButton)
@@ -225,7 +201,7 @@ function frame:PLAYER_LOGIN(event)
 	-- Zone text
 	self.SetParent(MinimapZoneTextButton, Minimap)
 	self.ClearAllPoints(MinimapZoneTextButton)
-	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrops[5], "TOP", 0, 4)
+	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", 0, 2)
 	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	if not self.db.profile.zoneText then
 		self.SetParent(MinimapZoneTextButton, self)
