@@ -37,6 +37,18 @@ function frame:HideButtons(_, _, name)
 	ldbi:ShowOnEnter(name, true)
 end
 
+function frame:ClassColor()
+	local _, class = UnitClass("player")
+	color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+	alpha = 1
+	return {color.r, color.g, color.b, alpha}
+end
+
+function frame:UpdateBorder()
+	color = self.db.profile.colorBorder == nil and self:ClassColor() or self.db.profile.colorBorder
+	self.backdrop:SetColorTexture(unpack(color))
+end
+
 -- Init
 function frame:ADDON_LOADED(event, addon)
 	if addon == "BasicMinimap" then
@@ -63,7 +75,7 @@ function frame:ADDON_LOADED(event, addon)
 				outline = "OUTLINE",
 				monochrome = false,
 				font = media:GetDefault("font"),
-				colorBorder = {0,0.6,0,1},
+				colorBorder = nil,
 				calendarBtn = "RightButton",
 				trackingBtn = "MiddleButton",
 				missionsBtn = "None",
@@ -103,14 +115,14 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Backdrop, creating the border cleanly
 	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
+	frame.backdrop = backdrop
 	backdrop:SetPoint("CENTER", Minimap, "CENTER")
 	backdrop:SetSize(self.db.profile.size + self.db.profile.borderSize, self.db.profile.size + self.db.profile.borderSize)
-	backdrop:SetColorTexture(unpack(self.db.profile.colorBorder))
+	self:UpdateBorder()
 	local mask = self:CreateMaskTexture()
 	mask:SetAllPoints(backdrop)
 	mask:SetParent(Minimap)
 	backdrop:AddMaskTexture(mask)
-	frame.backdrop = backdrop
 	frame.mask = mask
 
 	self.ClearAllPoints(Minimap)
