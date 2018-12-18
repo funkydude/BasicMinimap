@@ -294,7 +294,7 @@ local acOptions = {
 					step = 1,
 					set = function(_, value)
 						map.db.profile.fontSize = value
-						MinimapZoneText:SetHeight(map.db.profile.fontSize)
+						map.SetHeight(MinimapZoneText, map.db.profile.fontSize)
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
 						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
 					end,
