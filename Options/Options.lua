@@ -130,6 +130,7 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.size = value
 						map.SetSize(Minimap, value, value)
+						map.SetWidth(MinimapZoneText, value)
 						-- I'm not sure of a better way to update the render layer to the new size
 						if Minimap:GetZoom() ~= 5 then
 							Minimap_ZoomInClick()
