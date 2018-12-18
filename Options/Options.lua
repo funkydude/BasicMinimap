@@ -130,6 +130,7 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.size = value
 						map.SetSize(Minimap, value, value)
+						map.SetWidth(MinimapZoneText, value)
 						-- I'm not sure of a better way to update the render layer to the new size
 						if Minimap:GetZoom() ~= 5 then
 							Minimap_ZoomInClick()
@@ -294,6 +295,7 @@ local acOptions = {
 					step = 1,
 					set = function(_, value)
 						map.db.profile.fontSize = value
+						map.SetHeight(MinimapZoneText, map.db.profile.fontSize)
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
 						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
 					end,
