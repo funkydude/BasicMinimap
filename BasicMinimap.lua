@@ -202,9 +202,10 @@ function frame:PLAYER_LOGIN(event)
 	self.SetParent(MinimapZoneTextButton, Minimap)
 	self.ClearAllPoints(MinimapZoneTextButton)
 	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", 0, 2)
-	self.SetPoint(MinimapZoneText, "BOTTOM", MinimapZoneTextButton, "BOTTOM")
-	MinimapZoneText:SetWidth(self.db.profile.size)
-	MinimapZoneText:SetHeight(self.db.profile.fontSize)
+	self.ClearAllPoints(MinimapZoneText)
+	self.SetPoint(MinimapZoneText, "BOTTOM", MinimapZoneTextButton, "BOTTOM") -- Prevent text overlapping the border
+	self.SetWidth(MinimapZoneText, self.db.profile.size) -- Prevent text cropping
+	self.SetHeight(MinimapZoneText, self.db.profile.fontSize) -- Prevent text cropping
 	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	if not self.db.profile.zoneText then
 		self.SetParent(MinimapZoneTextButton, self)
