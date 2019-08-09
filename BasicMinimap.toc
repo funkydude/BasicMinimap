@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 11302
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
@@ -13,7 +13,7 @@
 ## Notes-esES: Minimapa configurable con opciones básicas.
 ## Notes-esMX: Minimapa configurable con opciones básicas.
 ## Author: Funkydude
-## SavedVariables: BasicMinimapSV
+## SavedVariables: BasicMinimapClassicSV, BasicMinimapSV
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0
 
 ## X-Embeds: Ace3, LibSharedMedia-3.0, LibDDI-1.0
@@ -21,7 +21,7 @@
 ## X-Website: https://github.com/funkydude/BasicMinimap
 ## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
 ## X-Curse-Project-ID: 13506
-## X-WoWI-ID: 9101
+# X-WoWI-ID: 9101
 
 embeds.xml
 modules.xml

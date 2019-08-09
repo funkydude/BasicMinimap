@@ -223,22 +223,6 @@ local acOptions = {
 						end
 					end,
 				},
-				raidDiffIcon = {
-					name = L.difficultyIndicator,
-					order = 5, type = "toggle",
-					set = function(_, value)
-						map.db.profile.raidDiffIcon = value
-						if value then
-							map.SetParent(MiniMapInstanceDifficulty, Minimap)
-							map.SetParent(GuildInstanceDifficulty, Minimap)
-							map.SetParent(MiniMapChallengeMode, Minimap)
-						else
-							map.SetParent(MiniMapInstanceDifficulty, map)
-							map.SetParent(GuildInstanceDifficulty, map)
-							map.SetParent(MiniMapChallengeMode, map)
-						end
-					end,
-				},
 				clock = {
 					name = L.clock,
 					order = 6, type = "toggle",
@@ -253,14 +237,6 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.zoneText = value
 						map.SetParent(MinimapZoneTextButton, value and Minimap or map)
-					end,
-				},
-				missions = {
-					name = L.missions,
-					order = 8, type = "toggle",
-					set = function(_, value)
-						map.db.profile.missions = value
-						map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
 					end,
 				},
 				fontHeaderDesc = {
@@ -334,21 +310,6 @@ local acOptions = {
 				clickHeaderDesc = {
 					name = "\n".. L.minimapClicks,
 					order = 1, type = "description",
-				},
-				calendarBtn = {
-					name = L.openCalendar,
-					order = 2, type = "select",
-					values = buttonValues,
-				},
-				trackingBtn = {
-					name = L.openTracking,
-					order = 3, type = "select",
-					values = buttonValues,
-				},
-				missionsBtn = {
-					name = L.openMissions,
-					order = 4, type = "select",
-					values = buttonValues,
 				},
 				mapBtn = {
 					name = L.openMap,

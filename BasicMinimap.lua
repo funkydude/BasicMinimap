@@ -6,11 +6,6 @@ local ldbi = LibStub("LibDBIcon-1.0")
 local blizzButtonPositions = {
 	[328] = MinimapZoomIn,
 	[302] = MinimapZoomOut,
-	[190] = GarrisonLandingPageMinimapButton,
-	[230] = QueueStatusMinimapButton,
-	[140] = MiniMapInstanceDifficulty,
-	[141] = GuildInstanceDifficulty,
-	[142] = MiniMapChallengeMode,
 	[44] = GameTimeFrame,
 	[20] = MiniMapMailFrame,
 }
@@ -64,13 +59,10 @@ function frame:ADDON_LOADED(event, addon)
 				monochrome = false,
 				font = media:GetDefault("font"),
 				colorBorder = {0,0.6,0,1},
-				calendarBtn = "RightButton",
-				trackingBtn = "MiddleButton",
-				missionsBtn = "None",
-				mapBtn = "None",
+				mapBtn = "RightButton",
 			}
 		}
-		self.db = LibStub("AceDB-3.0"):New("BasicMinimapSV", defaults, true)
+		self.db = LibStub("AceDB-3.0"):New("BasicMinimapClassicSV", defaults, true)
 
 		-- Return minimap shape for other addons
 		if self.db.profile.shape ~= "ROUND" then
@@ -94,8 +86,6 @@ frame:RegisterEvent("ADDON_LOADED")
 function frame:PLAYER_LOGIN(event)
 	self:UnregisterEvent(event)
 	self[event] = nil
-
-	self:CALENDAR_UPDATE_PENDING_INVITES()
 
 	local Minimap = Minimap
 	self.SetParent(Minimap, UIParent)
@@ -158,12 +148,6 @@ function frame:PLAYER_LOGIN(event)
 		mask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
 	end
 
-	-- Removes the circular "waffle-like" texture that shows when using a non-circular minimap in the blue quest objective area.
-	Minimap:SetArchBlobRingScalar(0)
-	Minimap:SetArchBlobRingAlpha(0)
-	Minimap:SetQuestBlobRingScalar(0)
-	Minimap:SetQuestBlobRingAlpha(0)
-
 	-- Zoom buttons
 	if not self.db.profile.zoomBtn then
 		self.SetParent(MinimapZoomIn, self)
@@ -195,8 +179,9 @@ function frame:PLAYER_LOGIN(event)
 		self.SetParent(TimeManagerClockButton, self)
 	end
 
-	-- World map button
-	self.SetParent(MiniMapWorldMapButton, self)
+	self.SetParent(MiniMapWorldMapButton, self) -- World map button
+	self.SetParent(GameTimeFrame, self) -- Day/Night button
+	self.SetParent(MinimapToggleButton, self) -- Minimap "X" to close button
 
 	-- Zone text
 	self.SetParent(MinimapZoneTextButton, Minimap)
@@ -210,34 +195,6 @@ function frame:PLAYER_LOGIN(event)
 	if not self.db.profile.zoneText then
 		self.SetParent(MinimapZoneTextButton, self)
 	end
-
-	-- Tracking button
-	self.SetParent(MiniMapTracking, self)
-
-	-- Difficulty indicators
-	if not self.db.profile.raidDiffIcon then
-		self.SetParent(MiniMapInstanceDifficulty, self)
-		self.SetParent(GuildInstanceDifficulty, self)
-		self.SetParent(MiniMapChallengeMode, self)
-	else
-		self.SetParent(MiniMapInstanceDifficulty, Minimap)
-		self.SetParent(GuildInstanceDifficulty, Minimap)
-		self.SetParent(MiniMapChallengeMode, Minimap)
-	end
-
-	-- Missions button
-	self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
-	self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
-	-- We also need to hook this as Blizz likes to fiddle with its size
-	hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
-		frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
-	end)
-	if not self.db.profile.missions then
-		self.SetParent(GarrisonLandingPageMinimapButton, self)
-	end
-
-	-- PvE/PvP Queue button
-	self.SetParent(QueueStatusMinimapButton, Minimap)
 
 	-- Update all blizz button positions
 	for position, button in next, blizzButtonPositions do
@@ -279,13 +236,7 @@ function frame:PLAYER_LOGIN(event)
 	end)
 
 	self.SetScript(Minimap, "OnMouseUp", function(self, btn)
-		if btn == frame.db.profile.calendarBtn then
-			GameTimeFrame:Click()
-		elseif btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self)
-		elseif btn == frame.db.profile.missionsBtn then
-			GarrisonLandingPageMinimapButton:Click()
-		elseif btn == frame.db.profile.mapBtn then
+		if btn == frame.db.profile.mapBtn then
 			MiniMapWorldMapButton:Click()
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(self)
@@ -293,25 +244,3 @@ function frame:PLAYER_LOGIN(event)
 	end)
 end
 frame:RegisterEvent("PLAYER_LOGIN")
-
-function frame:CALENDAR_ACTION_PENDING()
-	if C_Calendar.GetNumPendingInvites() < 1 then
-		frame.Hide(GameTimeFrame)
-	else
-		frame.Show(GameTimeFrame)
-	end
-end
-frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
-frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-frame:RegisterEvent("CALENDAR_ACTION_PENDING")
-
-function frame:PET_BATTLE_OPENING_START()
-	frame.Hide(Minimap)
-end
-frame:RegisterEvent("PET_BATTLE_OPENING_START")
-
-function frame:PET_BATTLE_CLOSE()
-	frame.Show(Minimap)
-end
-frame:RegisterEvent("PET_BATTLE_CLOSE")
-
