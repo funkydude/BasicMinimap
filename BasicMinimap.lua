@@ -1,4 +1,9 @@
 
+if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+	print("|cFF33FF99BasicMinimap|r: You're trying to run the Classic version of BasicMinimap on a live server.")
+	return
+end
+
 local name = ...
 local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
