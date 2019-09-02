@@ -186,7 +186,7 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Clock
 	self.ClearAllPoints(TimeManagerClockButton)
-	self.SetPoint(TimeManagerClockButton, "TOP", backdrop, "BOTTOM", 0, 6)
+	self.SetPoint(TimeManagerClockButton, "TOP", backdrop, "BOTTOM", 0, 4)
 	self.SetWidth(TimeManagerClockButton, 100)
 	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	local clockBorder = self.GetRegions(TimeManagerClockButton)
@@ -201,7 +201,7 @@ function frame:PLAYER_LOGIN(event)
 	-- Zone text
 	self.SetParent(MinimapZoneTextButton, Minimap)
 	self.ClearAllPoints(MinimapZoneTextButton)
-	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", 0, 2)
+	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", 0, 3)
 	self.ClearAllPoints(MinimapZoneText)
 	self.SetPoint(MinimapZoneText, "BOTTOM", MinimapZoneTextButton, "BOTTOM") -- Prevent text overlapping the border
 	self.SetWidth(MinimapZoneText, self.db.profile.size) -- Prevent text cropping
