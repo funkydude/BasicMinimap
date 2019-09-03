@@ -101,10 +101,12 @@ function frame:PLAYER_LOGIN(event)
 	self.SetParent(Minimap, UIParent)
 	self.EnableMouse(MinimapCluster, false)
 
+	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
+
 	-- Backdrop, creating the border cleanly
 	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
 	backdrop:SetPoint("CENTER", Minimap, "CENTER")
-	backdrop:SetSize(self.db.profile.size + self.db.profile.borderSize, self.db.profile.size + self.db.profile.borderSize)
+	backdrop:SetSize(fullMinimapSize, fullMinimapSize)
 	backdrop:SetColorTexture(unpack(self.db.profile.colorBorder))
 	local mask = self:CreateMaskTexture()
 	mask:SetAllPoints(backdrop)
@@ -186,9 +188,12 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Clock
 	self.ClearAllPoints(TimeManagerClockButton)
-	self.SetPoint(TimeManagerClockButton, "TOP", backdrop, "BOTTOM", 0, 4)
-	self.SetWidth(TimeManagerClockButton, 100)
+	self.SetPoint(TimeManagerClockButton, "TOPLEFT", backdrop, "BOTTOMLEFT", 0, 4)
+	self.SetWidth(TimeManagerClockButton, fullMinimapSize)
 	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
+	TimeManagerClockTicker:SetJustifyH("LEFT")
+	self.ClearAllPoints(TimeManagerClockTicker)
+	self.SetPoint(TimeManagerClockTicker, "TOPLEFT", backdrop, "BOTTOMLEFT", 0, -4)
 	local clockBorder = self.GetRegions(TimeManagerClockButton)
 	self.SetParent(clockBorder, self) -- Hide the border
 	if not self.db.profile.clock then
@@ -203,13 +208,43 @@ function frame:PLAYER_LOGIN(event)
 	self.ClearAllPoints(MinimapZoneTextButton)
 	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", 0, 3)
 	self.ClearAllPoints(MinimapZoneText)
-	self.SetPoint(MinimapZoneText, "BOTTOM", MinimapZoneTextButton, "BOTTOM") -- Prevent text overlapping the border
-	self.SetWidth(MinimapZoneText, self.db.profile.size) -- Prevent text cropping
+	self.SetPoint(MinimapZoneText, "BOTTOM", backdrop, "TOP", 0, 3) -- Prevent text overlapping the border
+	self.SetWidth(MinimapZoneText, fullMinimapSize) -- Prevent text cropping
 	self.SetHeight(MinimapZoneText, self.db.profile.fontSize) -- Prevent text cropping
 	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
 	if not self.db.profile.zoneText then
 		self.SetParent(MinimapZoneTextButton, self)
 	end
+
+	-- Coords
+	local coords = self:CreateFontString()
+	coords:SetParent(Minimap)
+	coords:ClearAllPoints()
+	coords:SetPoint("TOPRIGHT", backdrop, "BOTTOMRIGHT", 0, -4)
+	coords:SetWidth(fullMinimapSize) -- Prevent text cropping
+	coords:SetHeight(self.db.profile.fontSize) -- Prevent text cropping
+	coords:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
+	coords:SetJustifyH("RIGHT")
+	do
+		local GetPlayerMapPosition = C_Map.GetPlayerMapPosition
+		local GetBestMapForUnit = C_Map.GetBestMapForUnit
+		local CTimerAfter = C_Timer.After
+		local function updateCoords()
+			local uiMapID = GetBestMapForUnit"player"
+			if uiMapID then
+				local tbl = GetPlayerMapPosition(uiMapID, "player")
+				if tbl then
+					CTimerAfter(1, updateCoords)
+					coords:SetFormattedText("%d,%d", tbl.x*100, tbl.y*100)
+				else
+					CTimerAfter(5, updateCoords)
+					coords:SetText("0,0")
+				end
+			end
+		end
+		updateCoords()
+	end
+	self.coords = coords
 
 	-- Tracking button
 	self.SetParent(MiniMapTracking, self)

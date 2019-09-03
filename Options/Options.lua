@@ -284,6 +284,7 @@ local acOptions = {
 						map.db.profile.font = font
 						MinimapZoneText:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
 						TimeManagerClockTicker:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
+						map.coords:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
 					end,
 				},
 				fontSize = {
@@ -298,6 +299,9 @@ local acOptions = {
 						map.SetHeight(MinimapZoneText, map.db.profile.fontSize)
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
 						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
+						map.SetHeight(TimeManagerClockTicker, map.db.profile.fontSize)
+						map.coords:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
+						map.SetHeight(map.coords, map.db.profile.fontSize)
 					end,
 				},
 				monochrome = {
@@ -308,6 +312,7 @@ local acOptions = {
 						map.db.profile.monochrome = value
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
 						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
+						map.coords:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
 					end,
 				},
 				outline = {
@@ -323,6 +328,7 @@ local acOptions = {
 						map.db.profile.outline = value
 						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
 						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
+						map.coords:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
 					end,
 				},
 			},
