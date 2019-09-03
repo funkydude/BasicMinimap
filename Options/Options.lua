@@ -331,6 +331,28 @@ local acOptions = {
 						map.coords:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
 					end,
 				},
+				coordDesc = {
+					name = "\n\n"..L.coordinates..":",
+					order = 14, type = "description",
+				},
+				coordPrecision = {
+					name = L.coordPrecision,
+					desc = L.coordPrecisionDesc,
+					order = 15, type = "select",
+					values = {["%d,%d"] = L.normal, ["%.1f, %.1f"] = L.high, ["%.2f, %.2f"] = L.veryHigh},
+					set = function(_, value)
+						map.db.profile.coordPrecision = value
+					end,
+				},
+				coordTime = {
+					name = L.coordUpdates,
+					desc = L.coordUpdatesDesc,
+					order = 16, type = "select",
+					values = {[1] = L.normal, [0.5] = L.high, [0.1] = L.veryHigh},
+					set = function(_, value)
+						map.db.profile.coordTime = value
+					end,
+				},
 			},
 		},
 		clicks = {

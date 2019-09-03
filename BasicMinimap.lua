@@ -68,6 +68,8 @@ function frame:ADDON_LOADED(event, addon)
 				trackingBtn = "MiddleButton",
 				missionsBtn = "None",
 				mapBtn = "None",
+				coordPrecision = "%d,%d",
+				coordTime = 1,
 			}
 		}
 		self.db = LibStub("AceDB-3.0"):New("BasicMinimapSV", defaults, true)
@@ -234,8 +236,9 @@ function frame:PLAYER_LOGIN(event)
 			if uiMapID then
 				local tbl = GetPlayerMapPosition(uiMapID, "player")
 				if tbl then
-					CTimerAfter(1, updateCoords)
-					coords:SetFormattedText("%d,%d", tbl.x*100, tbl.y*100)
+					local db = frame.db.profile
+					CTimerAfter(db.coordTime, updateCoords)
+					coords:SetFormattedText(db.coordPrecision, tbl.x*100, tbl.y*100)
 				else
 					CTimerAfter(5, updateCoords)
 					coords:SetText("0,0")
