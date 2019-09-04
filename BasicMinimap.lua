@@ -243,6 +243,9 @@ function frame:PLAYER_LOGIN(event)
 					CTimerAfter(5, updateCoords)
 					coords:SetText("0,0")
 				end
+			else
+				CTimerAfter(5, updateCoords)
+				coords:SetText("0,0")
 			end
 		end
 		updateCoords()
