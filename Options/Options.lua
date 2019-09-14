@@ -20,16 +20,30 @@ local buttonValues = {RightButton = L.rightMouseButton, MiddleButton = L.middleM
 	None = L.none
 }
 
-local function updateFlags()
+local function UpdateFont(frame, db)
 	local flags = nil
-	if map.db.profile.monochrome and map.db.profile.outline ~= "NONE" then
-		flags = "MONOCHROME," .. map.db.profile.outline
-	elseif map.db.profile.monochrome then
+	if db.monochrome and db.outline ~= "NONE" then
+		flags = "MONOCHROME," .. db.outline
+	elseif db.monochrome then
 		flags = "MONOCHROME"
-	elseif map.db.profile.outline ~= "NONE" then
-		flags = map.db.profile.outline
+	elseif db.outline ~= "NONE" then
+		flags = db.outline
 	end
-	return flags
+	frame:SetFont(media:Fetch("font", db.font), db.fontSize, flags)
+end
+
+local function UpdateCoords()
+	local uiMapID = C_Map.GetBestMapForUnit"player"
+	if uiMapID then
+		local tbl = C_Map.GetPlayerMapPosition(uiMapID, "player")
+		if tbl then
+			map.coords:SetFormattedText(map.db.profile.coordPrecision, tbl.x*100, tbl.y*100)
+		else
+			map.coords:SetText("0,0")
+		end
+	else
+		map.coords:SetText("0,0")
+	end
 end
 
 local acOptions = {
@@ -162,6 +176,15 @@ local acOptions = {
 						map.db.profile.position[3], map.db.profile.position[4] = map.db.profile.position[3]*s, map.db.profile.position[4]*s
 						map.SetPoint(Minimap, map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
 						map.db.profile.scale = value
+						-- Fix Size (Clock)
+						TimeManagerClockTicker:SetText("99:99")
+						local width = TimeManagerClockTicker:GetUnboundedStringWidth()
+						map.SetWidth(TimeManagerClockButton, width + 5)
+						-- Fix size (Coords)
+						map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
+						local width = map.coords:GetUnboundedStringWidth()
+						map.SetWidth(map.coords, width + 5)
+						UpdateCoords()
 					end,
 				},
 			},
@@ -206,7 +229,7 @@ local acOptions = {
 					end,
 				},
 				buttonShowDesc = {
-					name = "\n\n".. L.buttonHeader,
+					name = "\n\n\n".. L.buttonHeader,
 					order = 3, type = "description",
 				},
 				zoomBtn = {
@@ -263,91 +286,26 @@ local acOptions = {
 						map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
 					end,
 				},
-				fontHeaderDesc = {
-					name = "\n\n".. L.fontHeader,
-					order = 9, type = "description",
-				},
-				font = {
-					type = "select",
-					name = L.font,
-					order = 10,
-					values = media:List("font"),
-					itemControl = "DDI-Font",
-					get = function()
-						for i, v in next, media:List("font") do
-							if v == map.db.profile.font then return i end
-						end
-					end,
-					set = function(_, value)
-						local list = media:List("font")
-						local font = list[value]
-						map.db.profile.font = font
-						MinimapZoneText:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
-						TimeManagerClockTicker:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
-						map.coords:SetFont(media:Fetch("font", font), map.db.profile.fontSize, updateFlags())
-					end,
-				},
-				fontSize = {
-					type = "range",
-					name = L.fontSize,
-					order = 11,
-					max = 200,
-					min = 1,
-					step = 1,
-					set = function(_, value)
-						map.db.profile.fontSize = value
-						map.SetHeight(MinimapZoneText, map.db.profile.fontSize)
-						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
-						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
-						map.SetHeight(TimeManagerClockTicker, map.db.profile.fontSize)
-						map.coords:SetFont(media:Fetch("font", map.db.profile.font), value, updateFlags())
-						map.SetHeight(map.coords, map.db.profile.fontSize)
-					end,
-				},
-				monochrome = {
-					type = "toggle",
-					name = L.monochrome,
-					order = 12,
-					set = function(_, value)
-						map.db.profile.monochrome = value
-						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
-						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
-						map.coords:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
-					end,
-				},
-				outline = {
-					type = "select",
-					name = L.outline,
-					order = 13,
-					values = {
-						NONE = L.none,
-						OUTLINE = L.thin,
-						THICKOUTLINE = L.thick,
-					},
-					set = function(_, value)
-						map.db.profile.outline = value
-						MinimapZoneText:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
-						TimeManagerClockTicker:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
-						map.coords:SetFont(media:Fetch("font", map.db.profile.font), map.db.profile.fontSize, updateFlags())
-					end,
-				},
 				coordDesc = {
-					name = "\n\n"..L.coordinates..":",
-					order = 14, type = "description",
+					name = "\n\n\n".. L.coordinates..":",
+					order = 9, type = "description",
 				},
 				coordPrecision = {
 					name = L.coordPrecision,
 					desc = L.coordPrecisionDesc,
-					order = 15, type = "select",
+					order = 10, type = "select",
 					values = {["%d,%d"] = L.normal, ["%.1f, %.1f"] = L.high, ["%.2f, %.2f"] = L.veryHigh},
 					set = function(_, value)
 						map.db.profile.coordPrecision = value
+						map.coords:SetFormattedText(value, 100.77, 100.77)
+						local width = map.coords:GetUnboundedStringWidth()
+						map.SetWidth(map.coords, width + 5)
 					end,
 				},
 				coordTime = {
 					name = L.coordUpdates,
 					desc = L.coordUpdatesDesc,
-					order = 16, type = "select",
+					order = 11, type = "select",
 					values = {[1] = L.normal, [0.5] = L.high, [0.1] = L.veryHigh},
 					set = function(_, value)
 						map.db.profile.coordTime = value
@@ -355,9 +313,411 @@ local acOptions = {
 				},
 			},
 		},
+		text = {
+			name = L.text,
+			order = 3, type = "group", childGroups = "tab",
+			args = {
+				zonetext = {
+					name = L.ZONETEXT,
+					order = 1, type = "group",
+					get = function(info)
+						return map.db.profile.zoneTextConfig[info[#info]]
+					end,
+					args = {
+						x = {
+							type = "range",
+							name = L.horizontalX,
+							order = 1,
+							max = 2000,
+							softMax = 250,
+							min = -2000,
+							softMin = -250,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.x = value
+								map.ClearAllPoints(MinimapZoneTextButton)
+								map.SetPoint(MinimapZoneTextButton, "BOTTOM", map.backdrop, "TOP", value, map.db.profile.zoneTextConfig.y)
+							end,
+						},
+						y = {
+							type = "range",
+							name = L.verticalY,
+							order = 2,
+							max = 2000,
+							softMax = 250,
+							min = -2000,
+							softMin = -250,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.y = value
+								map.ClearAllPoints(MinimapZoneTextButton)
+								map.SetPoint(MinimapZoneTextButton, "BOTTOM", map.backdrop, "TOP", map.db.profile.zoneTextConfig.x, value)
+							end,
+						},
+						align = {
+							type = "select",
+							name = L.align,
+							order = 3,
+							values = {
+								LEFT = L.alignLeft,
+								CENTER = L.alignCenter,
+								RIGHT = L.alignRight,
+							},
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.align = value
+								MinimapZoneText:SetJustifyH(value)
+							end,
+						},
+						reset = {
+							name = L.reset,
+							order = 4, type = "execute",
+							func = function()
+								map.db.profile.zoneTextConfig.x = 0
+								map.db.profile.zoneTextConfig.y = 3
+								map.db.profile.zoneTextConfig.align = "CENTER"
+								MinimapZoneText:SetJustifyH(map.db.profile.zoneTextConfig.align)
+								map.ClearAllPoints(MinimapZoneTextButton)
+								map.SetPoint(MinimapZoneTextButton, "BOTTOM", map.backdrop, "TOP", map.db.profile.zoneTextConfig.x, map.db.profile.zoneTextConfig.y)
+							end,
+						},
+						spacer = {
+							name = "\n\n",
+							order = 5, type = "description", width = "full", 
+						},
+						font = {
+							type = "select",
+							name = L.font,
+							order = 6,
+							values = media:List("font"),
+							itemControl = "DDI-Font",
+							get = function()
+								for i, v in next, media:List("font") do
+									if v == map.db.profile.zoneTextConfig.font then return i end
+								end
+							end,
+							set = function(_, value)
+								local list = media:List("font")
+								local font = list[value]
+								map.db.profile.zoneTextConfig.font = font
+								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+							end,
+						},
+						fontSize = {
+							type = "range",
+							name = L.fontSize,
+							order = 7,
+							max = 200,
+							min = 1,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.fontSize = value
+								map.SetHeight(MinimapZoneTextButton, value)
+								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+							end,
+						},
+						monochrome = {
+							type = "toggle",
+							name = L.monochrome,
+							order = 8,
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.monochrome = value
+								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+							end,
+						},
+						outline = {
+							type = "select",
+							name = L.outline,
+							order = 9,
+							values = {
+								NONE = L.none,
+								OUTLINE = L.thin,
+								THICKOUTLINE = L.thick,
+							},
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.outline = value
+								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+							end,
+						},
+					},
+				},
+				clock = {
+					name = L.clock,
+					order = 2, type = "group",
+					get = function(info)
+						return map.db.profile.clockConfig[info[#info]]
+					end,
+					args = {
+						x = {
+							type = "range",
+							name = L.horizontalX,
+							order = 1,
+							max = 2000,
+							softMax = 250,
+							min = -2000,
+							softMin = -250,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.clockConfig.x = value
+								map.ClearAllPoints(TimeManagerClockButton)
+								map.SetPoint(TimeManagerClockButton, "TOPLEFT", map.backdrop, "BOTTOMLEFT", value, map.db.profile.clockConfig.y)
+							end,
+						},
+						y = {
+							type = "range",
+							name = L.verticalY,
+							order = 2,
+							max = 2000,
+							softMax = 250,
+							min = -2000,
+							softMin = -250,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.clockConfig.y = value
+								map.ClearAllPoints(TimeManagerClockButton)
+								map.SetPoint(TimeManagerClockButton, "TOPLEFT", map.backdrop, "BOTTOMLEFT", map.db.profile.clockConfig.x, value)
+							end,
+						},
+						align = {
+							type = "select",
+							name = L.align,
+							order = 3,
+							values = {
+								LEFT = L.alignLeft,
+								CENTER = L.alignCenter,
+								RIGHT = L.alignRight,
+							},
+							set = function(_, value)
+								map.db.profile.clockConfig.align = value
+								TimeManagerClockTicker:SetJustifyH(value)
+							end,
+						},
+						reset = {
+							name = L.reset,
+							order = 4, type = "execute",
+							func = function()
+								map.db.profile.clockConfig.x = 0
+								map.db.profile.clockConfig.y = -4
+								map.db.profile.clockConfig.align = "LEFT"
+								TimeManagerClockTicker:SetJustifyH(map.db.profile.clockConfig.align)
+								map.ClearAllPoints(TimeManagerClockButton)
+								map.SetPoint(TimeManagerClockButton, "TOPLEFT", map.backdrop, "BOTTOMLEFT", map.db.profile.clockConfig.x, map.db.profile.clockConfig.y)
+							end,
+						},
+						spacer = {
+							name = "\n\n",
+							order = 5, type = "description", width = "full", 
+						},
+						font = {
+							type = "select",
+							name = L.font,
+							order = 6,
+							values = media:List("font"),
+							itemControl = "DDI-Font",
+							get = function()
+								for i, v in next, media:List("font") do
+									if v == map.db.profile.clockConfig.font then return i end
+								end
+							end,
+							set = function(_, value)
+								local list = media:List("font")
+								local font = list[value]
+								map.db.profile.clockConfig.font = font
+								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								-- Fix Size
+								TimeManagerClockTicker:SetText("99:99")
+								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
+								map.SetWidth(TimeManagerClockButton, width + 5)
+							end,
+						},
+						fontSize = {
+							type = "range",
+							name = L.fontSize,
+							order = 7,
+							max = 200,
+							min = 1,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.clockConfig.fontSize = value
+								map.SetHeight(TimeManagerClockButton, value)
+								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								-- Fix Size
+								TimeManagerClockTicker:SetText("99:99")
+								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
+								map.SetWidth(TimeManagerClockButton, width + 5)
+							end,
+						},
+						monochrome = {
+							type = "toggle",
+							name = L.monochrome,
+							order = 8,
+							set = function(_, value)
+								map.db.profile.clockConfig.monochrome = value
+								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+							end,
+						},
+						outline = {
+							type = "select",
+							name = L.outline,
+							order = 9,
+							values = {
+								NONE = L.none,
+								OUTLINE = L.thin,
+								THICKOUTLINE = L.thick,
+							},
+							set = function(_, value)
+								map.db.profile.clockConfig.outline = value
+								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								-- Fix Size
+								TimeManagerClockTicker:SetText("99:99")
+								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
+								map.SetWidth(TimeManagerClockButton, width + 5)
+							end,
+						},
+					},
+				},
+				coords = {
+					name = L.coordinates,
+					order = 3, type = "group",
+					get = function(info)
+						return map.db.profile.coordsConfig[info[#info]]
+					end,
+					args = {
+						x = {
+							type = "range",
+							name = L.horizontalX,
+							order = 1,
+							max = 2000,
+							softMax = 250,
+							min = -2000,
+							softMin = -250,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.coordsConfig.x = value
+								map.ClearAllPoints(map.coords)
+								map.SetPoint(map.coords, "TOPRIGHT", map.backdrop, "BOTTOMRIGHT", value, map.db.profile.coordsConfig.y)
+							end,
+						},
+						y = {
+							type = "range",
+							name = L.verticalY,
+							order = 2,
+							max = 2000,
+							softMax = 250,
+							min = -2000,
+							softMin = -250,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.coordsConfig.y = value
+								map.ClearAllPoints(map.coords)
+								map.SetPoint(map.coords, "TOPRIGHT", map.backdrop, "BOTTOMRIGHT", map.db.profile.coordsConfig.x, value)
+							end,
+						},
+						align = {
+							type = "select",
+							name = L.align,
+							order = 3,
+							values = {
+								LEFT = L.alignLeft,
+								CENTER = L.alignCenter,
+								RIGHT = L.alignRight,
+							},
+							set = function(_, value)
+								map.db.profile.coordsConfig.align = value
+								map.coords:SetJustifyH(value)
+							end,
+						},
+						reset = {
+							name = L.reset,
+							order = 4, type = "execute",
+							func = function()
+								map.db.profile.coordsConfig.x = 0
+								map.db.profile.coordsConfig.y = -4
+								map.db.profile.coordsConfig.align = "RIGHT"
+								map.coords:SetJustifyH(map.db.profile.coordsConfig.align)
+								map.ClearAllPoints(map.coords)
+								map.SetPoint(map.coords, "TOPRIGHT", map.backdrop, "BOTTOMRIGHT", map.db.profile.coordsConfig.x, map.db.profile.coordsConfig.y)
+							end,
+						},
+						spacer = {
+							name = "\n\n",
+							order = 5, type = "description", width = "full", 
+						},
+						font = {
+							type = "select",
+							name = L.font,
+							order = 6,
+							values = media:List("font"),
+							itemControl = "DDI-Font",
+							get = function()
+								for i, v in next, media:List("font") do
+									if v == map.db.profile.coordsConfig.font then return i end
+								end
+							end,
+							set = function(_, value)
+								local list = media:List("font")
+								local font = list[value]
+								map.db.profile.coordsConfig.font = font
+								UpdateFont(map.coords, map.db.profile.coordsConfig)
+								-- Fix size
+								map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
+								local width = map.coords:GetUnboundedStringWidth()
+								map.SetWidth(map.coords, width + 5)
+								UpdateCoords()
+							end,
+						},
+						fontSize = {
+							type = "range",
+							name = L.fontSize,
+							order = 7,
+							max = 200,
+							min = 1,
+							step = 1,
+							set = function(_, value)
+								map.db.profile.coordsConfig.fontSize = value
+								map.SetHeight(map.coords, value)
+								UpdateFont(map.coords, map.db.profile.coordsConfig)
+								-- Fix size
+								map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
+								local width = map.coords:GetUnboundedStringWidth()
+								map.SetWidth(map.coords, width + 5)
+								UpdateCoords()
+							end,
+						},
+						monochrome = {
+							type = "toggle",
+							name = L.monochrome,
+							order = 8,
+							set = function(_, value)
+								map.db.profile.coordsConfig.monochrome = value
+								UpdateFont(map.coords, map.db.profile.coordsConfig)
+							end,
+						},
+						outline = {
+							type = "select",
+							name = L.outline,
+							order = 9,
+							values = {
+								NONE = L.none,
+								OUTLINE = L.thin,
+								THICKOUTLINE = L.thick,
+							},
+							set = function(_, value)
+								map.db.profile.coordsConfig.outline = value
+								UpdateFont(map.coords, map.db.profile.coordsConfig)
+								-- Fix size
+								map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
+								local width = map.coords:GetUnboundedStringWidth()
+								map.SetWidth(map.coords, width + 5)
+								UpdateCoords()
+							end,
+						},
+					},
+				},
+			},
+		},
 		clicks = {
 			name = L.clicks,
-			order = 3, type = "group",
+			order = 4, type = "group",
 			args = {
 				clickHeaderDesc = {
 					name = "\n".. L.minimapClicks,
@@ -388,8 +748,8 @@ local acOptions = {
 		profiles = adbo:GetOptionsTable(BasicMinimap.db),
 	},
 }
-acOptions.args.profiles.order = 4
+acOptions.args.profiles.order = 5
 
 acr:RegisterOptionsTable(acOptions.name, acOptions, true)
-acd:SetDefaultSize(acOptions.name, 430, 500)
+acd:SetDefaultSize(acOptions.name, 440, 500)
 

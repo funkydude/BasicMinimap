@@ -58,11 +58,7 @@ function frame:ADDON_LOADED(event, addon)
 				borderSize = 3,
 				size = 140,
 				scale = 1,
-				fontSize = 12,
 				radius = 5,
-				outline = "OUTLINE",
-				monochrome = false,
-				font = media:GetDefault("font"),
 				colorBorder = {0,0.6,0,1},
 				calendarBtn = "RightButton",
 				trackingBtn = "MiddleButton",
@@ -70,7 +66,34 @@ function frame:ADDON_LOADED(event, addon)
 				mapBtn = "None",
 				coordPrecision = "%d,%d",
 				coordTime = 1,
-			}
+				zoneTextConfig = {
+					x = 0,
+					y = 3,
+					align = "CENTER",
+					font = media:GetDefault("font"),
+					fontSize = 12,
+					monochrome = false,
+					outline = "OUTLINE",
+				},
+				coordsConfig = {
+					x = 0,
+					y = -4,
+					align = "RIGHT",
+					font = media:GetDefault("font"),
+					fontSize = 12,
+					monochrome = false,
+					outline = "OUTLINE",
+				},
+				clockConfig = {
+					x = 0,
+					y = -4,
+					align = "LEFT",
+					font = media:GetDefault("font"),
+					fontSize = 12,
+					monochrome = false,
+					outline = "OUTLINE",
+				},
+			},
 		}
 		self.db = LibStub("AceDB-3.0"):New("BasicMinimapSV", defaults, true)
 
@@ -88,6 +111,12 @@ function frame:ADDON_LOADED(event, addon)
 			end
 			ldbi.RegisterCallback(self, "LibDBIcon_IconCreated", "HideButtons")
 		end
+
+		-- XXX temp 8.2.0
+		self.db.profile.fontSize = nil
+		self.db.profile.outline = nil
+		self.db.profile.monochrome = nil
+		self.db.profile.font = nil
 	end
 end
 frame:RegisterEvent("ADDON_LOADED")
@@ -177,25 +206,27 @@ function frame:PLAYER_LOGIN(event)
 		self.SetParent(MinimapZoomOut, Minimap)
 	end
 
-	-- Create font flag
-	local flags = nil
-	if self.db.profile.monochrome and self.db.profile.outline ~= "NONE" then
-		flags = "MONOCHROME," .. self.db.profile.outline
-	elseif self.db.profile.monochrome then
-		flags = "MONOCHROME"
-	elseif self.db.profile.outline ~= "NONE" then
-		flags = self.db.profile.outline
-	end
-	--
-
 	-- Clock
 	self.ClearAllPoints(TimeManagerClockButton)
-	self.SetPoint(TimeManagerClockButton, "TOPLEFT", backdrop, "BOTTOMLEFT", 0, 4)
-	self.SetWidth(TimeManagerClockButton, fullMinimapSize)
-	TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
-	TimeManagerClockTicker:SetJustifyH("LEFT")
+	self.SetPoint(TimeManagerClockButton, "TOPLEFT", backdrop, "BOTTOMLEFT", self.db.profile.clockConfig.x, self.db.profile.clockConfig.y)
+	self.SetHeight(TimeManagerClockButton, self.db.profile.clockConfig.fontSize+1)
+	do
+		local clockFlags = nil
+		if self.db.profile.clockConfig.monochrome and self.db.profile.clockConfig.outline ~= "NONE" then
+			clockFlags = "MONOCHROME," .. self.db.profile.clockConfig.outline
+		elseif self.db.profile.clockConfig.monochrome then
+			clockFlags = "MONOCHROME"
+		elseif self.db.profile.clockConfig.outline ~= "NONE" then
+			clockFlags = self.db.profile.clockConfig.outline
+		end
+		TimeManagerClockTicker:SetFont(media:Fetch("font", self.db.profile.clockConfig.font), self.db.profile.clockConfig.fontSize, clockFlags)
+		TimeManagerClockTicker:SetText("99:99")
+		local width = TimeManagerClockTicker:GetUnboundedStringWidth()
+		self.SetWidth(TimeManagerClockButton, width + 5)
+	end
+	TimeManagerClockTicker:SetJustifyH(self.db.profile.clockConfig.align)
 	self.ClearAllPoints(TimeManagerClockTicker)
-	self.SetPoint(TimeManagerClockTicker, "TOPLEFT", backdrop, "BOTTOMLEFT", 0, -4)
+	self.SetAllPoints(TimeManagerClockTicker, TimeManagerClockButton)
 	local clockBorder = self.GetRegions(TimeManagerClockButton)
 	self.SetParent(clockBorder, self) -- Hide the border
 	if not self.db.profile.clock then
@@ -208,12 +239,23 @@ function frame:PLAYER_LOGIN(event)
 	-- Zone text
 	self.SetParent(MinimapZoneTextButton, Minimap)
 	self.ClearAllPoints(MinimapZoneTextButton)
-	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", 0, 3)
+	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", self.db.profile.zoneTextConfig.x, self.db.profile.zoneTextConfig.y)
 	self.ClearAllPoints(MinimapZoneText)
-	self.SetPoint(MinimapZoneText, "BOTTOM", backdrop, "TOP", 0, 3) -- Prevent text overlapping the border
+	self.SetAllPoints(MinimapZoneText, MinimapZoneTextButton)
 	self.SetWidth(MinimapZoneText, fullMinimapSize) -- Prevent text cropping
-	self.SetHeight(MinimapZoneText, self.db.profile.fontSize) -- Prevent text cropping
-	MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
+	self.SetHeight(MinimapZoneText, self.db.profile.zoneTextConfig.fontSize+1) -- Prevent text cropping
+	do
+		local zoneTextFlags = nil
+		if self.db.profile.zoneTextConfig.monochrome and self.db.profile.zoneTextConfig.outline ~= "NONE" then
+			zoneTextFlags = "MONOCHROME," .. self.db.profile.zoneTextConfig.outline
+		elseif self.db.profile.zoneTextConfig.monochrome then
+			zoneTextFlags = "MONOCHROME"
+		elseif self.db.profile.zoneTextConfig.outline ~= "NONE" then
+			zoneTextFlags = self.db.profile.zoneTextConfig.outline
+		end
+		MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.zoneTextConfig.font), self.db.profile.zoneTextConfig.fontSize, zoneTextFlags)
+	end
+	MinimapZoneText:SetJustifyH(self.db.profile.zoneTextConfig.align)
 	if not self.db.profile.zoneText then
 		self.SetParent(MinimapZoneTextButton, self)
 	end
@@ -222,11 +264,23 @@ function frame:PLAYER_LOGIN(event)
 	local coords = self:CreateFontString()
 	coords:SetParent(Minimap)
 	coords:ClearAllPoints()
-	coords:SetPoint("TOPRIGHT", backdrop, "BOTTOMRIGHT", 0, -4)
-	coords:SetWidth(fullMinimapSize) -- Prevent text cropping
-	coords:SetHeight(self.db.profile.fontSize) -- Prevent text cropping
-	coords:SetFont(media:Fetch("font", self.db.profile.font), self.db.profile.fontSize, flags)
-	coords:SetJustifyH("RIGHT")
+	coords:SetPoint("TOPRIGHT", backdrop, "BOTTOMRIGHT", self.db.profile.coordsConfig.x, self.db.profile.coordsConfig.y)
+	coords:SetHeight(self.db.profile.coordsConfig.fontSize+1) -- Prevent text cropping
+	do
+		local coordsFlags = nil
+		if self.db.profile.coordsConfig.monochrome and self.db.profile.coordsConfig.outline ~= "NONE" then
+			coordsFlags = "MONOCHROME," .. self.db.profile.coordsConfig.outline
+		elseif self.db.profile.coordsConfig.monochrome then
+			coordsFlags = "MONOCHROME"
+		elseif self.db.profile.coordsConfig.outline ~= "NONE" then
+			coordsFlags = self.db.profile.coordsConfig.outline
+		end
+		coords:SetFont(media:Fetch("font", self.db.profile.coordsConfig.font), self.db.profile.coordsConfig.fontSize, coordsFlags)
+		coords:SetFormattedText(self.db.profile.coordPrecision, 100.77, 100.77)
+		local width = coords:GetUnboundedStringWidth()
+		coords:SetWidth(width + 5)
+	end
+	coords:SetJustifyH(self.db.profile.coordsConfig.align)
 	do
 		local GetPlayerMapPosition = C_Map.GetPlayerMapPosition
 		local GetBestMapForUnit = C_Map.GetBestMapForUnit
