@@ -74,6 +74,12 @@ function frame:ADDON_LOADED(event, addon)
 					fontSize = 12,
 					monochrome = false,
 					outline = "OUTLINE",
+					colorNormal = {1, 0.82, 0, 1},
+					colorSanctuary = {0.41, 0.8, 0.94, 1},
+					colorArena = {1.0, 0.1, 0.1, 1},
+					colorFriendly = {0.1, 1.0, 0.1, 1},
+					colorHostile = {1.0, 0.1, 0.1, 1},
+					colorContested = {1.0, 0.7, 0.0, 1},
 				},
 				coordsConfig = {
 					x = 0,
@@ -83,6 +89,7 @@ function frame:ADDON_LOADED(event, addon)
 					fontSize = 12,
 					monochrome = false,
 					outline = "OUTLINE",
+					color = {1,1,1,1},
 				},
 				clockConfig = {
 					x = 0,
@@ -92,6 +99,7 @@ function frame:ADDON_LOADED(event, addon)
 					fontSize = 12,
 					monochrome = false,
 					outline = "OUTLINE",
+					color = {1,1,1,1},
 				},
 			},
 		}
@@ -132,6 +140,7 @@ function frame:PLAYER_LOGIN(event)
 	self.SetParent(Minimap, UIParent)
 	self.EnableMouse(MinimapCluster, false)
 
+	local tt = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 
 	-- Backdrop, creating the border cleanly
@@ -224,6 +233,7 @@ function frame:PLAYER_LOGIN(event)
 		local width = TimeManagerClockTicker:GetUnboundedStringWidth()
 		self.SetWidth(TimeManagerClockButton, width + 5)
 	end
+	TimeManagerClockTicker:SetTextColor(unpack(self.db.profile.clockConfig.color))
 	TimeManagerClockTicker:SetJustifyH(self.db.profile.clockConfig.align)
 	self.ClearAllPoints(TimeManagerClockTicker)
 	self.SetAllPoints(TimeManagerClockTicker, TimeManagerClockButton)
@@ -237,13 +247,26 @@ function frame:PLAYER_LOGIN(event)
 	self.SetParent(MiniMapWorldMapButton, self)
 
 	-- Zone text
-	self.SetParent(MinimapZoneTextButton, Minimap)
-	self.ClearAllPoints(MinimapZoneTextButton)
-	self.SetPoint(MinimapZoneTextButton, "BOTTOM", backdrop, "TOP", self.db.profile.zoneTextConfig.x, self.db.profile.zoneTextConfig.y)
-	self.ClearAllPoints(MinimapZoneText)
-	self.SetAllPoints(MinimapZoneText, MinimapZoneTextButton)
-	self.SetWidth(MinimapZoneText, fullMinimapSize) -- Prevent text cropping
-	self.SetHeight(MinimapZoneText, self.db.profile.zoneTextConfig.fontSize+1) -- Prevent text cropping
+	do
+		-- Kill Blizz Frame
+		local Parent = self.SetParent
+		Parent(MinimapZoneTextButton, self)
+		Parent(MinimapZoneText, self)
+		MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 784-786 as of wow 8.2
+		MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
+		MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+		local function block(self)
+			Parent(self, frame)
+		end
+		hooksecurefunc(MinimapZoneTextButton, "SetParent", block)
+		hooksecurefunc(MinimapZoneText, "SetParent", block)
+	end
+	local zoneText = CreateFrame("Frame", nil, Minimap) -- Create our own zone text
+	zoneText:SetPoint("BOTTOM", backdrop, "TOP", self.db.profile.zoneTextConfig.x, self.db.profile.zoneTextConfig.y)
+	local zoneTextFont = zoneText:CreateFontString()
+	zoneTextFont:SetAllPoints(zoneText)
+	zoneText:SetWidth(fullMinimapSize) -- Prevent text cropping
+	zoneText:SetHeight(self.db.profile.zoneTextConfig.fontSize+1) -- Prevent text cropping
 	do
 		local zoneTextFlags = nil
 		if self.db.profile.zoneTextConfig.monochrome and self.db.profile.zoneTextConfig.outline ~= "NONE" then
@@ -253,12 +276,89 @@ function frame:PLAYER_LOGIN(event)
 		elseif self.db.profile.zoneTextConfig.outline ~= "NONE" then
 			zoneTextFlags = self.db.profile.zoneTextConfig.outline
 		end
-		MinimapZoneText:SetFont(media:Fetch("font", self.db.profile.zoneTextConfig.font), self.db.profile.zoneTextConfig.fontSize, zoneTextFlags)
+		zoneTextFont:SetFont(media:Fetch("font", self.db.profile.zoneTextConfig.font), self.db.profile.zoneTextConfig.fontSize, zoneTextFlags)
 	end
-	MinimapZoneText:SetJustifyH(self.db.profile.zoneTextConfig.align)
+	zoneTextFont:SetJustifyH(self.db.profile.zoneTextConfig.align)
 	if not self.db.profile.zoneText then
-		self.SetParent(MinimapZoneTextButton, self)
+		self.SetParent(zoneText, self)
 	end
+	zoneText:RegisterEvent("ZONE_CHANGED")
+	zoneText:RegisterEvent("ZONE_CHANGED_INDOORS")
+	zoneText:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	do
+		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, GetZonePVPInfo
+		local function update(self)
+			local text = GetMinimapZoneText()
+			zoneTextFont:SetText(text)
+
+			local pvpType = GetZonePVPInfo()
+			if pvpType == "sanctuary" then
+				local c = frame.db.profile.zoneTextConfig.colorSanctuary
+				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
+			elseif pvpType == "arena" then
+				local c = frame.db.profile.zoneTextConfig.colorArena
+				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
+			elseif pvpType == "friendly" then
+				local c = frame.db.profile.zoneTextConfig.colorFriendly
+				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
+			elseif pvpType == "hostile" then
+				local c = frame.db.profile.zoneTextConfig.colorHostile
+				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
+			elseif pvpType == "contested" then
+				local c = frame.db.profile.zoneTextConfig.colorContested
+				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
+			else
+				local c = frame.db.profile.zoneTextConfig.colorNormal
+				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
+			end
+
+			if self:IsMouseOver() then
+				self:GetScript("OnLeave")()
+				self:GetScript("OnEnter")(self)
+			end
+		end
+		update(zoneText)
+		zoneText:SetScript("OnEvent", update)
+		zoneText:SetScript("OnEnter", function(self)
+			tt:SetOwner(self, "ANCHOR_LEFT")
+			local pvpType, _, factionName = GetZonePVPInfo()
+			local zoneName = GetZoneText()
+			local subzoneName = GetSubZoneText()
+			if subzoneName == zoneName then
+				subzoneName = ""
+			end
+			tt:AddLine(zoneName, 1.0, 1.0, 1.0)
+			if pvpType == "sanctuary" then
+				tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorSanctuary))
+				tt:AddLine(SANCTUARY_TERRITORY, unpack(frame.db.profile.zoneTextConfig.colorSanctuary))
+			elseif pvpType == "arena" then
+				tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorArena))
+				tt:AddLine(FREE_FOR_ALL_TERRITORY, unpack(frame.db.profile.zoneTextConfig.colorArena))
+			elseif pvpType == "friendly" then
+				if factionName and factionName ~= "" then
+					tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorFriendly))
+					tt:AddLine(format(FACTION_CONTROLLED_TERRITORY, factionName), unpack(frame.db.profile.zoneTextConfig.colorFriendly))
+				end
+			elseif pvpType == "hostile" then
+				if factionName and factionName ~= "" then
+					tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorHostile))
+					tt:AddLine(format(FACTION_CONTROLLED_TERRITORY, factionName), unpack(frame.db.profile.zoneTextConfig.colorHostile))
+				end
+			elseif pvpType == "contested" then
+				tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorContested))
+				tt:AddLine(CONTESTED_TERRITORY, unpack(frame.db.profile.zoneTextConfig.colorContested))
+			elseif pvpType == "combat" then
+				tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorArena))
+				tt:AddLine(COMBAT_ZONE, unpack(frame.db.profile.zoneTextConfig.colorArena))
+			else
+				tt:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorNormal))
+			end
+			tt:Show()
+		end)
+		zoneText:SetScript("OnLeave", function() tt:Hide() end)
+	end
+	self.zonetext = zoneText
+	self.zonetext.text = zoneTextFont
 
 	-- Coords
 	local coords = self:CreateFontString()
@@ -280,6 +380,7 @@ function frame:PLAYER_LOGIN(event)
 		local width = coords:GetUnboundedStringWidth()
 		coords:SetWidth(width + 5)
 	end
+	coords:SetTextColor(unpack(self.db.profile.coordsConfig.color))
 	coords:SetJustifyH(self.db.profile.coordsConfig.align)
 	do
 		local GetPlayerMapPosition = C_Map.GetPlayerMapPosition

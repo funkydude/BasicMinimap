@@ -46,6 +46,29 @@ local function UpdateCoords()
 	end
 end
 
+local function UpdateZoneText()
+	local pvpType = GetZonePVPInfo()
+	if pvpType == "sanctuary" then
+		local c = map.db.profile.zoneTextConfig.colorSanctuary
+		map.zonetext.text:SetTextColor(c[1], c[2], c[3], c[4])
+	elseif pvpType == "arena" then
+		local c = map.db.profile.zoneTextConfig.colorArena
+		map.zonetext.text:SetTextColor(c[1], c[2], c[3], c[4])
+	elseif pvpType == "friendly" then
+		local c = map.db.profile.zoneTextConfig.colorFriendly
+		map.zonetext.text:SetTextColor(c[1], c[2], c[3], c[4])
+	elseif pvpType == "hostile" then
+		local c = map.db.profile.zoneTextConfig.colorHostile
+		map.zonetext.text:SetTextColor(c[1], c[2], c[3], c[4])
+	elseif pvpType == "contested" then
+		local c = map.db.profile.zoneTextConfig.colorContested
+		map.zonetext.text:SetTextColor(c[1], c[2], c[3], c[4])
+	else
+		local c = map.db.profile.zoneTextConfig.colorNormal
+		map.zonetext.text:SetTextColor(c[1], c[2], c[3], c[4])
+	end
+end
+
 local acOptions = {
 	name = "BasicMinimap",
 	type = "group", childGroups = "tab",
@@ -144,7 +167,7 @@ local acOptions = {
 					set = function(_, value)
 						map.db.profile.size = value
 						map.SetSize(Minimap, value, value)
-						map.SetWidth(MinimapZoneText, value)
+						map.zonetext:SetWidth(value)
 						-- I'm not sure of a better way to update the render layer to the new size
 						if Minimap:GetZoom() ~= 5 then
 							Minimap_ZoomInClick()
@@ -275,7 +298,7 @@ local acOptions = {
 					order = 7, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoneText = value
-						map.SetParent(MinimapZoneTextButton, value and Minimap or map)
+						map.zonetext:SetParent(value and Minimap or map)
 					end,
 				},
 				missions = {
@@ -335,8 +358,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.zoneTextConfig.x = value
-								map.ClearAllPoints(MinimapZoneTextButton)
-								map.SetPoint(MinimapZoneTextButton, "BOTTOM", map.backdrop, "TOP", value, map.db.profile.zoneTextConfig.y)
+								map.zonetext:ClearAllPoints()
+								map.zonetext:SetPoint("BOTTOM", map.backdrop, "TOP", value, map.db.profile.zoneTextConfig.y)
 							end,
 						},
 						y = {
@@ -350,8 +373,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.zoneTextConfig.y = value
-								map.ClearAllPoints(MinimapZoneTextButton)
-								map.SetPoint(MinimapZoneTextButton, "BOTTOM", map.backdrop, "TOP", map.db.profile.zoneTextConfig.x, value)
+								map.zonetext:ClearAllPoints()
+								map.zonetext:SetPoint("BOTTOM", map.backdrop, "TOP", map.db.profile.zoneTextConfig.x, value)
 							end,
 						},
 						align = {
@@ -365,7 +388,7 @@ local acOptions = {
 							},
 							set = function(_, value)
 								map.db.profile.zoneTextConfig.align = value
-								MinimapZoneText:SetJustifyH(value)
+								map.zonetext.text:SetJustifyH(value)
 							end,
 						},
 						reset = {
@@ -375,9 +398,9 @@ local acOptions = {
 								map.db.profile.zoneTextConfig.x = 0
 								map.db.profile.zoneTextConfig.y = 3
 								map.db.profile.zoneTextConfig.align = "CENTER"
-								MinimapZoneText:SetJustifyH(map.db.profile.zoneTextConfig.align)
-								map.ClearAllPoints(MinimapZoneTextButton)
-								map.SetPoint(MinimapZoneTextButton, "BOTTOM", map.backdrop, "TOP", map.db.profile.zoneTextConfig.x, map.db.profile.zoneTextConfig.y)
+								map.zonetext.text:SetJustifyH(map.db.profile.zoneTextConfig.align)
+								map.zonetext:ClearAllPoints()
+								map.zonetext:SetPoint("BOTTOM", map.backdrop, "TOP", map.db.profile.zoneTextConfig.x, map.db.profile.zoneTextConfig.y)
 							end,
 						},
 						spacer = {
@@ -399,7 +422,7 @@ local acOptions = {
 								local list = media:List("font")
 								local font = list[value]
 								map.db.profile.zoneTextConfig.font = font
-								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+								UpdateFont(map.zonetext.text, map.db.profile.zoneTextConfig)
 							end,
 						},
 						fontSize = {
@@ -411,8 +434,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.zoneTextConfig.fontSize = value
-								map.SetHeight(MinimapZoneTextButton, value)
-								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+								map.zonetext:SetHeight(value)
+								UpdateFont(map.zonetext.text, map.db.profile.zoneTextConfig)
 							end,
 						},
 						monochrome = {
@@ -421,7 +444,7 @@ local acOptions = {
 							order = 8,
 							set = function(_, value)
 								map.db.profile.zoneTextConfig.monochrome = value
-								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+								UpdateFont(map.zonetext.text, map.db.profile.zoneTextConfig)
 							end,
 						},
 						outline = {
@@ -435,7 +458,65 @@ local acOptions = {
 							},
 							set = function(_, value)
 								map.db.profile.zoneTextConfig.outline = value
-								UpdateFont(MinimapZoneText, map.db.profile.zoneTextConfig)
+								UpdateFont(map.zonetext.text, map.db.profile.zoneTextConfig)
+							end,
+						},
+						colorDesc = {
+							name = L.currentZone:format(type(GetZonePVPInfo()) == "string" and L[GetZonePVPInfo()] or L.normal),
+							order = 9.5, type = "description", width = "full", 
+						},
+						colorNormal = {
+							name = L.normal,
+							order = 10, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.zoneTextConfig.colorNormal) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.zoneTextConfig.colorNormal = {r, g, b, a}
+								UpdateZoneText()
+							end,
+						},
+						colorSanctuary = {
+							name = L.sanctuary,
+							order = 11, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.zoneTextConfig.colorSanctuary) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.zoneTextConfig.colorSanctuary = {r, g, b, a}
+								UpdateZoneText()
+							end,
+						},
+						colorArena = {
+							name = L.arena,
+							order = 12, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.zoneTextConfig.colorArena) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.zoneTextConfig.colorArena = {r, g, b, a}
+								UpdateZoneText()
+							end,
+						},
+						colorFriendly = {
+							name = L.friendly,
+							order = 13, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.zoneTextConfig.colorFriendly) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.zoneTextConfig.colorFriendly = {r, g, b, a}
+								UpdateZoneText()
+							end,
+						},
+						colorHostile = {
+							name = L.hostile,
+							order = 14, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.zoneTextConfig.colorHostile) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.zoneTextConfig.colorHostile = {r, g, b, a}
+								UpdateZoneText()
+							end,
+						},
+						colorContested = {
+							name = L.contested,
+							order = 15, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.zoneTextConfig.colorContested) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.zoneTextConfig.colorContested = {r, g, b, a}
+								UpdateZoneText()
 							end,
 						},
 					},
@@ -571,6 +652,15 @@ local acOptions = {
 								TimeManagerClockTicker:SetText("99:99")
 								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
 								map.SetWidth(TimeManagerClockButton, width + 5)
+							end,
+						},
+						color = {
+							name = L.color,
+							order = 10, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.clockConfig.color) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.clockConfig.color = {r, g, b, a}
+								TimeManagerClockTicker:SetTextColor(r, g, b, a)
 							end,
 						},
 					},
@@ -709,6 +799,15 @@ local acOptions = {
 								local width = map.coords:GetUnboundedStringWidth()
 								map.SetWidth(map.coords, width + 5)
 								UpdateCoords()
+							end,
+						},
+						color = {
+							name = L.color,
+							order = 10, type = "color", hasAlpha = true,
+							get = function() return unpack(map.db.profile.coordsConfig.color) end,
+							set = function(_, r, g, b, a)
+								map.db.profile.coordsConfig.color = {r, g, b, a}
+								map.coords:SetTextColor(r, g, b, a)
 							end,
 						},
 					},
