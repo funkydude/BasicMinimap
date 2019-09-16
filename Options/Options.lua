@@ -88,19 +88,28 @@ local acOptions = {
 					order = 1, type = "color", hasAlpha = true,
 					get = function() return unpack(map.db.profile.colorBorder) end,
 					set = function(_, r, g, b, a)
+						if map.db.profile.classcolor then
+							r, g, b = unpack(map.db.profile.colorBorder)
+						end
 						map.db.profile.colorBorder = {r, g, b, a}
 						map.backdrop:SetColorTexture(r, g, b, a)
 					end,
 				},
 				classcolor = {
 					name = L.CLASSCOLORED,
-					order = 2, type = "execute",
-					func = function()
-						local _, class = UnitClass("player")
-						local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-						local a = map.db.profile.colorBorder[4]
-						map.db.profile.colorBorder = {color.r, color.g, color.b, a}
-						map.backdrop:SetColorTexture(color.r, color.g, color.b, a)
+					order = 2, type = "toggle",
+					set = function(_, value)
+						map.db.profile.classcolor = value
+						if value then
+							local _, class = UnitClass("player")
+							local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+							local a = map.db.profile.colorBorder[4]
+							map.db.profile.colorBorder = {color.r, color.g, color.b, a}
+							map.backdrop:SetColorTexture(color.r, color.g, color.b, a)
+						else
+							map.db.profile.colorBorder = {0, 0, 0, 1}
+							map.backdrop:SetColorTexture(0, 0, 0, 1)
+						end
 					end,
 				},
 				borderSize = {

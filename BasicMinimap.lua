@@ -46,6 +46,7 @@ function frame:ADDON_LOADED(event, addon)
 		local defaults = {
 			profile = {
 				lock = false,
+				classcolor = false,
 				shape = "SQUARE",
 				clock = true,
 				zoneText = true,
@@ -144,6 +145,12 @@ function frame:PLAYER_LOGIN(event)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 
 	-- Backdrop, creating the border cleanly
+	if self.db.profile.classcolor then
+		local _, class = UnitClass("player")
+		local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+		local a = self.db.profile.colorBorder[4]
+		self.db.profile.colorBorder = {color.r, color.g, color.b, a}
+	end
 	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
 	backdrop:SetPoint("CENTER", Minimap, "CENTER")
 	backdrop:SetSize(fullMinimapSize, fullMinimapSize)
