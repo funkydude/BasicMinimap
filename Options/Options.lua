@@ -471,7 +471,7 @@ local acOptions = {
 							end,
 						},
 						colorDesc = {
-							name = L.currentZone:format(type(GetZonePVPInfo()) == "string" and L[GetZonePVPInfo()] or L.normal),
+							name = L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.normal),
 							order = 9.5, type = "description", width = "full", 
 						},
 						colorNormal = {
