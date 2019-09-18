@@ -50,6 +50,7 @@ function frame:ADDON_LOADED(event, addon)
 				shape = "SQUARE",
 				clock = true,
 				zoneText = true,
+				coords = true,
 				missions = true,
 				raidDiffIcon = true,
 				zoomBtn = false,
@@ -370,7 +371,13 @@ function frame:PLAYER_LOGIN(event)
 
 	-- Coords
 	local coords = self:CreateFontString()
-	coords:SetParent(Minimap)
+	if not self.db.profile.coords then
+		coords:SetParent(self)
+		coords.shown = false
+	else
+		coords:SetParent(Minimap)
+		coords.shown = true
+	end
 	coords:ClearAllPoints()
 	coords:SetPoint("TOPRIGHT", backdrop, "BOTTOMRIGHT", self.db.profile.coordsConfig.x, self.db.profile.coordsConfig.y)
 	coords:SetHeight(self.db.profile.coordsConfig.fontSize+1) -- Prevent text cropping
@@ -396,7 +403,7 @@ function frame:PLAYER_LOGIN(event)
 		local CTimerAfter = C_Timer.After
 		local function updateCoords()
 			local uiMapID = GetBestMapForUnit"player"
-			if uiMapID then
+			if uiMapID and coords.shown then
 				local tbl = GetPlayerMapPosition(uiMapID, "player")
 				if tbl then
 					local db = frame.db.profile

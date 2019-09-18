@@ -215,7 +215,7 @@ local acOptions = {
 						-- Fix size (Coords)
 						map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
 						local width = map.coords:GetUnboundedStringWidth()
-						map.SetWidth(map.coords, width + 5)
+						map.coords:SetWidth(width + 5)
 						UpdateCoords()
 					end,
 				},
@@ -294,12 +294,12 @@ local acOptions = {
 						end
 					end,
 				},
-				clock = {
-					name = L.clock,
+				missions = {
+					name = L.missions,
 					order = 6, type = "toggle",
 					set = function(_, value)
-						map.db.profile.clock = value
-						map.SetParent(TimeManagerClockButton, value and Minimap or map)
+						map.db.profile.missions = value
+						map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
 					end,
 				},
 				zoneText = {
@@ -320,34 +320,43 @@ local acOptions = {
 						end
 					end,
 				},
-				missions = {
-					name = L.missions,
+				clock = {
+					name = L.clock,
 					order = 8, type = "toggle",
 					set = function(_, value)
-						map.db.profile.missions = value
-						map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
+						map.db.profile.clock = value
+						map.SetParent(TimeManagerClockButton, value and Minimap or map)
+					end,
+				},
+				coords = {
+					name = L.coordinates,
+					order = 9, type = "toggle",
+					set = function(_, value)
+						map.db.profile.coords = value
+						map.coords.shown = value
+						map.coords:SetParent(value and Minimap or map)
 					end,
 				},
 				coordDesc = {
 					name = "\n\n\n".. L.coordinates..":",
-					order = 9, type = "description",
+					order = 10, type = "description",
 				},
 				coordPrecision = {
 					name = L.coordPrecision,
 					desc = L.coordPrecisionDesc,
-					order = 10, type = "select",
+					order = 11, type = "select",
 					values = {["%d,%d"] = L.normal, ["%.1f, %.1f"] = L.high, ["%.2f, %.2f"] = L.veryHigh},
 					set = function(_, value)
 						map.db.profile.coordPrecision = value
 						map.coords:SetFormattedText(value, 100.77, 100.77)
 						local width = map.coords:GetUnboundedStringWidth()
-						map.SetWidth(map.coords, width + 5)
+						map.coords:SetWidth(width + 5)
 					end,
 				},
 				coordTime = {
 					name = L.coordUpdates,
 					desc = L.coordUpdatesDesc,
-					order = 11, type = "select",
+					order = 12, type = "select",
 					values = {[1] = L.normal, [0.5] = L.high, [0.1] = L.veryHigh},
 					set = function(_, value)
 						map.db.profile.coordTime = value
@@ -702,8 +711,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.coordsConfig.x = value
-								map.ClearAllPoints(map.coords)
-								map.SetPoint(map.coords, "TOPRIGHT", map.backdrop, "BOTTOMRIGHT", value, map.db.profile.coordsConfig.y)
+								map.coords:ClearAllPoints()
+								map.coords:SetPoint("TOPRIGHT", map.backdrop, "BOTTOMRIGHT", value, map.db.profile.coordsConfig.y)
 							end,
 						},
 						y = {
@@ -717,8 +726,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.coordsConfig.y = value
-								map.ClearAllPoints(map.coords)
-								map.SetPoint(map.coords, "TOPRIGHT", map.backdrop, "BOTTOMRIGHT", map.db.profile.coordsConfig.x, value)
+								map.coords:ClearAllPoints()
+								map.coords:SetPoint("TOPRIGHT", map.backdrop, "BOTTOMRIGHT", map.db.profile.coordsConfig.x, value)
 							end,
 						},
 						align = {
@@ -743,8 +752,8 @@ local acOptions = {
 								map.db.profile.coordsConfig.y = -4
 								map.db.profile.coordsConfig.align = "RIGHT"
 								map.coords:SetJustifyH(map.db.profile.coordsConfig.align)
-								map.ClearAllPoints(map.coords)
-								map.SetPoint(map.coords, "TOPRIGHT", map.backdrop, "BOTTOMRIGHT", map.db.profile.coordsConfig.x, map.db.profile.coordsConfig.y)
+								map.coords:ClearAllPoints()
+								map.coords:SetPoint("TOPRIGHT", map.backdrop, "BOTTOMRIGHT", map.db.profile.coordsConfig.x, map.db.profile.coordsConfig.y)
 							end,
 						},
 						spacer = {
@@ -770,7 +779,7 @@ local acOptions = {
 								-- Fix size
 								map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
 								local width = map.coords:GetUnboundedStringWidth()
-								map.SetWidth(map.coords, width + 5)
+								map.coords:SetWidth(width + 5)
 								UpdateCoords()
 							end,
 						},
@@ -783,12 +792,12 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.coordsConfig.fontSize = value
-								map.SetHeight(map.coords, value)
+								map.coords:SetHeight(value)
 								UpdateFont(map.coords, map.db.profile.coordsConfig)
 								-- Fix size
 								map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
 								local width = map.coords:GetUnboundedStringWidth()
-								map.SetWidth(map.coords, width + 5)
+								map.coords:SetWidth(width + 5)
 								UpdateCoords()
 							end,
 						},
@@ -816,7 +825,7 @@ local acOptions = {
 								-- Fix size
 								map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
 								local width = map.coords:GetUnboundedStringWidth()
-								map.SetWidth(map.coords, width + 5)
+								map.coords:SetWidth(width + 5)
 								UpdateCoords()
 							end,
 						},
