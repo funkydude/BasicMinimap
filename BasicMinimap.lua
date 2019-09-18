@@ -287,11 +287,12 @@ function frame:PLAYER_LOGIN(event)
 	end
 	zoneTextFont:SetJustifyH(self.db.profile.zoneTextConfig.align)
 	if not self.db.profile.zoneText then
-		self.SetParent(zoneText, self)
+		zoneText:SetParent(self)
+	else
+		zoneText:RegisterEvent("ZONE_CHANGED")
+		zoneText:RegisterEvent("ZONE_CHANGED_INDOORS")
+		zoneText:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	end
-	zoneText:RegisterEvent("ZONE_CHANGED")
-	zoneText:RegisterEvent("ZONE_CHANGED_INDOORS")
-	zoneText:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	do
 		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, GetZonePVPInfo
 		local function update(self)

@@ -307,7 +307,17 @@ local acOptions = {
 					order = 7, type = "toggle",
 					set = function(_, value)
 						map.db.profile.zoneText = value
-						map.zonetext:SetParent(value and Minimap or map)
+						if value then
+							map.zonetext:SetParent(Minimap)
+							map.zonetext:RegisterEvent("ZONE_CHANGED")
+							map.zonetext:RegisterEvent("ZONE_CHANGED_INDOORS")
+							map.zonetext:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+						else
+							map.zonetext:SetParent(map)
+							map.zonetext:UnregisterEvent("ZONE_CHANGED")
+							map.zonetext:UnregisterEvent("ZONE_CHANGED_INDOORS")
+							map.zonetext:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+						end
 					end,
 				},
 				missions = {
