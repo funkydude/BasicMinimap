@@ -525,4 +525,3 @@ function frame:PET_BATTLE_CLOSE()
 	frame.Show(Minimap)
 end
 frame:RegisterEvent("PET_BATTLE_CLOSE")
-
