@@ -1,4 +1,4 @@
-## Interface: 11302
+## Interface: 11303
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
@@ -21,7 +21,7 @@
 ## X-Website: https://github.com/funkydude/BasicMinimap
 ## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
 ## X-Curse-Project-ID: 13506
-# X-WoWI-ID: 9101
+## X-WoWI-ID: 9101
 
 embeds.xml
 modules.xml
