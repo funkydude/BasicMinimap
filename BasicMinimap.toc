@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.

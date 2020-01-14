@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.
