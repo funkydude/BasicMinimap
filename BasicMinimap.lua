@@ -439,9 +439,14 @@ function frame:PLAYER_LOGIN(event)
 	-- Missions button
 	self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
 	self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
-	-- We also need to hook this as Blizz likes to fiddle with its size
+	-- Stop Blizz changing the icon size || GarrisonLandingPageMinimapButton_UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
 	hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
 		frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
+	end)
+	-- Stop Blizz moving the icon || GarrisonLandingPageMinimapButton_UpdateIcon() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
+	hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
+		frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
+		ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
 	end)
 	if not self.db.profile.missions then
 		self.SetParent(GarrisonLandingPageMinimapButton, self)
