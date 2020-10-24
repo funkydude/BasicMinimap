@@ -148,10 +148,20 @@ local acOptions = {
 						if value == "SQUARE" then
 							Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 							map.mask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+							if HybridMinimap then
+								HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+								HybridMinimap.CircleMask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+								HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+							end
 							function GetMinimapShape() return "SQUARE" end
 						else
 							Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
 							map.mask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
+							if HybridMinimap then
+								HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+								HybridMinimap.CircleMask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
+								HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+							end
 							function GetMinimapShape() return "ROUND" end
 						end
 						local tbl = ldbi:GetButtonList()

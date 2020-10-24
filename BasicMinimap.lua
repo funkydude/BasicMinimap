@@ -208,9 +208,19 @@ function frame:PLAYER_LOGIN(event)
 	if shape == "SQUARE" then
 		Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 		mask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+		if HybridMinimap then
+			HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+			HybridMinimap.CircleMask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+			HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+		end
 	else
 		Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
 		mask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
+		if HybridMinimap then
+			HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+			HybridMinimap.CircleMask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
+			HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+		end
 	end
 
 	-- Removes the circular "waffle-like" texture that shows when using a non-circular minimap in the blue quest objective area.
@@ -535,3 +545,19 @@ function frame:PET_BATTLE_CLOSE()
 	frame.Show(Minimap)
 end
 frame:RegisterEvent("PET_BATTLE_CLOSE")
+
+function frame:PLAYER_ENTERING_WORLD() -- XXX Investigate if it's safe to unregister this after the first application
+	if C_Minimap.ShouldUseHybridMinimap() and HybridMinimap then
+		local shape = self.db.profile.shape
+		if shape == "SQUARE" then
+			HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+			HybridMinimap.CircleMask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+			HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+		else
+			HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+			HybridMinimap.CircleMask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
+			HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+		end
+	end
+end
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
