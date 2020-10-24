@@ -1,5 +1,5 @@
 ---
-name: Issue for WoW Classic
+name: Issue for Classic
 about: Create a report about Classic WoW
 title: ''
 labels: classic
