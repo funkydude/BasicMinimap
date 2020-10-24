@@ -231,9 +231,39 @@ local acOptions = {
 				},
 			},
 		},
+		clicks = {
+			name = L.clicks,
+			order = 2, type = "group",
+			args = {
+				clickHeaderDesc = {
+					name = "\n".. L.minimapClicks,
+					order = 1, type = "description",
+				},
+				calendarBtn = {
+					name = L.openCalendar,
+					order = 2, type = "select",
+					values = buttonValues,
+				},
+				trackingBtn = {
+					name = L.openTracking,
+					order = 3, type = "select",
+					values = buttonValues,
+				},
+				missionsBtn = {
+					name = L.openMissions,
+					order = 4, type = "select",
+					values = buttonValues,
+				},
+				mapBtn = {
+					name = L.openMap,
+					order = 5, type = "select",
+					values = buttonValues,
+				},
+			},
+		},
 		buttons = {
 			name = L.BUTTONS,
-			order = 2, type = "group",
+			order = 3, type = "group",
 			args = {
 				hideAddons = {
 					name = L.hideAddons,
@@ -376,7 +406,7 @@ local acOptions = {
 		},
 		text = {
 			name = L.text,
-			order = 3, type = "group", childGroups = "tab",
+			order = 4, type = "group", childGroups = "tab",
 			args = {
 				zonetext = {
 					name = L.ZONETEXT,
@@ -849,36 +879,6 @@ local acOptions = {
 							end,
 						},
 					},
-				},
-			},
-		},
-		clicks = {
-			name = L.clicks,
-			order = 4, type = "group",
-			args = {
-				clickHeaderDesc = {
-					name = "\n".. L.minimapClicks,
-					order = 1, type = "description",
-				},
-				calendarBtn = {
-					name = L.openCalendar,
-					order = 2, type = "select",
-					values = buttonValues,
-				},
-				trackingBtn = {
-					name = L.openTracking,
-					order = 3, type = "select",
-					values = buttonValues,
-				},
-				missionsBtn = {
-					name = L.openMissions,
-					order = 4, type = "select",
-					values = buttonValues,
-				},
-				mapBtn = {
-					name = L.openMap,
-					order = 5, type = "select",
-					values = buttonValues,
 				},
 			},
 		},
