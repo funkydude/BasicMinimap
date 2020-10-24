@@ -106,6 +106,12 @@ function frame:ADDON_LOADED(event, addon)
 			},
 		}
 		self.db = LibStub("AceDB-3.0"):New("BasicMinimapSV", defaults, true)
+		do
+			local t, rl = {}, function() ReloadUI() end
+			self.db.RegisterCallback(t, "OnProfileChanged", rl)
+			self.db.RegisterCallback(t, "OnProfileCopied", rl)
+			self.db.RegisterCallback(t, "OnProfileReset", rl)
+		end
 
 		-- Return minimap shape for other addons
 		if self.db.profile.shape ~= "ROUND" then
