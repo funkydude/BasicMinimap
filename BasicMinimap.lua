@@ -131,6 +131,12 @@ function frame:ADDON_LOADED(event, addon)
 end
 frame:RegisterEvent("ADDON_LOADED")
 
+frame.SetParent(Minimap, UIParent)
+-- Undo the damage caused by automagic fuckery when a frame changes parent
+-- In other words, restore the minimap defaults to what they were, when it was parented to MinimapCluster
+frame.SetFrameStrata(Minimap, "LOW")
+frame.SetFrameLevel(Minimap, 1)
+
 -- Enable
 function frame:PLAYER_LOGIN(event)
 	self:UnregisterEvent(event)
@@ -139,7 +145,6 @@ function frame:PLAYER_LOGIN(event)
 	self:CALENDAR_UPDATE_PENDING_INVITES()
 
 	local Minimap = Minimap
-	self.SetParent(Minimap, UIParent)
 	self.EnableMouse(MinimapCluster, false)
 
 	local tt = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
@@ -260,7 +265,7 @@ function frame:PLAYER_LOGIN(event)
 		local Parent = self.SetParent
 		Parent(MinimapZoneTextButton, self)
 		Parent(MinimapZoneText, self)
-		MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 784-786 as of wow 8.2
+		MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 719-722 script "<OnLoad>" as of wow 9.0.1
 		MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
 		MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
 		local function block(self)
@@ -296,7 +301,7 @@ function frame:PLAYER_LOGIN(event)
 	end
 	do
 		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, GetZonePVPInfo
-		local function update(self)
+		local function update(self) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
 			local text = GetMinimapZoneText()
 			zoneTextFont:SetText(text)
 
@@ -328,7 +333,7 @@ function frame:PLAYER_LOGIN(event)
 		end
 		update(zoneText)
 		zoneText:SetScript("OnEvent", update)
-		zoneText:SetScript("OnEnter", function(self)
+		zoneText:SetScript("OnEnter", function(self) -- Minimap.lua line 68 function "Minimap_SetTooltip" as of wow 9.0.1
 			tt:SetOwner(self, "ANCHOR_LEFT")
 			local pvpType, _, factionName = GetZonePVPInfo()
 			local zoneName = GetZoneText()
