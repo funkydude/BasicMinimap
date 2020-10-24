@@ -13,7 +13,3 @@ externals:
 
 move-folders:
     BasicMinimap/Options: BasicMinimap_Options
-
-ignore:
-  - .travis.yml
-  - README.md
