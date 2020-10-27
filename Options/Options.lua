@@ -552,7 +552,7 @@ local acOptions = {
 							end,
 						},
 						colorDesc = {
-							name = L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.normal),
+							name = function() return L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.normal) end,
 							order = 9.5, type = "description", width = "full", 
 						},
 						colorNormal = {
@@ -563,6 +563,7 @@ local acOptions = {
 								map.db.profile.zoneTextConfig.colorNormal = {r, g, b, a}
 								UpdateZoneText()
 							end,
+							disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 						},
 						colorSanctuary = {
 							name = L.sanctuary,
@@ -572,6 +573,7 @@ local acOptions = {
 								map.db.profile.zoneTextConfig.colorSanctuary = {r, g, b, a}
 								UpdateZoneText()
 							end,
+							disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 						},
 						colorArena = {
 							name = L.arena,
@@ -581,6 +583,7 @@ local acOptions = {
 								map.db.profile.zoneTextConfig.colorArena = {r, g, b, a}
 								UpdateZoneText()
 							end,
+							disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 						},
 						colorFriendly = {
 							name = L.friendly,
@@ -590,6 +593,7 @@ local acOptions = {
 								map.db.profile.zoneTextConfig.colorFriendly = {r, g, b, a}
 								UpdateZoneText()
 							end,
+							disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 						},
 						colorHostile = {
 							name = L.hostile,
@@ -599,6 +603,7 @@ local acOptions = {
 								map.db.profile.zoneTextConfig.colorHostile = {r, g, b, a}
 								UpdateZoneText()
 							end,
+							disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 						},
 						colorContested = {
 							name = L.contested,
@@ -607,6 +612,39 @@ local acOptions = {
 							set = function(_, r, g, b, a)
 								map.db.profile.zoneTextConfig.colorContested = {r, g, b, a}
 								UpdateZoneText()
+							end,
+							disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
+						},
+						classcolor = {
+							name = L.CLASSCOLORED,
+							order = 16, type = "toggle",
+							set = function(_, value)
+								map.db.profile.zoneTextConfig.classcolor = value
+								if value then
+									local _, class = UnitClass("player")
+									local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+									local a = map.db.profile.zoneTextConfig.colorNormal[4]
+									map.db.profile.zoneTextConfig.colorNormal = {color.r, color.g, color.b, a}
+									a = map.db.profile.zoneTextConfig.colorSanctuary[4]
+									map.db.profile.zoneTextConfig.colorSanctuary = {color.r, color.g, color.b, a}
+									a = map.db.profile.zoneTextConfig.colorArena[4]
+									map.db.profile.zoneTextConfig.colorArena = {color.r, color.g, color.b, a}
+									a = map.db.profile.zoneTextConfig.colorFriendly[4]
+									map.db.profile.zoneTextConfig.colorFriendly = {color.r, color.g, color.b, a}
+									a = map.db.profile.zoneTextConfig.colorHostile[4]
+									map.db.profile.zoneTextConfig.colorHostile = {color.r, color.g, color.b, a}
+									a = map.db.profile.zoneTextConfig.colorContested[4]
+									map.db.profile.zoneTextConfig.colorContested = {color.r, color.g, color.b, a}
+									UpdateZoneText()
+								else
+									map.db.profile.zoneTextConfig.colorNormal = {1, 0.82, 0, 1}
+									map.db.profile.zoneTextConfig.colorSanctuary = {0.41, 0.8, 0.94, 1}
+									map.db.profile.zoneTextConfig.colorArena = {1.0, 0.1, 0.1, 1}
+									map.db.profile.zoneTextConfig.colorFriendly = {0.1, 1.0, 0.1, 1}
+									map.db.profile.zoneTextConfig.colorHostile = {1.0, 0.1, 0.1, 1}
+									map.db.profile.zoneTextConfig.colorContested = {1.0, 0.7, 0.0, 1}
+									UpdateZoneText()
+								end
 							end,
 						},
 					},
@@ -755,6 +793,24 @@ local acOptions = {
 								map.db.profile.clockConfig.color = {r, g, b, a}
 								map.clock.text:SetTextColor(r, g, b, a)
 							end,
+							disabled = function() return map.db.profile.clockConfig.classcolor end,
+						},
+						classcolor = {
+							name = L.CLASSCOLORED,
+							order = 11, type = "toggle",
+							set = function(_, value)
+								map.db.profile.clockConfig.classcolor = value
+								if value then
+									local _, class = UnitClass("player")
+									local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+									local a = map.db.profile.clockConfig.color[4]
+									map.db.profile.clockConfig.color = {color.r, color.g, color.b, a}
+									map.clock.text:SetTextColor(color.r, color.g, color.b, a)
+								else
+									map.db.profile.clockConfig.color = {1, 1, 1, 1}
+									map.clock.text:SetTextColor(1, 1, 1, 1)
+								end
+							end,
 						},
 					},
 				},
@@ -901,6 +957,24 @@ local acOptions = {
 							set = function(_, r, g, b, a)
 								map.db.profile.coordsConfig.color = {r, g, b, a}
 								map.coords:SetTextColor(r, g, b, a)
+							end,
+							disabled = function() return map.db.profile.coordsConfig.classcolor end,
+						},
+						classcolor = {
+							name = L.CLASSCOLORED,
+							order = 11, type = "toggle",
+							set = function(_, value)
+								map.db.profile.coordsConfig.classcolor = value
+								if value then
+									local _, class = UnitClass("player")
+									local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
+									local a = map.db.profile.coordsConfig.color[4]
+									map.db.profile.coordsConfig.color = {color.r, color.g, color.b, a}
+									map.coords:SetTextColor(color.r, color.g, color.b, a)
+								else
+									map.db.profile.coordsConfig.color = {1, 1, 1, 1}
+									map.coords:SetTextColor(1, 1, 1, 1)
+								end
 							end,
 						},
 					},

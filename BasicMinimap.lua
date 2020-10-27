@@ -82,6 +82,7 @@ local function Init(self)
 				colorFriendly = {0.1, 1.0, 0.1, 1},
 				colorHostile = {1.0, 0.1, 0.1, 1},
 				colorContested = {1.0, 0.7, 0.0, 1},
+				classcolor = false,
 			},
 			coordsConfig = {
 				x = 0,
@@ -92,6 +93,7 @@ local function Init(self)
 				monochrome = false,
 				outline = "OUTLINE",
 				color = {1,1,1,1},
+				classcolor = false,
 			},
 			clockConfig = {
 				x = 0,
@@ -102,6 +104,7 @@ local function Init(self)
 				monochrome = false,
 				outline = "OUTLINE",
 				color = {1,1,1,1},
+				classcolor = false,
 			},
 		},
 	}
@@ -440,13 +443,37 @@ local function Login(self)
 
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 
-	-- Backdrop, creating the border cleanly
-	if self.db.profile.classcolor then
+	do
 		local _, class = UnitClass("player")
 		local color = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-		local a = self.db.profile.colorBorder[4]
-		self.db.profile.colorBorder = {color.r, color.g, color.b, a}
+		if self.db.profile.classcolor then
+			local a = self.db.profile.colorBorder[4]
+			self.db.profile.colorBorder = {color.r, color.g, color.b, a}
+		end
+		if self.db.profile.coordsConfig.classcolor then
+			local a = self.db.profile.coordsConfig.color[4]
+			self.db.profile.coordsConfig.color = {color.r, color.g, color.b, a}
+		end
+		if self.db.profile.clockConfig.classcolor then
+			local a = self.db.profile.clockConfig.color[4]
+			self.db.profile.clockConfig.color = {color.r, color.g, color.b, a}
+		end
+		if self.db.profile.zoneTextConfig.classcolor then
+			local a = self.db.profile.zoneTextConfig.colorNormal[4]
+			self.db.profile.zoneTextConfig.colorNormal = {color.r, color.g, color.b, a}
+			a = self.db.profile.zoneTextConfig.colorSanctuary[4]
+			self.db.profile.zoneTextConfig.colorSanctuary = {color.r, color.g, color.b, a}
+			a = self.db.profile.zoneTextConfig.colorArena[4]
+			self.db.profile.zoneTextConfig.colorArena = {color.r, color.g, color.b, a}
+			a = self.db.profile.zoneTextConfig.colorFriendly[4]
+			self.db.profile.zoneTextConfig.colorFriendly = {color.r, color.g, color.b, a}
+			a = self.db.profile.zoneTextConfig.colorHostile[4]
+			self.db.profile.zoneTextConfig.colorHostile = {color.r, color.g, color.b, a}
+			a = self.db.profile.zoneTextConfig.colorContested[4]
+			self.db.profile.zoneTextConfig.colorContested = {color.r, color.g, color.b, a}
+		end
 	end
+	-- Backdrop, creating the border cleanly
 	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
 	backdrop:SetPoint("CENTER", Minimap, "CENTER")
 	backdrop:SetSize(fullMinimapSize, fullMinimapSize)
