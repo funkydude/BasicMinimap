@@ -172,7 +172,6 @@ local function CreateClock(self, Minimap, backdrop)
 		clockButton:SetParent(self)
 	end
 	do
-		clockButton.warmup = true
 		local function updateClock()
 			C_Timer.After(60, updateClock)
 			local hour, minute = 0, 0
@@ -209,7 +208,6 @@ local function CreateClock(self, Minimap, backdrop)
 			if prevMin == -1 then
 				prevMin = minute
 			elseif minute ~= prevMin then
-				clockButton.warmup = nil
 				warmupClock = nil
 				updateClock()
 				return

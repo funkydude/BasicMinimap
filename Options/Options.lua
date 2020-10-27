@@ -69,6 +69,26 @@ local function UpdateZoneText()
 	end
 end
 
+local function UpdateClock()
+	local hour, minute = 0, 0
+	if GetCVarBool("timeMgrUseLocalTime") then
+		hour, minute = tonumber(date("%H")), tonumber(date("%M"))
+	else
+		hour, minute = GetGameTime()
+	end
+
+	if GetCVarBool("timeMgrUseMilitaryTime") then
+		map.clock.text:SetFormattedText(TIMEMANAGER_TICKER_24HOUR, hour, minute)
+	else
+		if hour == 0 then
+			hour = 12
+		elseif hour > 12 then
+			hour = hour - 12
+		end
+		map.clock.text:SetFormattedText(TIMEMANAGER_TICKER_12HOUR, hour, minute)
+	end
+end
+
 local acOptions = {
 	name = "BasicMinimap",
 	type = "group", childGroups = "tab",
@@ -94,6 +114,7 @@ local acOptions = {
 						map.db.profile.colorBorder = {r, g, b, a}
 						map.backdrop:SetColorTexture(r, g, b, a)
 					end,
+					disabled = function() return map.db.profile.classcolor end,
 				},
 				classcolor = {
 					name = L.CLASSCOLORED,
@@ -219,9 +240,10 @@ local acOptions = {
 						map.SetPoint(Minimap, map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
 						map.db.profile.scale = value
 						-- Fix Size (Clock)
-						TimeManagerClockTicker:SetText("99:99")
-						local width = TimeManagerClockTicker:GetUnboundedStringWidth()
-						map.SetWidth(TimeManagerClockButton, width + 5)
+						map.clock.text:SetText("99:99")
+						local width = map.clock.text:GetUnboundedStringWidth()
+						map.clock:SetWidth(width + 5)
+						UpdateClock()
 						-- Fix size (Coords)
 						map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
 						local width = map.coords:GetUnboundedStringWidth()
@@ -365,7 +387,7 @@ local acOptions = {
 					order = 8, type = "toggle",
 					set = function(_, value)
 						map.db.profile.clock = value
-						map.SetParent(TimeManagerClockButton, value and Minimap or map)
+						map.clock:SetParent(value and Minimap or map)
 					end,
 				},
 				coords = {
@@ -607,8 +629,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.clockConfig.x = value
-								map.ClearAllPoints(TimeManagerClockButton)
-								map.SetPoint(TimeManagerClockButton, "TOPLEFT", map.backdrop, "BOTTOMLEFT", value, map.db.profile.clockConfig.y)
+								map.clock:ClearAllPoints()
+								map.clock:SetPoint("TOPLEFT", map.backdrop, "BOTTOMLEFT", value, map.db.profile.clockConfig.y)
 							end,
 						},
 						y = {
@@ -622,8 +644,8 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.clockConfig.y = value
-								map.ClearAllPoints(TimeManagerClockButton)
-								map.SetPoint(TimeManagerClockButton, "TOPLEFT", map.backdrop, "BOTTOMLEFT", map.db.profile.clockConfig.x, value)
+								map.clock:ClearAllPoints()
+								map.clock:SetPoint("TOPLEFT", map.backdrop, "BOTTOMLEFT", map.db.profile.clockConfig.x, value)
 							end,
 						},
 						align = {
@@ -637,7 +659,7 @@ local acOptions = {
 							},
 							set = function(_, value)
 								map.db.profile.clockConfig.align = value
-								TimeManagerClockTicker:SetJustifyH(value)
+								map.clock.text:SetJustifyH(value)
 							end,
 						},
 						reset = {
@@ -647,9 +669,9 @@ local acOptions = {
 								map.db.profile.clockConfig.x = 0
 								map.db.profile.clockConfig.y = -4
 								map.db.profile.clockConfig.align = "LEFT"
-								TimeManagerClockTicker:SetJustifyH(map.db.profile.clockConfig.align)
-								map.ClearAllPoints(TimeManagerClockButton)
-								map.SetPoint(TimeManagerClockButton, "TOPLEFT", map.backdrop, "BOTTOMLEFT", map.db.profile.clockConfig.x, map.db.profile.clockConfig.y)
+								map.clock.text:SetJustifyH(map.db.profile.clockConfig.align)
+								map.clock:ClearAllPoints()
+								map.clock:SetPoint("TOPLEFT", map.backdrop, "BOTTOMLEFT", map.db.profile.clockConfig.x, map.db.profile.clockConfig.y)
 							end,
 						},
 						spacer = {
@@ -671,11 +693,12 @@ local acOptions = {
 								local list = media:List("font")
 								local font = list[value]
 								map.db.profile.clockConfig.font = font
-								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								UpdateFont(map.clock.text, map.db.profile.clockConfig)
 								-- Fix Size
-								TimeManagerClockTicker:SetText("99:99")
-								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
-								map.SetWidth(TimeManagerClockButton, width + 5)
+								map.clock.text:SetText("99:99")
+								local width = map.clock.text:GetUnboundedStringWidth()
+								map.clock:SetWidth(width + 5)
+								UpdateClock()
 							end,
 						},
 						fontSize = {
@@ -687,12 +710,13 @@ local acOptions = {
 							step = 1,
 							set = function(_, value)
 								map.db.profile.clockConfig.fontSize = value
-								map.SetHeight(TimeManagerClockButton, value)
-								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								map.clock:SetHeight(value)
+								UpdateFont(map.clock.text, map.db.profile.clockConfig)
 								-- Fix Size
-								TimeManagerClockTicker:SetText("99:99")
-								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
-								map.SetWidth(TimeManagerClockButton, width + 5)
+								map.clock.text:SetText("99:99")
+								local width = map.clock.text:GetUnboundedStringWidth()
+								map.clock:SetWidth(width + 5)
+								UpdateClock()
 							end,
 						},
 						monochrome = {
@@ -701,7 +725,7 @@ local acOptions = {
 							order = 8,
 							set = function(_, value)
 								map.db.profile.clockConfig.monochrome = value
-								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								UpdateFont(map.clock.text, map.db.profile.clockConfig)
 							end,
 						},
 						outline = {
@@ -715,11 +739,12 @@ local acOptions = {
 							},
 							set = function(_, value)
 								map.db.profile.clockConfig.outline = value
-								UpdateFont(TimeManagerClockTicker, map.db.profile.clockConfig)
+								UpdateFont(map.clock.text, map.db.profile.clockConfig)
 								-- Fix Size
-								TimeManagerClockTicker:SetText("99:99")
-								local width = TimeManagerClockTicker:GetUnboundedStringWidth()
-								map.SetWidth(TimeManagerClockButton, width + 5)
+								map.clock.text:SetText("99:99")
+								local width = map.clock.text:GetUnboundedStringWidth()
+								map.clock:SetWidth(width + 5)
+								UpdateClock()
 							end,
 						},
 						color = {
@@ -728,7 +753,7 @@ local acOptions = {
 							get = function() return unpack(map.db.profile.clockConfig.color) end,
 							set = function(_, r, g, b, a)
 								map.db.profile.clockConfig.color = {r, g, b, a}
-								TimeManagerClockTicker:SetTextColor(r, g, b, a)
+								map.clock.text:SetTextColor(r, g, b, a)
 							end,
 						},
 					},
