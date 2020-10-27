@@ -517,7 +517,8 @@ local function Login(self)
 	end
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
 	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
-	self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
+	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
+	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
 	self.SetParent(MinimapBorderTop, self) -- Zone text border
 	self.SetParent(MinimapBorder, self) -- Minimap border
 
