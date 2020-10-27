@@ -127,12 +127,6 @@ local function Init(self)
 		end
 		ldbi.RegisterCallback(self, "LibDBIcon_IconCreated", "HideButtons")
 	end
-
-	-- XXX temp 8.2.0
-	self.db.profile.fontSize = nil
-	self.db.profile.outline = nil
-	self.db.profile.monochrome = nil
-	self.db.profile.font = nil
 end
 
 local function CreateClock(self, Minimap, backdrop)
