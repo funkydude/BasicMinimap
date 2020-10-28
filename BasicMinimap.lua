@@ -35,11 +35,28 @@ function frame:HideButtons(_, _, name)
 	ldbi:ShowOnEnter(name, true)
 end
 
+local Minimap = Minimap
 frame.SetParent(Minimap, UIParent)
 -- Undo the damage caused by automagic fuckery when a frame changes parent
 -- In other words, restore the minimap defaults to what they were, when it was parented to MinimapCluster
-frame.SetFrameStrata(Minimap, "LOW")
+frame.SetFrameStrata(Minimap, "LOW") -- Blizz Defaults patch 9.0.1 Minimap.xml
 frame.SetFrameLevel(Minimap, 1)
+
+-- This should never run as we should always load before it... unless someone force loads it early
+-- If they did, the strata/level would also mess up from changing Minimap parent, so we restore it
+if HybridMinimap then
+	HybridMinimap:SetFrameStrata("BACKGROUND") -- Blizz Defaults patch 9.0.1 Blizzard_HybridMinimap.xml
+	HybridMinimap:SetFrameLevel(100)
+end
+
+local backdropFrame = CreateFrame("Frame")
+backdropFrame:SetParent(Minimap)
+-- With the introduction of the HybridMinimap at BACKGROUND level 100, we need to create our backdrop lower
+backdropFrame:SetFrameStrata("BACKGROUND")
+backdropFrame:SetFrameLevel(1)
+backdropFrame:Show()
+local backdrop = backdropFrame:CreateTexture(nil, "BACKGROUND")
+backdrop:SetPoint("CENTER", Minimap, "CENTER")
 
 -- Init
 local function Init(self)
@@ -132,7 +149,7 @@ local function Init(self)
 	end
 end
 
-local function CreateClock(self, Minimap, backdrop)
+local function CreateClock(self)
 	local clockButton = CreateFrame("Button", nil, Minimap) -- Create our own clock
 	local clockFont = clockButton:CreateFontString()
 
@@ -259,7 +276,7 @@ local function CreateClock(self, Minimap, backdrop)
 	self.clock.text = clockFont
 end
 
-local function CreateZoneText(self, Minimap, backdrop, fullMinimapSize)
+local function CreateZoneText(self, fullMinimapSize)
 	local zoneText = CreateFrame("Button", nil, Minimap) -- Create our own zone text
 	local zoneTextFont = zoneText:CreateFontString()
 
@@ -379,7 +396,7 @@ local function CreateZoneText(self, Minimap, backdrop, fullMinimapSize)
 	self.zonetext.text = zoneTextFont
 end
 
-local function CreateCoords(self, Minimap, backdrop)
+local function CreateCoords(self)
 	-- Coords
 	local coords = self:CreateFontString()
 	if not self.db.profile.coords then
@@ -438,9 +455,7 @@ end
 local function Login(self)
 	self:CALENDAR_UPDATE_PENDING_INVITES()
 
-	local Minimap = Minimap
 	self.EnableMouse(MinimapCluster, false)
-
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 
 	do
@@ -474,13 +489,11 @@ local function Login(self)
 		end
 	end
 	-- Backdrop, creating the border cleanly
-	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
-	backdrop:SetPoint("CENTER", Minimap, "CENTER")
 	backdrop:SetSize(fullMinimapSize, fullMinimapSize)
 	backdrop:SetColorTexture(unpack(self.db.profile.colorBorder))
-	local mask = self:CreateMaskTexture()
+	local mask = backdropFrame:CreateMaskTexture()
 	mask:SetAllPoints(backdrop)
-	mask:SetParent(Minimap)
+	mask:SetParent(backdropFrame)
 	backdrop:AddMaskTexture(mask)
 	frame.backdrop = backdrop
 	frame.mask = mask
@@ -559,9 +572,9 @@ local function Login(self)
 	-- World map button
 	self.SetParent(MiniMapWorldMapButton, self)
 
-	CreateClock(self, Minimap, backdrop)
-	CreateZoneText(self, Minimap, backdrop, fullMinimapSize)
-	CreateCoords(self, Minimap, backdrop)
+	CreateClock(self)
+	CreateZoneText(self, fullMinimapSize)
+	CreateCoords(self)
 
 	-- Tracking button
 	self.SetParent(MiniMapTracking, self)
@@ -671,8 +684,9 @@ function frame:PET_BATTLE_CLOSE()
 end
 frame:RegisterEvent("PET_BATTLE_CLOSE")
 
-function frame:PLAYER_ENTERING_WORLD() -- XXX Investigate if it's safe to unregister this after the first application
-	if C_Minimap.ShouldUseHybridMinimap() and HybridMinimap then
+function frame:ADDON_LOADED(event, addon)
+	if addon == "Blizzard_HybridMinimap" then
+		self:UnregisterEvent(event)
 		local shape = self.db.profile.shape
 		if shape == "SQUARE" then
 			HybridMinimap.MapCanvas:SetUseMaskTexture(false)
@@ -685,19 +699,20 @@ function frame:PLAYER_ENTERING_WORLD() -- XXX Investigate if it's safe to unregi
 		end
 	end
 end
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("ADDON_LOADED")
 
 frame:SetScript("OnEvent", function(self, event, addon)
 	if event == "ADDON_LOADED" and addon == "BasicMinimap" then
-		self:UnregisterEvent(event)
+		if HybridMinimap then -- It somehow loaded before us
+			self:UnregisterEvent(event) -- The mask will be applied in Login() so unregister
+		end
 		Init(self)
 	elseif event == "PLAYER_LOGIN" then
 		self:UnregisterEvent(event)
 		Login(self)
-		self:SetScript("OnEvent", function(s, e)
-			s[e](s)
+		self:SetScript("OnEvent", function(s, e, a)
+			s[e](s, e, a)
 		end)
 	end
 end)
-frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_LOGIN")
