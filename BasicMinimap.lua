@@ -165,8 +165,8 @@ local function Init(self)
 	end
 end
 
-local function CreateClock(self)
-	local clockButton = CreateFrame("Button", nil, Minimap) -- Create our own clock
+local function CreateClock(self) -- Create our own clock
+	local clockButton = CreateFrame("Button", nil, Minimap) -- Having a nil frame name prevents minimap button grabbing addons mistaking it for an addon button
 	local clockFont = clockButton:CreateFontString()
 
 	do
@@ -292,8 +292,8 @@ local function CreateClock(self)
 	self.clock.text = clockFont
 end
 
-local function CreateZoneText(self, fullMinimapSize)
-	local zoneText = CreateFrame("Button", nil, Minimap) -- Create our own zone text
+local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
+	local zoneText = CreateFrame("Button", nil, Minimap) -- Having a nil frame name prevents minimap button grabbing addons mistaking it for an addon button
 	local zoneTextFont = zoneText:CreateFontString()
 
 	do
