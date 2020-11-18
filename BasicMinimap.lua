@@ -42,34 +42,19 @@ end
 if frame.GetFrameLevel(Minimap) ~= 2 then
 	frame.SetFrameLevel(Minimap, 2) -- Blizz Defaults patch 9.0.1 Minimap.xml
 end
-if frame.SetFixedFrameStrata then -- Compat
-	frame.SetFixedFrameStrata(Minimap, true)
-	frame.SetFixedFrameLevel(Minimap, true)
-	frame.SetParent(Minimap, UIParent)
-else
-	frame.SetParent(Minimap, UIParent)
-	-- Undo the damage caused by automagic fuckery when a frame changes parent
-	-- In other words, restore the minimap defaults to what they were, when it was parented to MinimapCluster
-	frame.SetFrameStrata(Minimap, "LOW")
-	frame.SetFrameLevel(Minimap, 2)
 
-	-- This should never run as we should always load before it... unless someone force loads it early
-	-- If they did, the strata/level would also mess up from changing Minimap parent, so we restore it
-	if HybridMinimap then
-		HybridMinimap:SetFrameStrata("BACKGROUND") -- Blizz Defaults patch 9.0.1 Blizzard_HybridMinimap.xml
-		HybridMinimap:SetFrameLevel(100)
-	end
-end
+-- Prevent the damage caused by automagic fuckery when a frame changes parent by locking the strata/level in place
+frame.SetFixedFrameStrata(Minimap, true)
+frame.SetFixedFrameLevel(Minimap, true)
+frame.SetParent(Minimap, UIParent)
 
 local backdropFrame = CreateFrame("Frame")
 backdropFrame:SetParent(Minimap)
 -- With the introduction of the HybridMinimap at BACKGROUND level 100, we need to create our backdrop lower
 backdropFrame:SetFrameStrata("BACKGROUND")
 backdropFrame:SetFrameLevel(1)
-if backdropFrame.SetFixedFrameStrata then -- Compat
-	backdropFrame:SetFixedFrameStrata(true)
-	backdropFrame:SetFixedFrameLevel(true)
-end
+backdropFrame:SetFixedFrameStrata(true)
+backdropFrame:SetFixedFrameLevel(true)
 backdropFrame:Show()
 local backdrop = backdropFrame:CreateTexture(nil, "BACKGROUND")
 backdrop:SetPoint("CENTER", Minimap, "CENTER")
