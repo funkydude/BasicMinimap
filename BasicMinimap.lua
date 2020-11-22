@@ -573,10 +573,6 @@ local function Login(self)
 	-- World map button
 	self.SetParent(MiniMapWorldMapButton, self)
 
-	CreateClock(self)
-	CreateZoneText(self, fullMinimapSize)
-	CreateCoords(self)
-
 	-- Tracking button
 	self.SetParent(MiniMapTracking, self)
 
@@ -701,6 +697,16 @@ function frame:ADDON_LOADED(event, addon)
 	end
 end
 frame:RegisterEvent("ADDON_LOADED")
+
+-- Hopefully temporary workaround for :GetUnboundedStringWidth returning 0 for foreign fonts at PLAYER_LOGIN on a cold boot, issue #19
+function frame:LOADING_SCREEN_DISABLED(event)
+	self:UnregisterEvent(event)
+	CreateClock(self)
+	CreateCoords(self)
+	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
+	CreateZoneText(self, fullMinimapSize)
+end
+frame:RegisterEvent("LOADING_SCREEN_DISABLED")
 
 frame:SetScript("OnEvent", function(self, event, addon)
 	if event == "ADDON_LOADED" and addon == "BasicMinimap" then
