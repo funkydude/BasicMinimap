@@ -247,24 +247,50 @@ local function CreateClock(self) -- Create our own clock
 		end
 		warmupClock()
 	end
-	clockButton:SetScript("OnEnter", function(self) -- Blizzard_TimeManager.lua line 428 function "TimeManagerClockButton_OnEnter" as of wow 9.0.1
-		bmTooltip:SetOwner(self, "ANCHOR_LEFT")
-		-- GameTime.lua line 107 function "GameTime_UpdateTooltip" as of wow 9.0.1
-		bmTooltip:AddLine(TIMEMANAGER_TOOLTIP_TITLE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-		bmTooltip:AddDoubleLine( -- Realm
-			TIMEMANAGER_TOOLTIP_REALMTIME,
-			GameTime_GetGameTime(true),
-			NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b,
-			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-		bmTooltip:AddDoubleLine( -- Local
-			TIMEMANAGER_TOOLTIP_LOCALTIME,
-			GameTime_GetLocalTime(true),
-			NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b,
-			HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-		bmTooltip:AddLine(" ")
-		bmTooltip:AddLine(GAMETIME_TOOLTIP_TOGGLE_CLOCK)
-		bmTooltip:Show()
-	end)
+	do
+		local CALENDAR_MONTH_NAMES = {
+			MONTH_JANUARY,
+			MONTH_FEBRUARY,
+			MONTH_MARCH,
+			MONTH_APRIL,
+			MONTH_MAY,
+			MONTH_JUNE,
+			MONTH_JULY,
+			MONTH_AUGUST,
+			MONTH_SEPTEMBER,
+			MONTH_OCTOBER,
+			MONTH_NOVEMBER,
+			MONTH_DECEMBER,
+		}
+		clockButton:SetScript("OnEnter", function(self) -- Blizzard_TimeManager.lua line 428 function "TimeManagerClockButton_OnEnter" as of wow 9.0.1
+			local whiteR, whiteG, whiteB = HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b
+			local normalR, normalG, normalB = NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b
+
+			local dateTbl = date("*t")
+			local d, m, y = dateTbl.day, dateTbl.month, dateTbl.year
+			local dateDisplay = ("%d %s %d"):format(d, CALENDAR_MONTH_NAMES[m], y)
+
+			bmTooltip:SetOwner(self, "ANCHOR_LEFT")
+			-- GameTime.lua line 107 function "GameTime_UpdateTooltip" as of wow 9.0.1
+			bmTooltip:AddLine(TIMEMANAGER_TOOLTIP_TITLE, whiteR, whiteG, whiteB)
+			bmTooltip:AddDoubleLine( -- Realm
+				TIMEMANAGER_TOOLTIP_REALMTIME,
+				GameTime_GetGameTime(true),
+				normalR, normalG, normalB,
+				whiteR, whiteG, whiteB)
+			bmTooltip:AddDoubleLine( -- Local
+				TIMEMANAGER_TOOLTIP_LOCALTIME,
+				GameTime_GetLocalTime(true),
+				normalR, normalG, normalB,
+				whiteR, whiteG, whiteB)
+			bmTooltip:AddLine(" ")
+			bmTooltip:AddLine(dateDisplay, whiteR, whiteG, whiteB)
+			bmTooltip:AddLine(" ")
+
+			bmTooltip:AddLine(GAMETIME_TOOLTIP_TOGGLE_CLOCK)
+			bmTooltip:Show()
+		end)
+	end
 	clockButton:SetScript("OnLeave", function() bmTooltip:Hide() end)
 	clockButton:SetScript("OnClick", function()
 		if TimeManagerFrame:IsShown() then
