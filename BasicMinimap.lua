@@ -349,7 +349,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 	end
 	do
 		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, GetZonePVPInfo
-		local function update(self) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
+		local function UpdateDisplay(self) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
 			local text = GetMinimapZoneText()
 			zoneTextFont:SetText(text)
 
@@ -379,8 +379,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 				self:GetScript("OnEnter")(self)
 			end
 		end
-		update(zoneText)
-		zoneText:SetScript("OnEvent", update)
+		zoneText:SetScript("OnEvent", UpdateDisplay)
 		zoneText:SetScript("OnEnter", function(self) -- Minimap.lua line 68 function "Minimap_SetTooltip" as of wow 9.0.1
 			bmTooltip:SetOwner(self, "ANCHOR_LEFT")
 			local pvpType, _, factionName = GetZonePVPInfo()
@@ -418,6 +417,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 			bmTooltip:Show()
 		end)
 		zoneText:SetScript("OnLeave", function() bmTooltip:Hide() end)
+		UpdateDisplay(zoneText)
 	end
 	self.zonetext = zoneText
 	self.zonetext.text = zoneTextFont
