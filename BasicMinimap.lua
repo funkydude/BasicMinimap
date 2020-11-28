@@ -31,8 +31,8 @@ do
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 end
 
-function frame:HideButtons(_, _, name)
-	ldbi:ShowOnEnter(name, true)
+function frame:HideButtons(_, _, iconName)
+	ldbi:ShowOnEnter(iconName, true)
 end
 
 local Minimap = Minimap
@@ -158,11 +158,11 @@ local function CreateClock(self) -- Create our own clock
 		-- Kill Blizz Frame
 		clockButton.SetParent(TimeManagerClockButton, self)
 		clockFont.SetParent(TimeManagerClockTicker, self)
-		local function blockBtn(self)
-			clockButton.SetParent(self, frame)
+		local function blockBtn(TimeManagerClockButton)
+			clockButton.SetParent(TimeManagerClockButton, frame)
 		end
-		local function blockText(self)
-			clockFont.SetParent(self, frame)
+		local function blockText(TimeManagerClockTicker)
+			clockFont.SetParent(TimeManagerClockTicker, frame)
 		end
 		hooksecurefunc(TimeManagerClockButton, "SetParent", blockBtn)
 		hooksecurefunc(TimeManagerClockTicker, "SetParent", blockText)
@@ -262,7 +262,7 @@ local function CreateClock(self) -- Create our own clock
 			MONTH_NOVEMBER,
 			MONTH_DECEMBER,
 		}
-		clockButton:SetScript("OnEnter", function(self) -- Blizzard_TimeManager.lua line 428 function "TimeManagerClockButton_OnEnter" as of wow 9.0.1
+		clockButton:SetScript("OnEnter", function(clockButtonFrame) -- Blizzard_TimeManager.lua line 428 function "TimeManagerClockButton_OnEnter" as of wow 9.0.1
 			local whiteR, whiteG, whiteB = HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b
 			local normalR, normalG, normalB = NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b
 
@@ -270,7 +270,7 @@ local function CreateClock(self) -- Create our own clock
 			local d, m, y = dateTbl.day, dateTbl.month, dateTbl.year
 			local dateDisplay = ("%d %s %d"):format(d, CALENDAR_MONTH_NAMES[m], y)
 
-			bmTooltip:SetOwner(self, "ANCHOR_LEFT")
+			bmTooltip:SetOwner(clockButtonFrame, "ANCHOR_LEFT")
 			-- GameTime.lua line 107 function "GameTime_UpdateTooltip" as of wow 9.0.1
 			bmTooltip:AddLine(TIMEMANAGER_TOOLTIP_TITLE, whiteR, whiteG, whiteB)
 			bmTooltip:AddDoubleLine( -- Realm
@@ -314,11 +314,11 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 		MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 719-722 script "<OnLoad>" as of wow 9.0.1
 		MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
 		MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
-		local function blockBtn(self)
-			zoneText.SetParent(self, frame)
+		local function blockBtn(MinimapZoneTextButton)
+			zoneText.SetParent(MinimapZoneTextButton, frame)
 		end
-		local function blockText(self)
-			zoneTextFont.SetParent(self, frame)
+		local function blockText(MinimapZoneText)
+			zoneTextFont.SetParent(MinimapZoneText, frame)
 		end
 		hooksecurefunc(MinimapZoneTextButton, "SetParent", blockBtn)
 		hooksecurefunc(MinimapZoneText, "SetParent", blockText)
@@ -349,7 +349,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 	end
 	do
 		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, GetZonePVPInfo
-		local function UpdateDisplay(self) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
+		local function UpdateDisplay(zoneTextFrame) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
 			local text = GetMinimapZoneText()
 			zoneTextFont:SetText(text)
 
@@ -374,14 +374,14 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 				zoneTextFont:SetTextColor(c[1], c[2], c[3], c[4])
 			end
 
-			if self:IsMouseOver() then
-				self:GetScript("OnLeave")()
-				self:GetScript("OnEnter")(self)
+			if zoneTextFrame:IsMouseOver() then
+				zoneTextFrame:GetScript("OnLeave")()
+				zoneTextFrame:GetScript("OnEnter")(zoneTextFrame)
 			end
 		end
 		zoneText:SetScript("OnEvent", UpdateDisplay)
-		zoneText:SetScript("OnEnter", function(self) -- Minimap.lua line 68 function "Minimap_SetTooltip" as of wow 9.0.1
-			bmTooltip:SetOwner(self, "ANCHOR_LEFT")
+		zoneText:SetScript("OnEnter", function(zoneTextFrame) -- Minimap.lua line 68 function "Minimap_SetTooltip" as of wow 9.0.1
+			bmTooltip:SetOwner(zoneTextFrame, "ANCHOR_LEFT")
 			local pvpType, _, factionName = GetZonePVPInfo()
 			local zoneName = GetZoneText()
 			local subzoneName = GetSubZoneText()
@@ -398,12 +398,12 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 			elseif pvpType == "friendly" then
 				if factionName and factionName ~= "" then
 					bmTooltip:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorFriendly))
-					bmTooltip:AddLine(format(FACTION_CONTROLLED_TERRITORY, factionName), unpack(frame.db.profile.zoneTextConfig.colorFriendly))
+					bmTooltip:AddLine((FACTION_CONTROLLED_TERRITORY):format(factionName), unpack(frame.db.profile.zoneTextConfig.colorFriendly))
 				end
 			elseif pvpType == "hostile" then
 				if factionName and factionName ~= "" then
 					bmTooltip:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorHostile))
-					bmTooltip:AddLine(format(FACTION_CONTROLLED_TERRITORY, factionName), unpack(frame.db.profile.zoneTextConfig.colorHostile))
+					bmTooltip:AddLine((FACTION_CONTROLLED_TERRITORY):format(factionName), unpack(frame.db.profile.zoneTextConfig.colorHostile))
 				end
 			elseif pvpType == "contested" then
 				bmTooltip:AddLine(subzoneName, unpack(frame.db.profile.zoneTextConfig.colorContested))
@@ -671,17 +671,17 @@ local function Login(self)
 		end
 	end)
 
-	self.SetScript(Minimap, "OnMouseUp", function(self, btn)
+	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, self)
+			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
 		elseif btn == frame.db.profile.missionsBtn then
 			GarrisonLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
 			MiniMapWorldMapButton:Click()
 		elseif btn == "LeftButton" then
-			Minimap_OnClick(self)
+			Minimap_OnClick(minimapFrame)
 		end
 	end)
 end
