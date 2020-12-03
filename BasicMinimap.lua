@@ -729,6 +729,7 @@ frame:RegisterEvent("ADDON_LOADED")
 -- Hopefully temporary workaround for :GetUnboundedStringWidth returning 0 for foreign fonts at PLAYER_LOGIN on a cold boot, issue #19
 function frame:LOADING_SCREEN_DISABLED(event)
 	self:UnregisterEvent(event)
+	self[event] = nil
 	CreateClock(self)
 	CreateCoords(self)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
@@ -740,6 +741,7 @@ frame:SetScript("OnEvent", function(self, event, addon)
 	if event == "ADDON_LOADED" and addon == "BasicMinimap" then
 		if HybridMinimap then -- It somehow loaded before us
 			self:UnregisterEvent(event) -- The mask will be applied in Login() so unregister
+			self[event] = nil
 		end
 		Init(self)
 	elseif event == "PLAYER_LOGIN" then
