@@ -31,8 +31,8 @@ do
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 end
 
-function frame:HideButtons(_, _, iconName)
-	ldbi:ShowOnEnter(iconName, true)
+function frame:HideButtons(_, _, buttonName)
+	ldbi:ShowOnEnter(buttonName, true)
 end
 
 local Minimap = Minimap
@@ -195,7 +195,7 @@ local function CreateClock(self) -- Create our own clock
 	do
 		local function updateClock()
 			C_Timer.After(60, updateClock)
-			local hour, minute = 0, 0
+			local hour, minute
 			if GetCVarBool("timeMgrUseLocalTime") then
 				hour, minute = tonumber(date("%H")), tonumber(date("%M"))
 			else
@@ -220,7 +220,7 @@ local function CreateClock(self) -- Create our own clock
 		end
 		local prevMin = -1
 		local function warmupClock() -- Run warmup clock every 0.1 sec until the minute changes, then swap to 60sec
-			local hour, minute = 0, 0
+			local hour, minute
 			if GetCVarBool("timeMgrUseLocalTime") then
 				hour, minute = tonumber(date("%H")), tonumber(date("%M"))
 			else
@@ -530,10 +530,14 @@ local function Login(self)
 	self.RegisterForDrag(Minimap, "LeftButton")
 	self.SetClampedToScreen(Minimap, true)
 
-	self.SetScript(Minimap, "OnDragStart", function(self) if frame.IsMovable(self) then frame.StartMoving(self) end end)
-	self.SetScript(Minimap, "OnDragStop", function(self)
-		frame.StopMovingOrSizing(self)
-		local a, _, b, c, d = frame.GetPoint(self)
+	self.SetScript(Minimap, "OnDragStart", function(minimapFrame)
+		if frame.IsMovable(minimapFrame) then
+			frame.StartMoving(minimapFrame)
+		end
+	end)
+	self.SetScript(Minimap, "OnDragStop", function(minimapFrame)
+		frame.StopMovingOrSizing(minimapFrame)
+		local a, _, b, c, d = frame.GetPoint(minimapFrame)
 		frame.db.profile.position[1] = a
 		frame.db.profile.position[2] = b
 		frame.db.profile.position[3] = c
@@ -645,7 +649,7 @@ local function Login(self)
 	local zoomOut = function()
 		current = current + 1
 		if started == current then
-			for i = 1, Minimap:GetZoom() or 0 do
+			for _ = 1, Minimap:GetZoom() or 0 do
 				Minimap_ZoomOutClick() -- Call it directly so we don't run our own hook
 			end
 			started, current = 0, 0

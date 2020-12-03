@@ -70,7 +70,7 @@ local function UpdateZoneText()
 end
 
 local function UpdateClock()
-	local hour, minute = 0, 0
+	local hour, minute
 	if GetCVarBool("timeMgrUseLocalTime") then
 		hour, minute = tonumber(date("%H")), tonumber(date("%M"))
 	else
