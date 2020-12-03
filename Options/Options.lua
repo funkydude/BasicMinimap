@@ -240,13 +240,13 @@ local options = function()
 							map.db.profile.position[3], map.db.profile.position[4] = map.db.profile.position[3]*s, map.db.profile.position[4]*s
 							map.SetPoint(Minimap, map.db.profile.position[1], UIParent, map.db.profile.position[2], map.db.profile.position[3], map.db.profile.position[4])
 							map.db.profile.scale = value
-	
+
 							-- Fix Size (Clock)
 							map.clock.text:SetText("99:99")
 							local clockWidth = map.clock.text:GetUnboundedStringWidth()
 							map.clock:SetWidth(clockWidth + 5)
 							UpdateClock()
-	
+
 							-- Fix size (Coords)
 							map.coords:SetFormattedText(map.db.profile.coordPrecision, 100.77, 100.77)
 							local coordsWidth = map.coords:GetUnboundedStringWidth()
