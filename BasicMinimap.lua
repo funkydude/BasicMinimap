@@ -647,9 +647,9 @@ local function Login(self)
 	local zoomOut = function()
 		current = current + 1
 		if started == current then
-			for _ = 1, Minimap:GetZoom() or 0 do
-				Minimap_ZoomOutClick() -- Call it directly so we don't run our own hook
-			end
+			Minimap:SetZoom(0)
+			MinimapZoomIn:Enable()
+			MinimapZoomOut:Disable()
 			started, current = 0, 0
 		end
 	end
@@ -657,7 +657,7 @@ local function Login(self)
 	local zoomBtnFunc = function()
 		if frame.db.profile.autoZoom then
 			started = started + 1
-			C_Timer.After(4, zoomOut)
+			C_Timer.After(10, zoomOut)
 		end
 	end
 	zoomBtnFunc()
