@@ -31,10 +31,6 @@ do
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 end
 
-function frame:HideButtons(_, _, buttonName)
-	ldbi:ShowOnEnter(buttonName, true)
-end
-
 local Minimap = Minimap
 if frame.GetFrameStrata(Minimap) ~= "LOW" then
 	frame.SetFrameStrata(Minimap, "LOW") -- Blizz Defaults patch 9.0.1 Minimap.xml
@@ -146,7 +142,9 @@ local function Init(self)
 		for i = 1, #tbl do
 			ldbi:ShowOnEnter(tbl[i], true)
 		end
-		ldbi.RegisterCallback(self, "LibDBIcon_IconCreated", "HideButtons")
+		ldbi.RegisterCallback(self, "LibDBIcon_IconCreated", function(_, _, buttonName)
+			ldbi:ShowOnEnter(buttonName, true)
+		end)
 	end
 end
 

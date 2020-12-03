@@ -300,7 +300,9 @@ local acOptions = {
 							ldbi:ShowOnEnter(tbl[i], value)
 						end
 						if value then
-							ldbi.RegisterCallback(map, "LibDBIcon_IconCreated", "HideButtons")
+							ldbi.RegisterCallback(map, "LibDBIcon_IconCreated", function(_, _, buttonName)
+								ldbi:ShowOnEnter(buttonName, true)
+							end)
 						else
 							ldbi.UnregisterCallback(map, "LibDBIcon_IconCreated")
 						end
