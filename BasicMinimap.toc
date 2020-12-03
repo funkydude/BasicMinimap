@@ -14,9 +14,9 @@
 ## Notes-esMX: Minimapa configurable con opciones básicas.
 ## Author: Funkydude
 ## SavedVariables: BasicMinimapSV
-## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0, LibDBIcon-1.0
 
-## X-Embeds: Ace3, LibSharedMedia-3.0, LibDDI-1.0
+## X-Embeds: Ace3, LibSharedMedia-3.0, LibDDI-1.0, LibDBIcon-1.0
 ## X-Category: Minimap
 ## X-Website: https://github.com/funkydude/BasicMinimap
 ## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
