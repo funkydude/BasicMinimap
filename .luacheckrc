@@ -5,8 +5,8 @@ exclude_files = {
 	"**/Libs",
 }
 ignore = {
-	"11/SLASH_BASICMINIMAP[12]", -- slash handlers
-	"11/GetMinimapShape",
+	"111/SLASH_BASICMINIMAP[12]", -- slash handlers
+	"111/GetMinimapShape",
 }
 globals = {
 	-- Lua
