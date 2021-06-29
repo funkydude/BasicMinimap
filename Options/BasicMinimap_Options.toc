@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.
