@@ -268,6 +268,7 @@ local options = function()
 						name = L.openCalendar,
 						order = 2, type = "select",
 						values = buttonValues,
+						disabled = true,
 					},
 					trackingBtn = {
 						name = L.openTracking,
@@ -278,6 +279,7 @@ local options = function()
 						name = L.openMissions,
 						order = 4, type = "select",
 						values = buttonValues,
+						disabled = true,
 					},
 					mapBtn = {
 						name = L.openMap,
@@ -360,6 +362,7 @@ local options = function()
 								map.SetParent(MiniMapChallengeMode, map)
 							end
 						end,
+						disabled = true,
 					},
 					missions = {
 						name = L.missions,
@@ -368,6 +371,7 @@ local options = function()
 							map.db.profile.missions = value
 							map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
 						end,
+						disabled = true,
 					},
 					zoneText = {
 						name = L.ZONETEXT,

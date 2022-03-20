@@ -10,11 +10,11 @@ frame:Hide()
 local blizzButtonPositions = {
 	[328] = MinimapZoomIn,
 	[302] = MinimapZoomOut,
-	[190] = GarrisonLandingPageMinimapButton,
-	[210] = QueueStatusMinimapButton,
-	[140] = MiniMapInstanceDifficulty,
-	[141] = GuildInstanceDifficulty,
-	[142] = MiniMapChallengeMode,
+	--[190] = GarrisonLandingPageMinimapButton,
+	[210] = MiniMapBattlefieldFrame, -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
+	--[140] = MiniMapInstanceDifficulty,
+	--[141] = GuildInstanceDifficulty,
+	--[142] = MiniMapChallengeMode,
 	[44] = GameTimeFrame,
 	[20] = MiniMapMailFrame,
 }
@@ -478,7 +478,7 @@ end
 
 -- Enable
 local function Login(self)
-	self:CALENDAR_UPDATE_PENDING_INVITES()
+	--self:CALENDAR_UPDATE_PENDING_INVITES()
 
 	self.EnableMouse(MinimapCluster, false)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
@@ -584,10 +584,10 @@ local function Login(self)
 	end
 
 	-- Removes the circular "waffle-like" texture that shows when using a non-circular minimap in the blue quest objective area.
-	Minimap:SetArchBlobRingScalar(0)
-	Minimap:SetArchBlobRingAlpha(0)
-	Minimap:SetQuestBlobRingScalar(0)
-	Minimap:SetQuestBlobRingAlpha(0)
+	--Minimap:SetArchBlobRingScalar(0)
+	--Minimap:SetArchBlobRingAlpha(0)
+	--Minimap:SetQuestBlobRingScalar(0)
+	--Minimap:SetQuestBlobRingAlpha(0)
 
 	-- Zoom buttons
 	if not self.db.profile.zoomBtn then
@@ -604,35 +604,39 @@ local function Login(self)
 	-- Tracking button
 	self.SetParent(MiniMapTracking, self)
 
+	-- Classic
+	self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button
+	self.SetParent(MinimapToggleButton, self) -- The "X" close button next to zone text
+
 	-- Difficulty indicators
-	if not self.db.profile.raidDiffIcon then
-		self.SetParent(MiniMapInstanceDifficulty, self)
-		self.SetParent(GuildInstanceDifficulty, self)
-		self.SetParent(MiniMapChallengeMode, self)
-	else
-		self.SetParent(MiniMapInstanceDifficulty, Minimap)
-		self.SetParent(GuildInstanceDifficulty, Minimap)
-		self.SetParent(MiniMapChallengeMode, Minimap)
-	end
+	--if not self.db.profile.raidDiffIcon then
+	--	self.SetParent(MiniMapInstanceDifficulty, self)
+	--	self.SetParent(GuildInstanceDifficulty, self)
+	--	self.SetParent(MiniMapChallengeMode, self)
+	--else
+	--	self.SetParent(MiniMapInstanceDifficulty, Minimap)
+	--	self.SetParent(GuildInstanceDifficulty, Minimap)
+	--	self.SetParent(MiniMapChallengeMode, Minimap)
+	--end
 
 	-- Missions button
-	self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
-	self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
+	--self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
+	--self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
 	-- Stop Blizz changing the icon size || GarrisonLandingPageMinimapButton_UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
-	hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
-		frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
-	end)
+	--hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
+	--	frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
+	--end)
 	-- Stop Blizz moving the icon || GarrisonLandingPageMinimapButton_UpdateIcon() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
-	hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
-		frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
-		ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
-	end)
-	if not self.db.profile.missions then
-		self.SetParent(GarrisonLandingPageMinimapButton, self)
-	end
+	--hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
+	--	frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
+	--	ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
+	--end)
+	--if not self.db.profile.missions then
+	--	self.SetParent(GarrisonLandingPageMinimapButton, self)
+	--end
 
 	-- PvE/PvP Queue button
-	self.SetParent(QueueStatusMinimapButton, Minimap)
+	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
 
 	-- Update all blizz button positions
 	for position, button in next, blizzButtonPositions do
@@ -674,12 +678,12 @@ local function Login(self)
 	end)
 
 	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
-		if btn == frame.db.profile.calendarBtn then
-			GameTimeFrame:Click()
-		elseif btn == frame.db.profile.trackingBtn then
+		--if btn == frame.db.profile.calendarBtn then
+		--	GameTimeFrame:Click()
+		if btn == frame.db.profile.trackingBtn then
 			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
-		elseif btn == frame.db.profile.missionsBtn then
-			GarrisonLandingPageMinimapButton:Click()
+		--elseif btn == frame.db.profile.missionsBtn then
+		--	GarrisonLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
 			MiniMapWorldMapButton:Click()
 		elseif btn == "LeftButton" then
@@ -688,16 +692,16 @@ local function Login(self)
 	end)
 end
 
-function frame:CALENDAR_ACTION_PENDING()
-	if C_Calendar.GetNumPendingInvites() < 1 then
-		self.Hide(GameTimeFrame)
-	else
-		self.Show(GameTimeFrame)
-	end
-end
-frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
-frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-frame:RegisterEvent("CALENDAR_ACTION_PENDING")
+--function frame:CALENDAR_ACTION_PENDING()
+--	if C_Calendar.GetNumPendingInvites() < 1 then
+--		self.Hide(GameTimeFrame)
+--	else
+--		self.Show(GameTimeFrame)
+--	end
+--end
+--frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
+--frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+--frame:RegisterEvent("CALENDAR_ACTION_PENDING")
 
 function frame:PET_BATTLE_OPENING_START()
 	self.Hide(Minimap)
