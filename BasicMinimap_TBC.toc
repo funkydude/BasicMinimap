@@ -24,5 +24,5 @@
 ## X-WoWI-ID: 9101
 
 embeds.xml
-BasicMinimap_Classic.lua
+BasicMinimap_TBC.lua
 modules.xml
