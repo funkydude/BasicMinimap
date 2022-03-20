@@ -96,4 +96,8 @@ globals = {
 	"TimeManagerClockButton",
 	"TimeManagerClockTicker",
 	"TimeManagerFrame",
+
+	-- Classic
+	"MiniMapBattlefieldFrame",
+	"MinimapToggleButton",
 }
