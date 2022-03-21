@@ -77,7 +77,7 @@ local function Init(self)
 			radius = 5,
 			colorBorder = {0,0,0,1},
 			calendarBtn = "None",
-			trackingBtn = "MiddleButton",
+			trackingBtn = "None",
 			missionsBtn = "None",
 			mapBtn = "RightButton",
 			coordPrecision = "%d,%d",
@@ -602,7 +602,7 @@ local function Login(self)
 	self.SetParent(MiniMapWorldMapButton, self)
 
 	-- Tracking button
-	self.SetParent(MiniMapTracking, self)
+	--self.SetParent(MiniMapTracking, self)
 
 	-- Classic
 	self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button

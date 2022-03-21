@@ -274,6 +274,7 @@ local options = function()
 						name = L.openTracking,
 						order = 3, type = "select",
 						values = buttonValues,
+						disabled = true,
 					},
 					missionsBtn = {
 						name = L.openMissions,
