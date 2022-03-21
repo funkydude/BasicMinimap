@@ -100,4 +100,5 @@ globals = {
 	-- Classic
 	"MiniMapBattlefieldFrame",
 	"MinimapToggleButton",
+	"MiniMapLFGFrame",
 }
