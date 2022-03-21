@@ -12,6 +12,7 @@ local blizzButtonPositions = {
 	[302] = MinimapZoomOut,
 	--[190] = GarrisonLandingPageMinimapButton,
 	[210] = MiniMapBattlefieldFrame, -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
+	[215] = MiniMapLFGFrame, -- Special LFG button for classic/TBC
 	--[140] = MiniMapInstanceDifficulty,
 	--[141] = GuildInstanceDifficulty,
 	--[142] = MiniMapChallengeMode,
@@ -637,6 +638,7 @@ local function Login(self)
 
 	-- PvE/PvP Queue button
 	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
+	self.SetParent(MiniMapLFGFrame, Minimap) -- Special LFG button for classic/TBC
 
 	-- Update all blizz button positions
 	for position, button in next, blizzButtonPositions do
