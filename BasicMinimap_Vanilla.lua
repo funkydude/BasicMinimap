@@ -76,10 +76,10 @@ local function Init(self)
 			scale = 1,
 			radius = 5,
 			colorBorder = {0,0,0,1},
-			calendarBtn = "RightButton",
+			calendarBtn = "None",
 			trackingBtn = "MiddleButton",
 			missionsBtn = "None",
-			mapBtn = "None",
+			mapBtn = "RightButton",
 			coordPrecision = "%d,%d",
 			coordTime = 1,
 			zoneTextConfig = {
