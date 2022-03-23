@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.

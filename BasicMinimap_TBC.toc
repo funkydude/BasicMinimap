@@ -1,4 +1,4 @@
-## Interface: 20503
+## Interface: 20504
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
