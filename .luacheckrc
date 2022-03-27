@@ -101,4 +101,7 @@ globals = {
 	"MiniMapBattlefieldFrame",
 	"MinimapToggleButton",
 	"MiniMapLFGFrame",
+	"GetTrackingTexture",
+	"MiniMapTrackingIcon",
+	"MiniMapTrackingFrame",
 }
