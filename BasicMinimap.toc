@@ -22,6 +22,7 @@
 ## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
 ## X-Curse-Project-ID: 13506
 ## X-WoWI-ID: 9101
+## X-Wago-ID: 5bGoroK0
 
 embeds.xml
 BasicMinimap.lua
