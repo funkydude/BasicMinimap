@@ -13,7 +13,7 @@ local blizzButtonPositions = {
 	--[190] = GarrisonLandingPageMinimapButton,
 	[210] = MiniMapBattlefieldFrame, -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
 	[215] = MiniMapLFGFrame, -- Special LFG button for classic/TBC
-	--[140] = MiniMapInstanceDifficulty,
+	[140] = MiniMapInstanceDifficulty,
 	--[141] = GuildInstanceDifficulty,
 	--[142] = MiniMapChallengeMode,
 	[44] = GameTimeFrame,
@@ -77,10 +77,10 @@ local function Init(self)
 			scale = 1,
 			radius = 5,
 			colorBorder = {0,0,0,1},
-			calendarBtn = "None",
+			calendarBtn = "RightButton",
 			trackingBtn = "MiddleButton",
 			missionsBtn = "None",
-			mapBtn = "RightButton",
+			mapBtn = "None",
 			coordPrecision = "%d,%d",
 			coordTime = 1,
 			zoneTextConfig = {
@@ -479,7 +479,7 @@ end
 
 -- Enable
 local function Login(self)
-	--self:CALENDAR_UPDATE_PENDING_INVITES()
+	self:CALENDAR_UPDATE_PENDING_INVITES()
 
 	self.EnableMouse(MinimapCluster, false)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
@@ -605,19 +605,19 @@ local function Login(self)
 	-- Tracking button
 	self.SetParent(MiniMapTracking, self)
 
-	-- Classic
-	self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button
+	-- Classic Wrath
+	self.SetParent(GameTimeFrame, Minimap) -- Calendar isn't parented to Minimap in Wrath
 
 	-- Difficulty indicators
-	--if not self.db.profile.raidDiffIcon then
-	--	self.SetParent(MiniMapInstanceDifficulty, self)
-	--	self.SetParent(GuildInstanceDifficulty, self)
-	--	self.SetParent(MiniMapChallengeMode, self)
-	--else
-	--	self.SetParent(MiniMapInstanceDifficulty, Minimap)
-	--	self.SetParent(GuildInstanceDifficulty, Minimap)
-	--	self.SetParent(MiniMapChallengeMode, Minimap)
-	--end
+	if not self.db.profile.raidDiffIcon then
+		self.SetParent(MiniMapInstanceDifficulty, self)
+		--self.SetParent(GuildInstanceDifficulty, self)
+		--self.SetParent(MiniMapChallengeMode, self)
+	else
+		self.SetParent(MiniMapInstanceDifficulty, Minimap)
+		--self.SetParent(GuildInstanceDifficulty, Minimap)
+		--self.SetParent(MiniMapChallengeMode, Minimap)
+	end
 
 	-- Missions button
 	--self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
@@ -636,6 +636,7 @@ local function Login(self)
 	--end
 
 	-- PvE/PvP Queue button
+	--self.SetParent(QueueStatusMinimapButton, Minimap)
 	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
 	self.SetParent(MiniMapLFGFrame, Minimap) -- Special LFG button for classic/TBC
 
@@ -679,9 +680,9 @@ local function Login(self)
 	end)
 
 	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
-		--if btn == frame.db.profile.calendarBtn then
-		--	GameTimeFrame:Click()
-		if btn == frame.db.profile.trackingBtn then
+		if btn == frame.db.profile.calendarBtn then
+			GameTimeFrame:Click()
+		elseif btn == frame.db.profile.trackingBtn then
 			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
 		--elseif btn == frame.db.profile.missionsBtn then
 		--	GarrisonLandingPageMinimapButton:Click()
@@ -693,16 +694,16 @@ local function Login(self)
 	end)
 end
 
---function frame:CALENDAR_ACTION_PENDING()
---	if C_Calendar.GetNumPendingInvites() < 1 then
---		self.Hide(GameTimeFrame)
---	else
---		self.Show(GameTimeFrame)
---	end
---end
---frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
---frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
---frame:RegisterEvent("CALENDAR_ACTION_PENDING")
+function frame:CALENDAR_ACTION_PENDING()
+	if C_Calendar.GetNumPendingInvites() < 1 then
+		self.Hide(GameTimeFrame)
+	else
+		self.Show(GameTimeFrame)
+	end
+end
+frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
+frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+frame:RegisterEvent("CALENDAR_ACTION_PENDING")
 
 function frame:PET_BATTLE_OPENING_START()
 	self.Hide(Minimap)

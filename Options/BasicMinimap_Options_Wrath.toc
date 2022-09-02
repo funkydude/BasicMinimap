@@ -25,5 +25,5 @@
 
 embeds.xml
 locales.xml
-Options_TBC.lua
+Options_Wrath.lua
 
