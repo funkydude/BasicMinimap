@@ -75,6 +75,7 @@ globals = {
 	"GuildInstanceDifficulty",
 	"HybridMinimap",
 	"Minimap",
+	"MinimapBackdrop",
 	"MinimapBorder",
 	"MinimapBorderTop",
 	"MiniMapChallengeMode",

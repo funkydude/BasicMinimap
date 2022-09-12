@@ -8,8 +8,8 @@ local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "G
 frame:Hide()
 
 local blizzButtonPositions = {
-	[328] = MinimapZoomIn,
-	[302] = MinimapZoomOut,
+	[328] = MinimapZoomIn or Minimap.ZoomIn, -- XXX Dragonflight compat
+	[302] = MinimapZoomOut or Minimap.ZoomOut, -- XXX Dragonflight compat
 	[190] = GarrisonLandingPageMinimapButton,
 	[210] = QueueStatusMinimapButton,
 	[140] = MiniMapInstanceDifficulty,
@@ -307,19 +307,21 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 
 	do
 		-- Kill Blizz Frame
-		zoneText.SetParent(MinimapZoneTextButton, self)
-		zoneTextFont.SetParent(MinimapZoneText, self)
-		MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 719-722 script "<OnLoad>" as of wow 9.0.1
-		MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
-		MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
-		local function blockBtn(MinimapZoneTextButton)
-			zoneText.SetParent(MinimapZoneTextButton, frame)
+		if MinimapZoneTextButton then -- XXX Dragonflight compat
+			zoneText.SetParent(MinimapZoneTextButton, self)
+			zoneTextFont.SetParent(MinimapZoneText, self)
+			MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 719-722 script "<OnLoad>" as of wow 9.0.1
+			MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
+			MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+			local function blockBtn(MinimapZoneTextButton)
+				zoneText.SetParent(MinimapZoneTextButton, frame)
+			end
+			local function blockText(MinimapZoneText)
+				zoneTextFont.SetParent(MinimapZoneText, frame)
+			end
+			hooksecurefunc(MinimapZoneTextButton, "SetParent", blockBtn)
+			hooksecurefunc(MinimapZoneText, "SetParent", blockText)
 		end
-		local function blockText(MinimapZoneText)
-			zoneTextFont.SetParent(MinimapZoneText, frame)
-		end
-		hooksecurefunc(MinimapZoneTextButton, "SetParent", blockBtn)
-		hooksecurefunc(MinimapZoneText, "SetParent", blockText)
 	end
 
 	zoneText:SetPoint("BOTTOM", backdrop, "TOP", self.db.profile.zoneTextConfig.x, self.db.profile.zoneTextConfig.y)
@@ -550,19 +552,33 @@ local function Login(self)
 		self.SetSize(Minimap, self.db.profile.size, self.db.profile.size)
 		-- I'm not sure of a better way to update the render layer to the new size
 		if Minimap:GetZoom() ~= 5 then
-			Minimap_ZoomInClick()
-			Minimap_ZoomOutClick()
+			if Minimap_ZoomInClick then -- XXX Dragonflight compat
+				Minimap_ZoomInClick()
+				Minimap_ZoomOutClick()
+			else
+				Minimap.ZoomIn:Click()
+				Minimap.ZoomOut:Click()
+			end
 		else
-			Minimap_ZoomOutClick()
-			Minimap_ZoomInClick()
+			if Minimap_ZoomInClick then -- XXX Dragonflight compat
+				Minimap_ZoomOutClick()
+				Minimap_ZoomInClick()
+			else
+				Minimap.ZoomOut:Click()
+				Minimap.ZoomIn:Click()
+			end
 		end
 	end
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
-	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
-	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
-	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-	self.SetParent(MinimapBorderTop, self) -- Zone text border
-	self.SetParent(MinimapBorder, self) -- Minimap border
+	if MinimapNorthTag then -- XXX Dragonflight compat
+		self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
+		-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
+		--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
+		self.SetParent(MinimapBorderTop, self) -- Zone text border
+		self.SetParent(MinimapBorder, self) -- Minimap border
+	else
+		self.SetParent(MinimapBackdrop, self) -- N/E/S/W circular indicator
+	end
 
 	local shape = self.db.profile.shape
 	if shape == "SQUARE" then
@@ -590,19 +606,33 @@ local function Login(self)
 	Minimap:SetQuestBlobRingAlpha(0)
 
 	-- Zoom buttons
-	if not self.db.profile.zoomBtn then
-		self.SetParent(MinimapZoomIn, self)
-		self.SetParent(MinimapZoomOut, self)
+	if MinimapZoomIn then -- XXX Dragonflight compat
+		if not self.db.profile.zoomBtn then
+			self.SetParent(MinimapZoomIn, self)
+			self.SetParent(MinimapZoomOut, self)
+		else
+			self.SetParent(MinimapZoomIn, Minimap)
+			self.SetParent(MinimapZoomOut, Minimap)
+		end
 	else
-		self.SetParent(MinimapZoomIn, Minimap)
-		self.SetParent(MinimapZoomOut, Minimap)
+		if not self.db.profile.zoomBtn then
+			self.SetParent(Minimap.ZoomIn, self)
+			self.SetParent(Minimap.ZoomOut, self)
+		else
+			self.SetParent(Minimap.ZoomIn, Minimap)
+			self.SetParent(Minimap.ZoomOut, Minimap)
+		end
 	end
 
 	-- World map button
-	self.SetParent(MiniMapWorldMapButton, self)
+	if MiniMapWorldMapButton then -- XXX Dragonflight compat
+		self.SetParent(MiniMapWorldMapButton, self)
+	end
 
 	-- Tracking button
-	self.SetParent(MiniMapTracking, self)
+	if MiniMapTracking then -- XXX Dragonflight compat
+		self.SetParent(MiniMapTracking, self)
+	end
 
 	-- Difficulty indicators
 	if not self.db.profile.raidDiffIcon then
@@ -616,23 +646,27 @@ local function Login(self)
 	end
 
 	-- Missions button
-	self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
-	self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
-	-- Stop Blizz changing the icon size || GarrisonLandingPageMinimapButton_UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
-	hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
-		frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
-	end)
-	-- Stop Blizz moving the icon || GarrisonLandingPageMinimapButton_UpdateIcon() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
-	hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
-		frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
-		ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
-	end)
-	if not self.db.profile.missions then
-		self.SetParent(GarrisonLandingPageMinimapButton, self)
+	if GarrisonLandingPageMinimapButton then -- XXX Dragonflight compat
+		self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
+		self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
+		-- Stop Blizz changing the icon size || GarrisonLandingPageMinimapButton_UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
+		hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
+			frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
+		end)
+		-- Stop Blizz moving the icon || GarrisonLandingPageMinimapButton_UpdateIcon() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
+		hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
+			frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
+			ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
+		end)
+		if not self.db.profile.missions then
+			self.SetParent(GarrisonLandingPageMinimapButton, self)
+		end
 	end
 
 	-- PvE/PvP Queue button
-	self.SetParent(QueueStatusMinimapButton, Minimap)
+	if QueueStatusMinimapButton then -- XXX Dragonflight compat
+		self.SetParent(QueueStatusMinimapButton, Minimap)
+	end
 
 	-- Update all blizz button positions
 	for position, button in next, blizzButtonPositions do
@@ -648,8 +682,13 @@ local function Login(self)
 		current = current + 1
 		if started == current then
 			Minimap:SetZoom(0)
-			MinimapZoomIn:Enable()
-			MinimapZoomOut:Disable()
+			if MinimapZoomIn then -- XXX Dragonflight compat
+				MinimapZoomIn:Enable()
+				MinimapZoomOut:Disable()
+			else
+				Minimap.ZoomIn:Enable()
+				Minimap.ZoomOut:Disable()
+			end
 			started, current = 0, 0
 		end
 	end
@@ -661,15 +700,15 @@ local function Login(self)
 		end
 	end
 	zoomBtnFunc()
-	self.HookScript(MinimapZoomIn, "OnClick", zoomBtnFunc)
-	self.HookScript(MinimapZoomOut, "OnClick", zoomBtnFunc)
+	self.HookScript(MinimapZoomIn or Minimap.ZoomIn, "OnClick", zoomBtnFunc) -- XXX Dragonflight compat
+	self.HookScript(MinimapZoomOut or Minimap.ZoomOut, "OnClick", zoomBtnFunc) -- XXX Dragonflight compat
 
 	self.EnableMouseWheel(Minimap, true)
 	self.SetScript(Minimap, "OnMouseWheel", function(_, d)
 		if d > 0 then
-			MinimapZoomIn:Click()
+			(MinimapZoomIn or Minimap.ZoomIn):Click() -- XXX Dragonflight compat
 		elseif d < 0 then
-			MinimapZoomOut:Click()
+			(MinimapZoomOut or Minimap.ZoomOut):Click() -- XXX Dragonflight compat
 		end
 	end)
 
@@ -681,7 +720,9 @@ local function Login(self)
 		elseif btn == frame.db.profile.missionsBtn then
 			GarrisonLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
-			MiniMapWorldMapButton:Click()
+			if MiniMapWorldMapButton then -- XXX Dragonflight compat
+				MiniMapWorldMapButton:Click()
+			end
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(minimapFrame)
 		end

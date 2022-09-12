@@ -211,11 +211,21 @@ local options = function()
 							map.zonetext:SetWidth(value)
 							-- I'm not sure of a better way to update the render layer to the new size
 							if Minimap:GetZoom() ~= 5 then
-								Minimap_ZoomInClick()
-								Minimap_ZoomOutClick()
+								if Minimap_ZoomInClick then -- XXX Dragonflight compat
+									Minimap_ZoomInClick()
+									Minimap_ZoomOutClick()
+								else
+									Minimap.ZoomIn:Click()
+									Minimap.ZoomOut:Click()
+								end
 							else
-								Minimap_ZoomOutClick()
-								Minimap_ZoomInClick()
+								if Minimap_ZoomInClick then -- XXX Dragonflight compat
+									Minimap_ZoomOutClick()
+									Minimap_ZoomInClick()
+								else
+									Minimap.ZoomOut:Click()
+									Minimap.ZoomIn:Click()
+								end
 							end
 							map.backdrop:SetSize(value+map.db.profile.borderSize, value+map.db.profile.borderSize)
 							local tbl = ldbi:GetButtonList()
@@ -337,11 +347,11 @@ local options = function()
 						set = function(_, value)
 							map.db.profile.zoomBtn = value
 							if value then
-								map.SetParent(MinimapZoomIn, Minimap)
-								map.SetParent(MinimapZoomOut, Minimap)
+								map.SetParent(MinimapZoomIn or Minimap.ZoomIn, Minimap) -- XXX Dragonflight compat
+								map.SetParent(MinimapZoomOut or Minimap.ZoomOut, Minimap) -- XXX Dragonflight compat
 							else
-								map.SetParent(MinimapZoomIn, map)
-								map.SetParent(MinimapZoomOut, map)
+								map.SetParent(MinimapZoomIn or Minimap.ZoomIn, map) -- XXX Dragonflight compat
+								map.SetParent(MinimapZoomOut or Minimap.ZoomOut, map) -- XXX Dragonflight compat
 							end
 						end,
 					},
