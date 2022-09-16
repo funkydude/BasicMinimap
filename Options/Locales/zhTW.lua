@@ -4,6 +4,7 @@ local _, tbl = ...
 local L = tbl.L
 
 L.AUTOZOOM = "自動放大"
+--L.autoZoomDesc = "If you zoom into the minimap using either the mouse wheel or the zoom buttons, this feature will automatically zoom the minimap out after 10 seconds."
 L.BORDERSIZE = "外框大小"
 L.BUTTONS = "按鈕"
 L.CALENDAR = "行事曆"

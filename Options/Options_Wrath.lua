@@ -158,6 +158,7 @@ local options = function()
 					},
 					autoZoom = {
 						name = L.AUTOZOOM,
+						desc = L.autoZoomDesc,
 						order = 6,
 						type = "toggle",
 					},
