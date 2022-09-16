@@ -562,11 +562,11 @@ local options = function()
 								end,
 							},
 							colorDesc = {
-								name = function() return L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.normal) end,
+								name = function() return L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.zoneNormal) end,
 								order = 9.5, type = "description", width = "full",
 							},
 							colorNormal = {
-								name = L.normal,
+								name = L.zoneNormal,
 								order = 10, type = "color", hasAlpha = true,
 								get = function() return unpack(map.db.profile.zoneTextConfig.colorNormal) end,
 								set = function(_, r, g, b, a)
@@ -576,7 +576,7 @@ local options = function()
 								disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 							},
 							colorSanctuary = {
-								name = L.sanctuary,
+								name = L.zoneSanctuary,
 								order = 11, type = "color", hasAlpha = true,
 								get = function() return unpack(map.db.profile.zoneTextConfig.colorSanctuary) end,
 								set = function(_, r, g, b, a)
@@ -586,7 +586,7 @@ local options = function()
 								disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 							},
 							colorArena = {
-								name = L.arena,
+								name = L.zoneArena,
 								order = 12, type = "color", hasAlpha = true,
 								get = function() return unpack(map.db.profile.zoneTextConfig.colorArena) end,
 								set = function(_, r, g, b, a)
@@ -596,7 +596,7 @@ local options = function()
 								disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 							},
 							colorFriendly = {
-								name = L.friendly,
+								name = L.zoneFriendly,
 								order = 13, type = "color", hasAlpha = true,
 								get = function() return unpack(map.db.profile.zoneTextConfig.colorFriendly) end,
 								set = function(_, r, g, b, a)
@@ -606,7 +606,7 @@ local options = function()
 								disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 							},
 							colorHostile = {
-								name = L.hostile,
+								name = L.zoneHostile,
 								order = 14, type = "color", hasAlpha = true,
 								get = function() return unpack(map.db.profile.zoneTextConfig.colorHostile) end,
 								set = function(_, r, g, b, a)
@@ -616,7 +616,7 @@ local options = function()
 								disabled = function() return map.db.profile.zoneTextConfig.classcolor end,
 							},
 							colorContested = {
-								name = L.contested,
+								name = L.zoneContested,
 								order = 15, type = "color", hasAlpha = true,
 								get = function() return unpack(map.db.profile.zoneTextConfig.colorContested) end,
 								set = function(_, r, g, b, a)
