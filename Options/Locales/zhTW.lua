@@ -4,7 +4,7 @@ local _, tbl = ...
 local L = tbl.L
 
 L.AUTOZOOM = "自動放大"
---L.autoZoomDesc = "If you zoom into the minimap using either the mouse wheel or the zoom buttons, this feature will automatically zoom the minimap out after 10 seconds."
+L.autoZoomDesc = "如果勾選這個選項，當你用滾輪或縮放按鈕拉近小地圖的視野，會在十秒後自動恢復最遠視野。"
 L.BORDERSIZE = "外框大小"
 L.BUTTONS = "按鈕"
 L.CALENDAR = "行事曆"
@@ -12,7 +12,7 @@ L.CLASSCOLORED = "職業著色"
 L.SHAPE = "形狀"
 L.ZONETEXT = "區域文字"
 
-L.sizeHeader = "如果你只想更改小地圖本身的大小，請調整小地圖尺寸。如果你想要更改小地圖整體的大小（包含周圍的元素和各種按鈕），請調整小地圖縮放。"
+L.sizeHeader = "如果你只想更改小地圖本身的大小，請調整小地圖尺寸。如果你想要更改小地圖整體的大小（包含地圖中的追蹤圖示和各種按鈕），請調整小地圖縮放。"
 L.scale = "小地圖縮放"
 L.general = "一般"
 L.square = "方形"
