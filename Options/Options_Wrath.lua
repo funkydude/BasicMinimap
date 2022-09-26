@@ -354,12 +354,12 @@ local options = function()
 							map.db.profile.raidDiffIcon = value
 							if value then
 								map.SetParent(MiniMapInstanceDifficulty, Minimap)
-								map.SetParent(GuildInstanceDifficulty, Minimap)
-								map.SetParent(MiniMapChallengeMode, Minimap)
+								--map.SetParent(GuildInstanceDifficulty, Minimap)
+								--map.SetParent(MiniMapChallengeMode, Minimap)
 							else
 								map.SetParent(MiniMapInstanceDifficulty, map)
-								map.SetParent(GuildInstanceDifficulty, map)
-								map.SetParent(MiniMapChallengeMode, map)
+								--map.SetParent(GuildInstanceDifficulty, map)
+								--map.SetParent(MiniMapChallengeMode, map)
 							end
 						end,
 					},
