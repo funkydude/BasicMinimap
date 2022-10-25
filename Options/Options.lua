@@ -362,13 +362,21 @@ local options = function()
 						set = function(_, value)
 							map.db.profile.raidDiffIcon = value
 							if value then
-								map.SetParent(MiniMapInstanceDifficulty, Minimap)
-								map.SetParent(GuildInstanceDifficulty, Minimap)
-								map.SetParent(MiniMapChallengeMode, Minimap)
+								if MiniMapInstanceDifficulty then
+									map.SetParent(MiniMapInstanceDifficulty, Minimap)
+									map.SetParent(GuildInstanceDifficulty, Minimap)
+									map.SetParent(MiniMapChallengeMode, Minimap)
+								else
+									map.SetParent(MinimapCluster.InstanceDifficulty, Minimap)
+								end
 							else
-								map.SetParent(MiniMapInstanceDifficulty, map)
-								map.SetParent(GuildInstanceDifficulty, map)
-								map.SetParent(MiniMapChallengeMode, map)
+								if MiniMapInstanceDifficulty then
+									map.SetParent(MiniMapInstanceDifficulty, map)
+									map.SetParent(GuildInstanceDifficulty, map)
+									map.SetParent(MiniMapChallengeMode, map)
+								else
+									map.SetParent(MinimapCluster.InstanceDifficulty, map)
+								end
 							end
 						end,
 					},
@@ -377,7 +385,11 @@ local options = function()
 						order = 6, type = "toggle",
 						set = function(_, value)
 							map.db.profile.missions = value
-							map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
+							if GarrisonLandingPageMinimapButton then
+								map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
+							else
+								map.SetParent(ExpansionLandingPageMinimapButton, value and Minimap or map)
+							end
 						end,
 					},
 					zoneText = {

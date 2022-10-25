@@ -70,6 +70,7 @@ globals = {
 	"TIMEMANAGER_TOOLTIP_TITLE",
 
 	-- WoW (minimap related)
+	"ExpansionLandingPageMinimapButton",
 	"GameTimeFrame",
 	"GarrisonLandingPageMinimapButton",
 	"GuildInstanceDifficulty",
@@ -97,6 +98,7 @@ globals = {
 	"TimeManagerClockButton",
 	"TimeManagerClockTicker",
 	"TimeManagerFrame",
+	"ToggleWorldMap",
 
 	-- Classic
 	"MiniMapBattlefieldFrame",

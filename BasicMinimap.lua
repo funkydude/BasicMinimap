@@ -10,13 +10,14 @@ frame:Hide()
 local blizzButtonPositions = {
 	[328] = MinimapZoomIn or Minimap.ZoomIn, -- XXX Dragonflight compat
 	[302] = MinimapZoomOut or Minimap.ZoomOut, -- XXX Dragonflight compat
-	[190] = GarrisonLandingPageMinimapButton,
+	[190] = GarrisonLandingPageMinimapButton or ExpansionLandingPageMinimapButton, -- XXX Dragonflight compat
 	[210] = QueueStatusMinimapButton,
 	[140] = MiniMapInstanceDifficulty,
 	[141] = GuildInstanceDifficulty,
 	[142] = MiniMapChallengeMode,
+	[150] = MinimapCluster.InstanceDifficulty,
 	[44] = GameTimeFrame,
-	[20] = MiniMapMailFrame,
+	[20] = MiniMapMailFrame or MinimapCluster.MailFrame,
 }
 frame.blizzButtonPositions = blizzButtonPositions
 
@@ -72,9 +73,9 @@ local function Init(self)
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
 			borderSize = 5,
-			size = 140,
+			size = MiniMapMailFrame and 140 or 200,
 			scale = 1,
-			radius = 5,
+			radius = MiniMapMailFrame and 5 or 2,
 			colorBorder = {0,0,0,1},
 			calendarBtn = "RightButton",
 			trackingBtn = "MiddleButton",
@@ -321,6 +322,9 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 			end
 			hooksecurefunc(MinimapZoneTextButton, "SetParent", blockBtn)
 			hooksecurefunc(MinimapZoneText, "SetParent", blockText)
+		else
+			zoneText.SetParent(MinimapCluster.ZoneTextButton, self)
+			zoneText.SetParent(MinimapCluster.BorderTop, self)
 		end
 	end
 
@@ -548,27 +552,26 @@ local function Login(self)
 	if self.db.profile.scale ~= 1 then -- Non-default
 		self.SetScale(Minimap, self.db.profile.scale)
 	end
-	if self.db.profile.size ~= 140 then -- Non-default
-		self.SetSize(Minimap, self.db.profile.size, self.db.profile.size)
-		-- I'm not sure of a better way to update the render layer to the new size
-		if Minimap:GetZoom() ~= 5 then
-			if Minimap_ZoomInClick then -- XXX Dragonflight compat
-				Minimap_ZoomInClick()
-				Minimap_ZoomOutClick()
-			else
-				Minimap.ZoomIn:Click()
-				Minimap.ZoomOut:Click()
-			end
+	self.SetSize(Minimap, self.db.profile.size, self.db.profile.size)
+	-- I'm not sure of a better way to update the render layer to the new size
+	if Minimap:GetZoom() ~= 5 then
+		if Minimap_ZoomInClick then -- XXX Dragonflight compat
+			Minimap_ZoomInClick()
+			Minimap_ZoomOutClick()
 		else
-			if Minimap_ZoomInClick then -- XXX Dragonflight compat
-				Minimap_ZoomOutClick()
-				Minimap_ZoomInClick()
-			else
-				Minimap.ZoomOut:Click()
-				Minimap.ZoomIn:Click()
-			end
+			Minimap.ZoomIn:Click()
+			Minimap.ZoomOut:Click()
+		end
+	else
+		if Minimap_ZoomInClick then -- XXX Dragonflight compat
+			Minimap_ZoomOutClick()
+			Minimap_ZoomInClick()
+		else
+			Minimap.ZoomOut:Click()
+			Minimap.ZoomIn:Click()
 		end
 	end
+
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
 	if MinimapNorthTag then -- XXX Dragonflight compat
 		self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
@@ -624,6 +627,11 @@ local function Login(self)
 		end
 	end
 
+	if MinimapCluster.MailFrame then -- XXX Dragonflight compat
+		self.SetParent(MinimapCluster.MailFrame, Minimap)
+		self.SetParent(GameTimeFrame, Minimap)
+	end
+
 	-- World map button
 	if MiniMapWorldMapButton then -- XXX Dragonflight compat
 		self.SetParent(MiniMapWorldMapButton, self)
@@ -632,17 +640,27 @@ local function Login(self)
 	-- Tracking button
 	if MiniMapTracking then -- XXX Dragonflight compat
 		self.SetParent(MiniMapTracking, self)
+	else
+		self.SetParent(MinimapCluster.Tracking, self)
 	end
 
 	-- Difficulty indicators
 	if not self.db.profile.raidDiffIcon then
-		self.SetParent(MiniMapInstanceDifficulty, self)
-		self.SetParent(GuildInstanceDifficulty, self)
-		self.SetParent(MiniMapChallengeMode, self)
+		if MiniMapInstanceDifficulty then
+			self.SetParent(MiniMapInstanceDifficulty, self)
+			self.SetParent(GuildInstanceDifficulty, self)
+			self.SetParent(MiniMapChallengeMode, self)
+		else
+			self.SetParent(MinimapCluster.InstanceDifficulty, self)
+		end
 	else
-		self.SetParent(MiniMapInstanceDifficulty, Minimap)
-		self.SetParent(GuildInstanceDifficulty, Minimap)
-		self.SetParent(MiniMapChallengeMode, Minimap)
+		if MiniMapInstanceDifficulty then
+			self.SetParent(MiniMapInstanceDifficulty, Minimap)
+			self.SetParent(GuildInstanceDifficulty, Minimap)
+			self.SetParent(MiniMapChallengeMode, Minimap)
+		else
+			self.SetParent(MinimapCluster.InstanceDifficulty, Minimap)
+		end
 	end
 
 	-- Missions button
@@ -660,6 +678,21 @@ local function Login(self)
 		end)
 		if not self.db.profile.missions then
 			self.SetParent(GarrisonLandingPageMinimapButton, self)
+		end
+	else
+		self.SetParent(ExpansionLandingPageMinimapButton, Minimap)
+		self.SetSize(ExpansionLandingPageMinimapButton, 36, 36) -- Shrink the missions button
+		-- Stop Blizz changing the icon size || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
+		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetSize", function()
+			frame.SetSize(ExpansionLandingPageMinimapButton, 36, 36)
+		end)
+		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon()>> self:UpdateIconForGarrison() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
+		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", function() -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
+			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
+			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, 190)
+		end)
+		if not self.db.profile.missions then
+			self.SetParent(ExpansionLandingPageMinimapButton, self)
 		end
 	end
 
@@ -716,15 +749,29 @@ local function Login(self)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+			if MiniMapTrackingDropDown then -- XXX Dragonflight compat
+				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+			else
+				ToggleDropDownMenu(1, nil, MinimapCluster.Tracking.DropDown, minimapFrame)
+			end
 		elseif btn == frame.db.profile.missionsBtn then
-			GarrisonLandingPageMinimapButton:Click()
+			if GarrisonLandingPageMinimapButton then
+				GarrisonLandingPageMinimapButton:Click()
+			else
+				ExpansionLandingPageMinimapButton:OnClick()
+			end
 		elseif btn == frame.db.profile.mapBtn then
 			if MiniMapWorldMapButton then -- XXX Dragonflight compat
 				MiniMapWorldMapButton:Click()
+			else
+				ToggleWorldMap()
 			end
 		elseif btn == "LeftButton" then
-			Minimap_OnClick(minimapFrame)
+			if Minimap_OnClick then -- XXX Dragonflight compat
+				Minimap_OnClick(minimapFrame)
+			else
+				Minimap:OnClick()
+			end
 		end
 	end)
 end
