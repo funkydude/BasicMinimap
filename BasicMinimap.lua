@@ -16,7 +16,7 @@ local blizzButtonPositions = {
 	[141] = GuildInstanceDifficulty,
 	[142] = MiniMapChallengeMode,
 	[150] = MinimapCluster.InstanceDifficulty,
-	[44] = GameTimeFrame,
+	[MiniMapMailFrame and 44 or 35] = GameTimeFrame,
 	[20] = MiniMapMailFrame or MinimapCluster.MailFrame,
 }
 frame.blizzButtonPositions = blizzButtonPositions
@@ -635,6 +635,24 @@ local function Login(self)
 	-- World map button
 	if MiniMapWorldMapButton then -- XXX Dragonflight compat
 		self.SetParent(MiniMapWorldMapButton, self)
+	else
+		local overlayMail = MinimapCluster.MailFrame:CreateTexture(nil, "OVERLAY")
+		overlayMail:SetSize(53,53)
+		overlayMail:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+		overlayMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER", 10, -10)
+		local backgroundMail = MinimapCluster.MailFrame:CreateTexture(nil, "BACKGROUND")
+		backgroundMail:SetSize(25,25)
+		backgroundMail:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+		backgroundMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER")
+
+		local overlayCalendar = GameTimeFrame:CreateTexture(nil, "OVERLAY")
+		overlayCalendar:SetSize(53,53)
+		overlayCalendar:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+		overlayCalendar:SetPoint("CENTER", GameTimeFrame, "CENTER", 10, -10)
+		local backgroundCalendar = GameTimeFrame:CreateTexture(nil, "BACKGROUND")
+		backgroundCalendar:SetSize(25,25)
+		backgroundCalendar:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+		backgroundCalendar:SetPoint("CENTER", GameTimeFrame, "CENTER")
 	end
 
 	-- Tracking button

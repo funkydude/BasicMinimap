@@ -83,6 +83,7 @@ globals = {
 	"MinimapCluster",
 	"MiniMapInstanceDifficulty",
 	"MiniMapMailFrame",
+	"MiniMapMailIcon",
 	"MinimapNorthTag",
 	"MiniMapTracking",
 	"MiniMapTrackingDropDown",
