@@ -70,6 +70,7 @@ globals = {
 	"TIMEMANAGER_TOOLTIP_TITLE",
 
 	-- WoW (minimap related)
+	"AddonCompartmentFrame",
 	"ExpansionLandingPageMinimapButton",
 	"GameTimeFrame",
 	"GarrisonLandingPageMinimapButton",

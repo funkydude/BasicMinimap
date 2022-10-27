@@ -572,6 +572,12 @@ local function Login(self)
 		end
 	end
 
+	-- Remove this fugly attempt by Blizz
+	self.SetParent(AddonCompartmentFrame, self)
+	hooksecurefunc(AddonCompartmentFrame, "SetParent", function()
+		self.SetParent(AddonCompartmentFrame, self)
+	end)
+
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
 	if MinimapNorthTag then -- XXX Dragonflight compat
 		self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
