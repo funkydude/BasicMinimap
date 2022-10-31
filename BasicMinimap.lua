@@ -757,15 +757,15 @@ local function Login(self)
 		end
 	end
 	zoomBtnFunc()
-	self.HookScript(MinimapZoomIn or Minimap.ZoomIn, "OnClick", zoomBtnFunc) -- XXX Dragonflight compat
-	self.HookScript(MinimapZoomOut or Minimap.ZoomOut, "OnClick", zoomBtnFunc) -- XXX Dragonflight compat
+	self.HookScript(Minimap.ZoomIn, "OnClick", zoomBtnFunc)
+	self.HookScript(Minimap.ZoomOut, "OnClick", zoomBtnFunc)
 
 	self.EnableMouseWheel(Minimap, true)
 	self.SetScript(Minimap, "OnMouseWheel", function(_, d)
 		if d > 0 then
-			(MinimapZoomIn or Minimap.ZoomIn):Click() -- XXX Dragonflight compat
+			Minimap.ZoomIn:Click()
 		elseif d < 0 then
-			(MinimapZoomOut or Minimap.ZoomOut):Click() -- XXX Dragonflight compat
+			Minimap.ZoomOut:Click()
 		end
 	end)
 
@@ -773,29 +773,15 @@ local function Login(self)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
-			if MiniMapTrackingDropDown then -- XXX Dragonflight compat
-				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
-			else
-				ToggleDropDownMenu(1, nil, MinimapCluster.Tracking.DropDown, minimapFrame)
-			end
+			ToggleDropDownMenu(1, nil, MinimapCluster.Tracking.DropDown, minimapFrame)
 		elseif btn == frame.db.profile.missionsBtn then
-			if GarrisonLandingPageMinimapButton then
-				GarrisonLandingPageMinimapButton:Click()
-			else
-				ExpansionLandingPageMinimapButton:OnClick()
-			end
+			ExpansionLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
-			if MiniMapWorldMapButton then -- XXX Dragonflight compat
-				MiniMapWorldMapButton:Click()
-			else
+			if not InCombatLockdown() then
 				ToggleWorldMap()
 			end
 		elseif btn == "LeftButton" then
-			if Minimap_OnClick then -- XXX Dragonflight compat
-				Minimap_OnClick(minimapFrame)
-			else
-				Minimap:OnClick()
-			end
+			Minimap:OnClick()
 		end
 	end)
 end

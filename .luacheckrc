@@ -7,8 +7,9 @@ exclude_files = {
 ignore = {
 	"111/SLASH_BASICMINIMAP[12]", -- slash handlers
 	"111/GetMinimapShape",
+	"112/SlashCmdList", -- SlashCmdList.BASICMINIMAP
 }
-globals = {
+read_globals = {
 	-- Lua
 	"date",
 	"tonumber",
@@ -35,11 +36,11 @@ globals = {
 	"GetZoneText",
 	"HIGHLIGHT_FONT_COLOR",
 	"hooksecurefunc",
+	"InCombatLockdown",
 	"LoadAddOn",
 	"NORMAL_FONT_COLOR",
 	"RAID_CLASS_COLORS",
 	"ReloadUI",
-	"SlashCmdList",
 	"ToggleDropDownMenu",
 	"UIParent",
 	"UnitClass",
