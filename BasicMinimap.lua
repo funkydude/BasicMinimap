@@ -7,19 +7,15 @@ local frame = CreateFrame("Frame", name)
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
-local blizzButtonPositions = {
-	[328] = MinimapZoomIn or Minimap.ZoomIn, -- XXX Dragonflight compat
-	[302] = MinimapZoomOut or Minimap.ZoomOut, -- XXX Dragonflight compat
-	[190] = GarrisonLandingPageMinimapButton or ExpansionLandingPageMinimapButton, -- XXX Dragonflight compat
-	[210] = QueueStatusMinimapButton,
-	[140] = MiniMapInstanceDifficulty,
-	[141] = GuildInstanceDifficulty,
-	[142] = MiniMapChallengeMode,
-	[150] = MinimapCluster.InstanceDifficulty,
-	[MiniMapMailFrame and 44 or 35] = GameTimeFrame,
-	[20] = MiniMapMailFrame or MinimapCluster.MailFrame,
+local blizzButtonNicknames = {
+	zoomIn = Minimap.ZoomIn,
+	zoomOut = Minimap.ZoomOut,
+	missions = ExpansionLandingPageMinimapButton,
+	difficulty = MinimapCluster.InstanceDifficulty,
+	calendar = GameTimeFrame,
+	mail = MinimapCluster.MailFrame,
 }
-frame.blizzButtonPositions = blizzButtonPositions
+frame.blizzButtonNicknames = blizzButtonNicknames
 
 do
 	local function openOpts()
@@ -82,9 +78,9 @@ local function Init(self)
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
 			borderSize = 5,
-			size = MiniMapMailFrame and 140 or 200,
+			size = 200,
 			scale = 1,
-			radius = MiniMapMailFrame and 5 or 2,
+			radius = 2,
 			colorBorder = {0,0,0,1},
 			calendarBtn = "RightButton",
 			trackingBtn = "MiddleButton",
@@ -129,6 +125,14 @@ local function Init(self)
 				outline = "OUTLINE",
 				color = {1,1,1,1},
 				classcolor = false,
+			},
+			blizzButtonLocation = {
+				zoomIn = 328,
+				zoomOut = 302,
+				missions = 190,
+				difficulty = 150,
+				calendar = 35,
+				mail = 20,
 			},
 		},
 	}
@@ -753,9 +757,9 @@ local function Login(self)
 	end
 
 	-- Update all blizz button positions
-	for position, button in next, blizzButtonPositions do
+	for nickName, button in next, blizzButtonNicknames do
 		self.ClearAllPoints(button)
-		ldbi:SetButtonToPosition(button, position)
+		ldbi:SetButtonToPosition(button, self.db.profile.blizzButtonLocation[nickName])
 	end
 
 	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.
