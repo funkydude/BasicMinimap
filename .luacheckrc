@@ -8,6 +8,7 @@ ignore = {
 	"111/SLASH_BASICMINIMAP[12]", -- slash handlers
 	"111/GetMinimapShape",
 	"112/SlashCmdList", -- SlashCmdList.BASICMINIMAP
+	"122/Minimap", -- Minimap.ZoomIn.IsMouseOver
 }
 read_globals = {
 	-- Lua

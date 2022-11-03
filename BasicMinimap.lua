@@ -56,6 +56,15 @@ backdropFrame:Show()
 local backdrop = backdropFrame:CreateTexture(nil, "BACKGROUND")
 backdrop:SetPoint("CENTER", Minimap, "CENTER")
 
+-- To turn off Blizz auto hiding the zoom buttons, we pretend the mouse is always over it.
+-- The alternative is killing the Minimap OnEnter/OnLeave script which could screw over other addons.
+-- See MinimapMixin:OnLeave() on line 185 of FrameXML/Minimap.lua
+local fakeMouseOver = function() return true end
+Minimap.ZoomIn.IsMouseOver = fakeMouseOver
+Minimap.ZoomIn:Show()
+Minimap.ZoomOut.IsMouseOver = fakeMouseOver
+Minimap.ZoomOut:Show()
+
 -- Init
 local function Init(self)
 	local defaults = {
@@ -659,6 +668,24 @@ local function Login(self)
 		backgroundCalendar:SetSize(25,25)
 		backgroundCalendar:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
 		backgroundCalendar:SetPoint("CENTER", GameTimeFrame, "CENTER")
+
+		local overlayZoomIn = Minimap.ZoomIn:CreateTexture(nil, "OVERLAY")
+		overlayZoomIn:SetSize(53,53)
+		overlayZoomIn:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+		overlayZoomIn:SetPoint("CENTER", Minimap.ZoomIn, "CENTER", 10, -10)
+		local backgroundZoomIn = Minimap.ZoomIn:CreateTexture(nil, "BACKGROUND")
+		backgroundZoomIn:SetSize(25,25)
+		backgroundZoomIn:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+		backgroundZoomIn:SetPoint("CENTER", Minimap.ZoomIn, "CENTER")
+
+		local overlayZoomOut = Minimap.ZoomOut:CreateTexture(nil, "OVERLAY")
+		overlayZoomOut:SetSize(53,53)
+		overlayZoomOut:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+		overlayZoomOut:SetPoint("CENTER", Minimap.ZoomOut, "CENTER", 10, -10)
+		local backgroundZoomOut = Minimap.ZoomOut:CreateTexture(nil, "BACKGROUND")
+		backgroundZoomOut:SetSize(25,25)
+		backgroundZoomOut:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+		backgroundZoomOut:SetPoint("CENTER", Minimap.ZoomOut, "CENTER")
 	end
 
 	-- Tracking button
