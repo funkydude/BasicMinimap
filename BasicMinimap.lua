@@ -744,7 +744,7 @@ local function Login(self)
 		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon()>> self:UpdateIconForGarrison() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
 		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", function() -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
 			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
-			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, 190)
+			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, self.db.profile.blizzButtonLocation.missions)
 		end)
 		if not self.db.profile.missions then
 			self.SetParent(ExpansionLandingPageMinimapButton, self)
