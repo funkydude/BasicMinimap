@@ -74,6 +74,7 @@ local function Init(self)
 			missions = true,
 			raidDiffIcon = true,
 			zoomBtn = false,
+			mail = true,
 			autoZoom = true,
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
@@ -646,10 +647,14 @@ local function Login(self)
 		end
 	end
 
-	if MinimapCluster.MailFrame then -- XXX Dragonflight compat
+	-- New mail button
+	if self.db.profile.mail then
 		self.SetParent(MinimapCluster.MailFrame, Minimap)
-		self.SetParent(GameTimeFrame, Minimap)
+	else
+		self.SetParent(MinimapCluster.MailFrame, self)
 	end
+
+	self.SetParent(GameTimeFrame, Minimap)
 
 	-- World map button
 	if MiniMapWorldMapButton then -- XXX Dragonflight compat

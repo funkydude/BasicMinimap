@@ -69,6 +69,7 @@ local function Init(self)
 			missions = true,
 			raidDiffIcon = true,
 			zoomBtn = false,
+			mail = true,
 			autoZoom = true,
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
@@ -597,6 +598,13 @@ local function Login(self)
 	else
 		self.SetParent(MinimapZoomIn, Minimap)
 		self.SetParent(MinimapZoomOut, Minimap)
+	end
+
+	-- New mail button
+	if self.db.profile.mail then
+		self.SetParent(MiniMapMailFrame, Minimap)
+	else
+		self.SetParent(MiniMapMailFrame, self)
 	end
 
 	-- World map button

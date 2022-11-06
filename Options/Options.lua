@@ -393,6 +393,14 @@ local options = function()
 							end
 						end,
 					},
+					mail = {
+						name = L.newMail,
+						order = 6.5, type = "toggle",
+						set = function(_, value)
+							map.db.profile.mail = value
+							MinimapCluster.MailFrame:SetParent(value and Minimap or map)
+						end,
+					},
 					zoneText = {
 						name = L.ZONETEXT,
 						order = 7, type = "toggle",
