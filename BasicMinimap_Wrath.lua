@@ -7,19 +7,16 @@ local frame = CreateFrame("Frame", name)
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
-local blizzButtonPositions = {
-	[328] = MinimapZoomIn,
-	[302] = MinimapZoomOut,
-	--[190] = GarrisonLandingPageMinimapButton,
-	[210] = MiniMapBattlefieldFrame, -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
-	[215] = MiniMapLFGFrame, -- Special LFG button for classic/TBC
-	[140] = MiniMapInstanceDifficulty,
-	--[141] = GuildInstanceDifficulty,
-	--[142] = MiniMapChallengeMode,
-	[44] = GameTimeFrame,
-	[20] = MiniMapMailFrame,
+local blizzButtonNicknames = {
+	zoomIn = MinimapZoomIn,
+	zoomOut = MinimapZoomOut,
+	difficulty = MiniMapInstanceDifficulty,
+	calendar = GameTimeFrame,
+	mail = MiniMapMailFrame,
+	pvp = MiniMapBattlefieldFrame,
+	lfg = MiniMapLFGFrame,
 }
-frame.blizzButtonPositions = blizzButtonPositions
+frame.blizzButtonNicknames = blizzButtonNicknames
 
 do
 	local function openOpts()
@@ -121,6 +118,15 @@ local function Init(self)
 				outline = "OUTLINE",
 				color = {1,1,1,1},
 				classcolor = false,
+			},
+			blizzButtonLocation = {
+				zoomIn = 328,
+				zoomOut = 302,
+				difficulty = 140,
+				calendar = 44,
+				mail = 20,
+				pvp = 210,
+				lfg = 215,
 			},
 		},
 	}
@@ -637,7 +643,7 @@ local function Login(self)
 	-- Stop Blizz moving the icon || GarrisonLandingPageMinimapButton_UpdateIcon() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
 	--hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
 	--	frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
-	--	ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
+	--	ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, self.db.profile.blizzButtonLocation.missions)
 	--end)
 	--if not self.db.profile.missions then
 	--	self.SetParent(GarrisonLandingPageMinimapButton, self)
@@ -649,9 +655,9 @@ local function Login(self)
 	self.SetParent(MiniMapLFGFrame, Minimap) -- Special LFG button for classic/TBC
 
 	-- Update all blizz button positions
-	for position, button in next, blizzButtonPositions do
+	for nickName, button in next, blizzButtonNicknames do
 		self.ClearAllPoints(button)
-		ldbi:SetButtonToPosition(button, position)
+		ldbi:SetButtonToPosition(button, self.db.profile.blizzButtonLocation[nickName])
 	end
 
 	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.

@@ -78,3 +78,5 @@ L.moveBlizzSliderDesc = "Move the slider to choose the position of the selected 
 L.newMail = "New Mail"
 L.zoomIn = "Zoom In"
 L.zoomOut = "Zoom Out"
+L.classicGroupFinder = "Group Finder"
+L.classicPvPQueue = "PvP Queue"

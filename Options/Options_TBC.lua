@@ -12,6 +12,7 @@ do
 	L = mod.L
 end
 
+local blizzButtonMoveSelection = nil
 local buttonValues = {RightButton = L.rightMouseButton, MiddleButton = L.middleMouse,
 	Button4 = L.mouseButton:format(4), Button5 = L.mouseButton:format(5), Button6 = L.mouseButton:format(6),
 	Button7 = L.mouseButton:format(7), Button8 = L.mouseButton:format(8), Button9 = L.mouseButton:format(9),
@@ -192,9 +193,9 @@ local options = function()
 								ldbi:Refresh(tbl[i])
 							end
 							-- Update all blizz button positions
-							for position, button in next, map.blizzButtonPositions do
+							for nickName, button in next, map.blizzButtonNicknames do
 								map.ClearAllPoints(button)
-								ldbi:SetButtonToPosition(button, position)
+								ldbi:SetButtonToPosition(button, map.db.profile.blizzButtonLocation[nickName])
 							end
 						end,
 					},
@@ -224,9 +225,9 @@ local options = function()
 								ldbi:Refresh(tbl[i])
 							end
 							-- Update all blizz button positions
-							for position, button in next, map.blizzButtonPositions do
+							for nickName, button in next, map.blizzButtonNicknames do
 								map.ClearAllPoints(button)
-								ldbi:SetButtonToPosition(button, position)
+								ldbi:SetButtonToPosition(button, map.db.profile.blizzButtonLocation[nickName])
 							end
 						end,
 					},
@@ -324,9 +325,9 @@ local options = function()
 							map.db.profile.radius = value
 							ldbi:SetButtonRadius(value)
 							-- Update all blizz button positions
-							for position, button in next, map.blizzButtonPositions do
+							for nickName, button in next, map.blizzButtonNicknames do
 								map.ClearAllPoints(button)
-								ldbi:SetButtonToPosition(button, position)
+								ldbi:SetButtonToPosition(button, map.db.profile.blizzButtonLocation[nickName])
 							end
 						end,
 					},
@@ -441,6 +442,39 @@ local options = function()
 						set = function(_, value)
 							map.db.profile.coordTime = value
 						end,
+					},
+					moveBlizzButtonDesc = {
+						name = "\n".. L.moveBlizzButtonsHeader1 .."\n".. L.moveBlizzButtonsHeader2,
+						order = 13, type = "description",
+					},
+					moveBlizzButtonSelect = {
+						name = L.moveBlizzDropdown,
+						desc = L.moveBlizzDropdownDesc,
+						order = 14, type = "select",
+						values = {zoomIn = L.zoomIn, zoomOut = L.zoomOut, mail = L.newMail, pvp = L.classicPvPQueue, lfg = L.classicGroupFinder},
+						get = function() return blizzButtonMoveSelection or "" end,
+						set = function(_, value)
+							blizzButtonMoveSelection = value
+						end,
+					},
+					moveBlizzButtonSlider = {
+						type = "range",
+						name = L.moveBlizzSlider,
+						desc = L.moveBlizzSliderDesc,
+						order = 15,
+						max = 360,
+						min = 1,
+						step = 1,
+						get = function() return map.db.profile.blizzButtonLocation[blizzButtonMoveSelection] end,
+						set = function(_, value)
+							local button = map.blizzButtonNicknames[blizzButtonMoveSelection]
+							if button then
+								map.db.profile.blizzButtonLocation[blizzButtonMoveSelection] = value
+								map.ClearAllPoints(button)
+								ldbi:SetButtonToPosition(button, value)
+							end
+						end,
+						disabled = function() return not blizzButtonMoveSelection end,
 					},
 				},
 			},
