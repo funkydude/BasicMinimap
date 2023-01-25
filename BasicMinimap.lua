@@ -13,7 +13,7 @@ local blizzButtonNicknames = {
 	missions = ExpansionLandingPageMinimapButton,
 	difficulty = MinimapCluster.InstanceDifficulty,
 	calendar = GameTimeFrame,
-	mail = MinimapCluster.MailFrame,
+	mail = MinimapCluster.IndicatorFrame.MailFrame,
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -649,10 +649,13 @@ local function Login(self)
 
 	-- New mail button
 	if self.db.profile.mail then
-		self.SetParent(MinimapCluster.MailFrame, Minimap)
+		self.SetParent(MinimapCluster.IndicatorFrame.MailFrame, Minimap)
 	else
-		self.SetParent(MinimapCluster.MailFrame, self)
+		self.SetParent(MinimapCluster.IndicatorFrame.MailFrame, self)
 	end
+	-- XXX hopefuly temporary workaround for line 376 of Minimap.lua
+	self.Layout = function() end
+	Minimap.Layout = self.Layout
 
 	self.SetParent(GameTimeFrame, Minimap)
 
@@ -660,11 +663,11 @@ local function Login(self)
 	if MiniMapWorldMapButton then -- XXX Dragonflight compat
 		self.SetParent(MiniMapWorldMapButton, self)
 	else
-		local overlayMail = MinimapCluster.MailFrame:CreateTexture(nil, "OVERLAY")
+		local overlayMail = MinimapCluster.IndicatorFrame.MailFrame:CreateTexture(nil, "OVERLAY")
 		overlayMail:SetSize(53,53)
 		overlayMail:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
 		overlayMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER", 10, -10)
-		local backgroundMail = MinimapCluster.MailFrame:CreateTexture(nil, "BACKGROUND")
+		local backgroundMail = MinimapCluster.IndicatorFrame.MailFrame:CreateTexture(nil, "BACKGROUND")
 		backgroundMail:SetSize(25,25)
 		backgroundMail:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
 		backgroundMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER")

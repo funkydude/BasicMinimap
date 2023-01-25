@@ -398,7 +398,7 @@ local options = function()
 						order = 6.5, type = "toggle",
 						set = function(_, value)
 							map.db.profile.mail = value
-							MinimapCluster.MailFrame:SetParent(value and Minimap or map)
+							MinimapCluster.IndicatorFrame.MailFrame:SetParent(value and Minimap or map)
 						end,
 					},
 					zoneText = {
