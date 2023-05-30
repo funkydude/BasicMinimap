@@ -87,6 +87,7 @@ read_globals = {
 	"MiniMapInstanceDifficulty",
 	"MiniMapMailFrame",
 	"MiniMapMailIcon",
+	"MiniMapCraftingOrderIcon",
 	"MinimapNorthTag",
 	"MiniMapTracking",
 	"MiniMapTrackingDropDown",

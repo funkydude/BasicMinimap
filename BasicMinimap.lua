@@ -14,6 +14,8 @@ local blizzButtonNicknames = {
 	difficulty = MinimapCluster.InstanceDifficulty,
 	calendar = GameTimeFrame,
 	mail = MinimapCluster.IndicatorFrame.MailFrame,
+	craftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame,
+	addonCompartment = AddonCompartmentFrame,
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -75,6 +77,8 @@ local function Init(self)
 			raidDiffIcon = true,
 			zoomBtn = false,
 			mail = true,
+			craftingOrder = true,
+			addonCompartment = false,
 			autoZoom = true,
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
@@ -134,6 +138,8 @@ local function Init(self)
 				difficulty = 150,
 				calendar = 35,
 				mail = 20,
+				addonCompartment = 132,
+				craftingOrder = 170,
 			},
 		},
 	}
@@ -586,12 +592,6 @@ local function Login(self)
 		end
 	end
 
-	-- Remove this fugly attempt by Blizz
-	self.SetParent(AddonCompartmentFrame, self)
-	hooksecurefunc(AddonCompartmentFrame, "SetParent", function()
-		self.SetParent(AddonCompartmentFrame, self)
-	end)
-
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
 	if MinimapNorthTag then -- XXX Dragonflight compat
 		self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
@@ -653,6 +653,19 @@ local function Login(self)
 	else
 		self.SetParent(MinimapCluster.IndicatorFrame.MailFrame, self)
 	end
+	-- New Crafting Order button
+	if self.db.profile.craftingOrder then
+		self.SetParent(MinimapCluster.IndicatorFrame.CraftingOrderFrame, Minimap)
+	else
+		self.SetParent(MinimapCluster.IndicatorFrame.CraftingOrderFrame, self)
+	end
+	-- Addon Compartment
+	if self.db.profile.addonCompartment then
+		self.SetParent(AddonCompartmentFrame, Minimap)
+	else
+		self.SetParent(AddonCompartmentFrame, self)
+	end
+
 	-- XXX hopefuly temporary workaround for line 376 of Minimap.lua
 	self.Layout = function() end
 	Minimap.Layout = self.Layout
@@ -671,6 +684,24 @@ local function Login(self)
 		backgroundMail:SetSize(25,25)
 		backgroundMail:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
 		backgroundMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER")
+
+		local overlayCraftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture(nil, "OVERLAY")
+		overlayCraftingOrder:SetSize(53,53)
+		overlayCraftingOrder:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+		overlayCraftingOrder:SetPoint("CENTER", MiniMapCraftingOrderIcon, "CENTER", 10, -10)
+		local backgroundCraftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture(nil, "BACKGROUND")
+		backgroundCraftingOrder:SetSize(25,25)
+		backgroundCraftingOrder:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+		backgroundCraftingOrder:SetPoint("CENTER", MiniMapCraftingOrderIcon, "CENTER")
+
+		local overlayAddonCompartment = AddonCompartmentFrame:CreateTexture(nil, "OVERLAY")
+		overlayAddonCompartment:SetSize(53,53)
+		overlayAddonCompartment:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+		overlayAddonCompartment:SetPoint("CENTER", AddonCompartmentFrame, "CENTER", 10, -10)
+		local backgroundAddonCompartment = AddonCompartmentFrame:CreateTexture(nil, "BACKGROUND")
+		backgroundAddonCompartment:SetSize(25,25)
+		backgroundAddonCompartment:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+		backgroundAddonCompartment:SetPoint("CENTER", AddonCompartmentFrame, "CENTER")
 
 		local overlayCalendar = GameTimeFrame:CreateTexture(nil, "OVERLAY")
 		overlayCalendar:SetSize(53,53)

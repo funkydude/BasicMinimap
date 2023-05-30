@@ -340,7 +340,7 @@ local options = function()
 						end,
 					},
 					buttonShowDesc = {
-						name = "\n\n\n".. L.buttonHeader,
+						name = "\n".. L.buttonHeader,
 						order = 3, type = "description",
 					},
 					zoomBtn = {
@@ -401,6 +401,22 @@ local options = function()
 							MinimapCluster.IndicatorFrame.MailFrame:SetParent(value and Minimap or map)
 						end,
 					},
+					addonCompartment = {
+						name = L.addonCompartment,
+						order = 6.6, type = "toggle",
+						set = function(_, value)
+							map.db.profile.addonCompartment = value
+							AddonCompartmentFrame:SetParent(value and Minimap or map)
+						end,
+					},
+					craftingOrder = {
+						name = L.craftingOrder,
+						order = 6.7, type = "toggle",
+						set = function(_, value)
+							map.db.profile.craftingOrder = value
+							MinimapCluster.IndicatorFrame.CraftingOrderFrame:SetParent(value and Minimap or map)
+						end,
+					},
 					zoneText = {
 						name = L.ZONETEXT,
 						order = 7, type = "toggle",
@@ -437,7 +453,7 @@ local options = function()
 						end,
 					},
 					coordDesc = {
-						name = "\n\n\n".. L.coordinates..":",
+						name = "\n".. L.coordinates..":",
 						order = 10, type = "description",
 					},
 					coordPrecision = {
@@ -469,7 +485,15 @@ local options = function()
 						name = L.moveBlizzDropdown,
 						desc = L.moveBlizzDropdownDesc,
 						order = 14, type = "select",
-						values = {zoomIn = L.zoomIn, zoomOut = L.zoomOut, missions = L.missions, difficulty = L.difficultyIndicator, calendar = L.CALENDAR, mail = L.newMail},
+						values = {
+							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
+							missions = L.missions,
+							difficulty = L.difficultyIndicator,
+							calendar = L.CALENDAR,
+							mail = L.newMail,
+							craftingOrder = L.craftingOrder,
+							addonCompartment = L.addonCompartment,
+						},
 						get = function() return blizzButtonMoveSelection or "" end,
 						set = function(_, value)
 							blizzButtonMoveSelection = value
