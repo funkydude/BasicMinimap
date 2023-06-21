@@ -1,4 +1,4 @@
-## Interface: 30401
+## Interface: 30402
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.
