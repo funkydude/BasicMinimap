@@ -25,7 +25,7 @@ do
 		LibStub("AceConfigDialog-3.0"):Open(name)
 	end
 	SlashCmdList.BASICMINIMAP = openOpts
-	SLASH_BASICMINIMAP1 = "/bm"
+	SLASH_BASICMINIMAP1 = "/bmm"
 	SLASH_BASICMINIMAP2 = "/basicminimap"
 end
 

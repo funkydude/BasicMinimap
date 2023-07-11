@@ -15,7 +15,7 @@ BasicMinimap is a basic solution to a clean, square minimap.
 * **MiddleClick**: Toggle Tracking
 
 ## Options:
-* /bm
+* /bmm
 * /basicminimap
 
 ## Download
