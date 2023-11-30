@@ -1,4 +1,4 @@
-## Interface: 11404
+## Interface: 11500
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
