@@ -7,6 +7,9 @@ local frame = CreateFrame("Frame", name)
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
+-- XXX temp 10.2.6
+local TrackingFrame = MinimapCluster.TrackingFrame or MinimapCluster.Tracking
+
 local blizzButtonNicknames = {
 	zoomIn = Minimap.ZoomIn,
 	zoomOut = Minimap.ZoomOut,
@@ -735,7 +738,7 @@ local function Login(self)
 	if MiniMapTracking then -- XXX Dragonflight compat
 		self.SetParent(MiniMapTracking, self)
 	else
-		self.SetParent(MinimapCluster.Tracking, self)
+		self.SetParent(TrackingFrame, self)
 	end
 
 	-- Difficulty indicators
@@ -843,7 +846,7 @@ local function Login(self)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, MinimapCluster.Tracking.DropDown, minimapFrame)
+			ToggleDropDownMenu(1, nil, TrackingFrame.DropDown, minimapFrame)
 		elseif btn == frame.db.profile.missionsBtn then
 			ExpansionLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
