@@ -1,4 +1,4 @@
-## Interface: 11502
+## Interface: 40400
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.
@@ -25,5 +25,5 @@
 
 embeds.xml
 locales.xml
-Options_Vanilla.lua
+Options_Wrath.lua
 

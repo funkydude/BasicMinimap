@@ -1,4 +1,4 @@
-## Interface: 11502
+## Interface: 40400
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
@@ -25,5 +25,5 @@
 ## X-Wago-ID: 5bGoroK0
 
 embeds.xml
-BasicMinimap_Vanilla.lua
+BasicMinimap_Wrath.lua
 modules.xml
