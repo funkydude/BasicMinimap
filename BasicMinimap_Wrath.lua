@@ -625,11 +625,15 @@ local function Login(self)
 	-- Difficulty indicators
 	if not self.db.profile.raidDiffIcon then
 		self.SetParent(MiniMapInstanceDifficulty, self)
-		--self.SetParent(GuildInstanceDifficulty, self)
+		if GuildInstanceDifficulty then
+			self.SetParent(GuildInstanceDifficulty, self)
+		end
 		--self.SetParent(MiniMapChallengeMode, self)
 	else
 		self.SetParent(MiniMapInstanceDifficulty, Minimap)
-		--self.SetParent(GuildInstanceDifficulty, Minimap)
+		if GuildInstanceDifficulty then
+			self.SetParent(GuildInstanceDifficulty, Minimap)
+		end
 		--self.SetParent(MiniMapChallengeMode, Minimap)
 	end
 
@@ -658,6 +662,10 @@ local function Login(self)
 	for nickName, button in next, blizzButtonNicknames do
 		self.ClearAllPoints(button)
 		ldbi:SetButtonToPosition(button, self.db.profile.blizzButtonLocation[nickName])
+		if nickName == "difficulty" and GuildInstanceDifficulty then
+			self.ClearAllPoints(GuildInstanceDifficulty)
+			ldbi:SetButtonToPosition(GuildInstanceDifficulty, self.db.profile.blizzButtonLocation[nickName])
+		end
 	end
 
 	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.
