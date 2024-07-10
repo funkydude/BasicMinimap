@@ -48,6 +48,7 @@ local function UpdateCoords()
 end
 
 local function UpdateZoneText()
+	local GetZonePVPInfo = C_PvP and C_PvP.GetZonePVPInfo or GetZonePVPInfo
 	local pvpType = GetZonePVPInfo()
 	if pvpType == "sanctuary" then
 		local c = map.db.profile.zoneTextConfig.colorSanctuary
@@ -605,7 +606,10 @@ local options = function()
 								end,
 							},
 							colorDesc = {
-								name = function() return L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.zoneNormal) end,
+								name = function()
+									local GetZonePVPInfo = C_PvP and C_PvP.GetZonePVPInfo or GetZonePVPInfo
+									return L.currentZone:format(type((GetZonePVPInfo())) == "string" and L[GetZonePVPInfo()] or L.zoneNormal)
+								end,
 								order = 9.5, type = "description", width = "full",
 							},
 							colorNormal = {

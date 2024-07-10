@@ -18,6 +18,8 @@ frame.blizzButtonNicknames = blizzButtonNicknames
 
 do
 	local function openOpts()
+		local EnableAddOn = C_AddOns.EnableAddOn or EnableAddOn
+		local LoadAddOn = C_AddOns.LoadAddOn or LoadAddOn
 		EnableAddOn("BasicMinimap_Options") -- Make sure it wasn't left disabled for whatever reason
 		LoadAddOn("BasicMinimap_Options")
 		LibStub("AceConfigDialog-3.0"):Open(name)
@@ -350,7 +352,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 		zoneText:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	end
 	do
-		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, GetZonePVPInfo
+		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, C_PvP and C_PvP.GetZonePVPInfo or GetZonePVPInfo
 		local function UpdateDisplay(zoneTextFrame) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
 			local text = GetMinimapZoneText()
 			zoneTextFont:SetText(text)

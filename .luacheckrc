@@ -22,7 +22,9 @@ read_globals = {
 
 	-- WoW (general API)
 	"CreateFrame",
+	"C_AddOns",
 	"C_Calendar",
+	"C_PvP",
 	"C_Map",
 	"C_Timer",
 	"EnableAddOn",
