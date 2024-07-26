@@ -21,6 +21,7 @@ read_globals = {
 	"LibStub",
 
 	-- WoW (general API)
+	"AnchorUtil",
 	"CreateFrame",
 	"C_AddOns",
 	"C_Calendar",
