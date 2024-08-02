@@ -309,6 +309,18 @@ local function CreateClock(self) -- Create our own clock
 			bmTooltip:AddLine(" ")
 			bmTooltip:AddLine(dateDisplay, whiteR, whiteG, whiteB)
 			bmTooltip:AddLine(" ")
+			bmTooltip:AddLine(RESET, whiteR, whiteG, whiteB) -- Reset
+			bmTooltip:AddDoubleLine( -- Daily quests
+				STAT_FORMAT:format(DAILY),
+				SecondsToTime(C_DateAndTime.GetSecondsUntilDailyReset()),
+				normalR, normalG, normalB,
+				whiteR, whiteG, whiteB)
+			bmTooltip:AddDoubleLine( -- Weekly quests
+				STAT_FORMAT:format(WEEKLY),
+				SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset()),
+				normalR, normalG, normalB,
+				whiteR, whiteG, whiteB)
+			bmTooltip:AddLine(" ")
 
 			bmTooltip:AddLine(GAMETIME_TOOLTIP_TOGGLE_CLOCK)
 			bmTooltip:Show()
