@@ -7,6 +7,8 @@ local frame = CreateFrame("Frame", name)
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
+local TrackingButton = MiniMapTrackingButton
+
 local blizzButtonNicknames = {
 	zoomIn = MinimapZoomIn,
 	zoomOut = MinimapZoomOut,
@@ -631,7 +633,18 @@ local function Login(self)
 	self.SetParent(MiniMapWorldMapButton, self)
 
 	-- Tracking button
-	self.SetParent(MiniMapTracking, self)
+	if not TrackingButton or not TrackingButton.SetMenuAnchor then -- Wrath
+		self.SetParent(MiniMapTracking, self)
+	else -- Cata
+		self.SetParent(MiniMapTracking, self)
+		self.SetParent(TrackingButton, Minimap)
+		self.ClearAllPoints(TrackingButton)
+		self.SetPoint(TrackingButton, "CENTER")
+		self.SetFixedFrameStrata(TrackingButton, false)
+		self.SetFrameStrata(TrackingButton, "BACKGROUND")
+		self.SetFixedFrameStrata(TrackingButton, true)
+		TrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
+	end
 
 	-- Classic Wrath
 	self.SetParent(GameTimeFrame, Minimap) -- Calendar isn't parented to Minimap in Wrath
@@ -719,7 +732,11 @@ local function Login(self)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+			if TrackingButton and TrackingButton.OpenMenu then -- Cata
+				TrackingButton:OpenMenu()
+			else -- Wrath
+				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+			end
 		--elseif btn == frame.db.profile.missionsBtn then
 		--	GarrisonLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then

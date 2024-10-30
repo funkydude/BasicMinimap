@@ -99,6 +99,7 @@ read_globals = {
 	"MiniMapCraftingOrderIcon",
 	"MinimapNorthTag",
 	"MiniMapTracking",
+	"MiniMapTrackingButton",
 	"MiniMapTrackingDropDown",
 	"MiniMapWorldMapButton",
 	"MinimapZoneText",
