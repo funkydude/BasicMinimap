@@ -633,7 +633,7 @@ local function Login(self)
 	local icon = GetTrackingTexture()
 	if icon then
 		MiniMapTrackingIcon:SetTexture(icon)
-		MiniMapTrackingFrame:Show()
+		MiniMapTracking:Show()
 	end
 
 	-- Classic
@@ -713,11 +713,11 @@ local function Login(self)
 	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 		--if btn == frame.db.profile.calendarBtn then
 		--	GameTimeFrame:Click()
-		if btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+		--elseif btn == frame.db.profile.trackingBtn then
+		--	ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
 		--elseif btn == frame.db.profile.missionsBtn then
 		--	GarrisonLandingPageMinimapButton:Click()
-		elseif btn == frame.db.profile.mapBtn then
+		if btn == frame.db.profile.mapBtn then
 			MiniMapWorldMapButton:Click()
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(minimapFrame)

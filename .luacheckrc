@@ -121,5 +121,4 @@ read_globals = {
 	"MiniMapLFGFrame",
 	"GetTrackingTexture",
 	"MiniMapTrackingIcon",
-	"MiniMapTrackingFrame",
 }
