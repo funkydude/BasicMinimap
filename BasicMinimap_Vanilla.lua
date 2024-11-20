@@ -12,7 +12,7 @@ local blizzButtonNicknames = {
 	zoomOut = MinimapZoomOut,
 	mail = MiniMapMailFrame,
 	pvp = MiniMapBattlefieldFrame,
-	lfg = MiniMapLFGFrame,
+	lfg = LFGMinimapFrame,
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -624,7 +624,7 @@ local function Login(self)
 	end
 
 	-- World map button
-	self.SetParent(MiniMapWorldMapButton, self)
+	--self.SetParent(MiniMapWorldMapButton, self) -- Not on classic era
 
 	-- Tracking button
 	--self.SetParent(MiniMapTracking, self)
@@ -669,7 +669,9 @@ local function Login(self)
 
 	-- PvE/PvP Queue button
 	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
-	self.SetParent(MiniMapLFGFrame, Minimap) -- Special LFG button for classic/TBC
+	if LFGMinimapFrame then
+		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
+	end
 
 	-- Update all blizz button positions
 	for nickName, button in next, blizzButtonNicknames do

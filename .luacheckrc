@@ -116,9 +116,10 @@ read_globals = {
 	"ToggleWorldMap",
 
 	-- Classic
+	"LFGMinimapFrame", -- classic era
 	"MiniMapBattlefieldFrame",
 	"MinimapToggleButton",
-	"MiniMapLFGFrame",
+	"MiniMapLFGFrame", -- tbc and beyond
 	"GetTrackingTexture",
 	"MiniMapTrackingIcon",
 }
