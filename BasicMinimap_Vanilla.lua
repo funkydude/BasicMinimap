@@ -12,7 +12,7 @@ local blizzButtonNicknames = {
 	zoomOut = MinimapZoomOut,
 	mail = MiniMapMailFrame,
 	pvp = MiniMapBattlefieldFrame,
-	lfg = LFGMinimapFrame,
+	--lfg = LFGMinimapFrame, -- loads on PLAYER_ENTERING_WORLD
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -667,11 +667,8 @@ local function Login(self)
 	--	self.SetParent(GarrisonLandingPageMinimapButton, self)
 	--end
 
-	-- PvE/PvP Queue button
+	-- PvP Queue button
 	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
-	if LFGMinimapFrame then
-		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
-	end
 
 	-- Update all blizz button positions
 	for nickName, button in next, blizzButtonNicknames do
@@ -720,7 +717,7 @@ local function Login(self)
 		--elseif btn == frame.db.profile.missionsBtn then
 		--	GarrisonLandingPageMinimapButton:Click()
 		if btn == frame.db.profile.mapBtn then
-			MiniMapWorldMapButton:Click()
+			ToggleWorldMap()
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(minimapFrame)
 		end
@@ -773,6 +770,12 @@ function frame:LOADING_SCREEN_DISABLED(event)
 	CreateCoords(self)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 	CreateZoneText(self, fullMinimapSize)
+	if LFGMinimapFrame then -- Classic era only, loads after PLAYER_ENTERING_WORLD
+		blizzButtonNicknames.lfg = LFGMinimapFrame
+		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
+		self.ClearAllPoints(LFGMinimapFrame)
+		ldbi:SetButtonToPosition(LFGMinimapFrame, self.db.profile.blizzButtonLocation.lfg)
+	end
 end
 frame:RegisterEvent("LOADING_SCREEN_DISABLED")
 
