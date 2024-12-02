@@ -13,6 +13,7 @@ local blizzButtonNicknames = {
 	mail = MiniMapMailFrame,
 	pvp = MiniMapBattlefieldFrame,
 	--lfg = LFGMinimapFrame, -- loads on PLAYER_ENTERING_WORLD
+	tracking = MiniMapTracking,
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -125,6 +126,7 @@ local function Init(self)
 				mail = 20,
 				pvp = 210,
 				lfg = 215,
+				tracking = 150,
 			},
 		},
 	}
@@ -629,6 +631,7 @@ local function Login(self)
 	-- Tracking button
 	--self.SetParent(MiniMapTracking, self)
 
+	self.SetParent(MiniMapTracking, Minimap)
 	-- On classic (vanilla) only, when reloading UI, there's a bug where the tracking icon doesn't re-show.
 	local icon = GetTrackingTexture()
 	if icon then

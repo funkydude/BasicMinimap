@@ -453,7 +453,7 @@ local options = function()
 						name = L.moveBlizzDropdown,
 						desc = L.moveBlizzDropdownDesc,
 						order = 14, type = "select",
-						values = {zoomIn = L.zoomIn, zoomOut = L.zoomOut, mail = L.newMail, pvp = L.classicPvPQueue, lfg = L.classicGroupFinder},
+						values = {zoomIn = L.zoomIn, zoomOut = L.zoomOut, mail = L.newMail, pvp = L.classicPvPQueue, lfg = L.classicGroupFinder, tracking = L.tracking},
 						get = function() return blizzButtonMoveSelection or "" end,
 						set = function(_, value)
 							blizzButtonMoveSelection = value
