@@ -167,7 +167,7 @@ local options = function()
 					shape = {
 						name = L.SHAPE,
 						order = 7, type = "select",
-						values = {SQUARE = L.square, ROUND = L.round},
+						values = {SQUARE = L.square, RECTANGLE = L.rectangle, ROUND = L.round},
 						set = function(_, value)
 							map.db.profile.shape = value
 							if value == "SQUARE" then
@@ -179,6 +179,15 @@ local options = function()
 									HybridMinimap.MapCanvas:SetUseMaskTexture(true)
 								end
 								function GetMinimapShape() return "SQUARE" end
+							else if value == "RECTANGLE" then
+								Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\rectangle")
+								map.mask:SetTexture("Interface\\AddOns\\BasicMinimap\\rectangle")
+								if HybridMinimap then
+									HybridMinimap.MapCanvas:SetUseMaskTexture(false)
+									HybridMinimap.CircleMask:SetTexture("Interface\\AddOns\\BasicMinimap\\rectangle")
+									HybridMinimap.MapCanvas:SetUseMaskTexture(true)
+								end
+								function GetMinimapShape() return "RECTANGLE" end
 							else
 								Minimap:SetMaskTexture("Interface\\AddOns\\BasicMinimap\\circle")
 								map.mask:SetTexture("Interface\\AddOns\\BasicMinimap\\circle")
