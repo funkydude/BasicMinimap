@@ -16,6 +16,7 @@ L.sizeHeader = "Change the minimap size if you want to leave the minimap buttons
 L.scale = "Minimap Scale"
 L.general = "General"
 L.square = "Square"
+L.rectangle = "Rectangle"
 L.round = "Round"
 L.buttonHeader = "Configure what buttons to show/hide:"
 L.size = "Minimap Size"

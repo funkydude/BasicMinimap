@@ -16,6 +16,7 @@ L.sizeHeader = "Changez la taille de la minicarte si vous voulez laisser les bou
 L.scale = "Echelle le la minicarte"
 L.general = "Général"
 L.square = "Carré"
+L.rectangle = "Rectangle"
 L.round = "Arrondi"
 L.buttonHeader = "Configurer quels boutons afficher/cacher:"
 L.size = "Taille de la minicarte"

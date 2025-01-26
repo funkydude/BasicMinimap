@@ -16,6 +16,7 @@ L.sizeHeader = "Veränder die Minikartengröße, falls du die Minikartenbuttons 
 L.scale = "Minikartenskalierung"
 L.general = "Allgemein"
 L.square = "Quadratisch"
+L.rectangle = "Rechteckig"
 L.round = "Rund"
 L.buttonHeader = "Lege fest, welche Button angezeigt/ausgeblendet werden:"
 L.size = "Minikartengröße"
