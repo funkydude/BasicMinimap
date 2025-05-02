@@ -1,0 +1,29 @@
+## Interface: 50500
+## Version: @project-version@
+## Title: BasicMinimap
+## Notes: Configurable minimap with basic options.
+## Notes-zhTW: 小地圖增強插件
+## Notes-zhCN: 小地图增强插件
+## Notes-deDE: Anpassbare Minimap mit grundliegenden Optionen.
+## Notes-frFR: Minicarte configurable comportant des options basiques.
+## Notes-itIT: Configurable minimap with basic options.
+## Notes-koKR: 미니맵의 간단한 옵션들을 설정할 수 있습니다.
+## Notes-ruRU: Настраиваемая миникарта с базовыми возможностями.
+## Notes-ptBR: Configurable minimap with basic options.
+## Notes-esES: Minimapa configurable con opciones básicas.
+## Notes-esMX: Minimapa configurable con opciones básicas.
+## Author: Funkydude
+## SavedVariables: BasicMinimapSV
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0, LibDBIcon-1.0
+
+## X-Embeds: Ace3, LibSharedMedia-3.0, LibDDI-1.0, LibDBIcon-1.0
+## X-Category: Minimap
+## X-Website: https://github.com/funkydude/BasicMinimap
+## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
+## X-Curse-Project-ID: 13506
+## X-WoWI-ID: 9101
+## X-Wago-ID: 5bGoroK0
+
+embeds.xml
+BasicMinimap_Wrath.lua
+modules.xml

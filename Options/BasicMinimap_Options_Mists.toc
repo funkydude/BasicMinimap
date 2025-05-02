@@ -1,0 +1,29 @@
+## Interface: 50500
+## Title: BasicMinimap_Options
+## Author: Funkydude
+## Notes: BasicMinimap Configuration Options.
+## Notes-esES: Opciones de configuración de BasicMinimap.
+## Notes-esMX: Opciones de configuración de BasicMinimap.
+## Notes-zhCN: BasicMinimap 配置选项。
+## Notes-zhTW: BasicMinimap 配置選項。
+## Notes-deDE: BasicMinimap Einstellungen.
+## Notes-frFR: Options de configuration de BasicMinimap.
+## Notes-itIT: BasicMinimap Configuration Options.
+## Notes-koKR: BasicMinimap|1을;를; 설정하는 옵션입니다.
+## Notes-ptBR: BasicMinimap Opções de Configuração.
+## Notes-ruRU: BasicMinimap параметры настроек.
+## Version: @project-version@
+## LoadOnDemand: 1
+## Dependencies: BasicMinimap
+
+## X-Category: Combat
+## X-Website: https://github.com/funkydude/BasicMinimap
+## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
+## X-Curse-Project-ID: 13506
+## X-WoWI-ID: 9101
+## X-Wago-ID: 5bGoroK0
+
+embeds.xml
+locales.xml
+Options_Wrath.lua
+
