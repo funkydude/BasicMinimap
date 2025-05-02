@@ -1,4 +1,4 @@
-## Interface: 110005, 110007, 110100
+## Interface: 110105, 110107, 110100
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.
