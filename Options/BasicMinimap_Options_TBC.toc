@@ -1,6 +1,6 @@
 ## Interface: 20504
 ## Title: BasicMinimap_Options
-## Author: Funkydude
+## Author: Funkeh
 ## Notes: BasicMinimap Configuration Options.
 ## Notes-esES: Opciones de configuración de BasicMinimap.
 ## Notes-esMX: Opciones de configuración de BasicMinimap.

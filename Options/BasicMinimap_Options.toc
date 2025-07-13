@@ -1,6 +1,6 @@
-## Interface: 110105, 110107, 110100
+## Interface: 110105, 110107, 110200
 ## Title: BasicMinimap_Options
-## Author: Funkydude
+## Author: Funkeh
 ## Notes: BasicMinimap Configuration Options.
 ## Notes-esES: Opciones de configuración de BasicMinimap.
 ## Notes-esMX: Opciones de configuración de BasicMinimap.
