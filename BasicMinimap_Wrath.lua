@@ -655,13 +655,17 @@ local function Login(self)
 		if GuildInstanceDifficulty then
 			self.SetParent(GuildInstanceDifficulty, self)
 		end
-		--self.SetParent(MiniMapChallengeMode, self)
+		if MiniMapChallengeMode then
+			self.SetParent(MiniMapChallengeMode, self)
+		end
 	else
 		self.SetParent(MiniMapInstanceDifficulty, Minimap)
 		if GuildInstanceDifficulty then
 			self.SetParent(GuildInstanceDifficulty, Minimap)
 		end
-		--self.SetParent(MiniMapChallengeMode, Minimap)
+		if MiniMapChallengeMode then
+			self.SetParent(MiniMapChallengeMode, Minimap)
+		end
 	end
 
 	-- Missions button
@@ -689,9 +693,15 @@ local function Login(self)
 	for nickName, button in next, blizzButtonNicknames do
 		self.ClearAllPoints(button)
 		ldbi:SetButtonToPosition(button, self.db.profile.blizzButtonLocation[nickName])
-		if nickName == "difficulty" and GuildInstanceDifficulty then
-			self.ClearAllPoints(GuildInstanceDifficulty)
-			ldbi:SetButtonToPosition(GuildInstanceDifficulty, self.db.profile.blizzButtonLocation[nickName])
+		if nickName == "difficulty" then
+			if GuildInstanceDifficulty then
+				self.ClearAllPoints(GuildInstanceDifficulty)
+				ldbi:SetButtonToPosition(GuildInstanceDifficulty, self.db.profile.blizzButtonLocation[nickName])
+			end
+			if MiniMapChallengeMode then
+				self.ClearAllPoints(MiniMapChallengeMode)
+				ldbi:SetButtonToPosition(MiniMapChallengeMode, self.db.profile.blizzButtonLocation[nickName])
+			end
 		end
 	end
 
