@@ -197,9 +197,15 @@ local options = function()
 							for nickName, button in next, map.blizzButtonNicknames do
 								map.ClearAllPoints(button)
 								ldbi:SetButtonToPosition(button, map.db.profile.blizzButtonLocation[nickName])
-								if nickName == "difficulty" and GuildInstanceDifficulty then
-									map.ClearAllPoints(GuildInstanceDifficulty)
-									ldbi:SetButtonToPosition(GuildInstanceDifficulty, map.db.profile.blizzButtonLocation[nickName])
+								if nickName == "difficulty" then
+									if GuildInstanceDifficulty then
+										map.ClearAllPoints(GuildInstanceDifficulty)
+										ldbi:SetButtonToPosition(GuildInstanceDifficulty, map.db.profile.blizzButtonLocation[nickName])
+									end
+									if MiniMapChallengeMode then
+										map.ClearAllPoints(MiniMapChallengeMode)
+										ldbi:SetButtonToPosition(MiniMapChallengeMode, map.db.profile.blizzButtonLocation[nickName])
+									end
 								end
 							end
 						end,
@@ -233,9 +239,15 @@ local options = function()
 							for nickName, button in next, map.blizzButtonNicknames do
 								map.ClearAllPoints(button)
 								ldbi:SetButtonToPosition(button, map.db.profile.blizzButtonLocation[nickName])
-								if nickName == "difficulty" and GuildInstanceDifficulty then
-									map.ClearAllPoints(GuildInstanceDifficulty)
-									ldbi:SetButtonToPosition(GuildInstanceDifficulty, map.db.profile.blizzButtonLocation[nickName])
+								if nickName == "difficulty" then
+									if GuildInstanceDifficulty then
+										map.ClearAllPoints(GuildInstanceDifficulty)
+										ldbi:SetButtonToPosition(GuildInstanceDifficulty, map.db.profile.blizzButtonLocation[nickName])
+									end
+									if MiniMapChallengeMode then
+										map.ClearAllPoints(MiniMapChallengeMode)
+										ldbi:SetButtonToPosition(MiniMapChallengeMode, map.db.profile.blizzButtonLocation[nickName])
+									end
 								end
 							end
 						end,
@@ -336,9 +348,15 @@ local options = function()
 							for nickName, button in next, map.blizzButtonNicknames do
 								map.ClearAllPoints(button)
 								ldbi:SetButtonToPosition(button, map.db.profile.blizzButtonLocation[nickName])
-								if nickName == "difficulty" and GuildInstanceDifficulty then
-									map.ClearAllPoints(GuildInstanceDifficulty)
-									ldbi:SetButtonToPosition(GuildInstanceDifficulty, map.db.profile.blizzButtonLocation[nickName])
+								if nickName == "difficulty" then
+									if GuildInstanceDifficulty then
+										map.ClearAllPoints(GuildInstanceDifficulty)
+										ldbi:SetButtonToPosition(GuildInstanceDifficulty, map.db.profile.blizzButtonLocation[nickName])
+									end
+									if MiniMapChallengeMode then
+										map.ClearAllPoints(MiniMapChallengeMode)
+										ldbi:SetButtonToPosition(MiniMapChallengeMode, map.db.profile.blizzButtonLocation[nickName])
+									end
 								end
 							end
 						end,
@@ -371,13 +389,17 @@ local options = function()
 								if GuildInstanceDifficulty then
 									map.SetParent(GuildInstanceDifficulty, Minimap)
 								end
-								--map.SetParent(MiniMapChallengeMode, Minimap)
+								if MiniMapChallengeMode then
+									map.SetParent(MiniMapChallengeMode, Minimap)
+								end
 							else
 								map.SetParent(MiniMapInstanceDifficulty, map)
 								if GuildInstanceDifficulty then
 									map.SetParent(GuildInstanceDifficulty, map)
 								end
-								--map.SetParent(MiniMapChallengeMode, map)
+								if MiniMapChallengeMode then
+									map.SetParent(MiniMapChallengeMode, map)
+								end
 							end
 						end,
 					},
@@ -487,9 +509,15 @@ local options = function()
 								map.db.profile.blizzButtonLocation[blizzButtonMoveSelection] = value
 								map.ClearAllPoints(button)
 								ldbi:SetButtonToPosition(button, value)
-								if blizzButtonMoveSelection == "difficulty" and GuildInstanceDifficulty then
-									map.ClearAllPoints(GuildInstanceDifficulty)
-									ldbi:SetButtonToPosition(GuildInstanceDifficulty, value)
+								if blizzButtonMoveSelection == "difficulty" then
+									if GuildInstanceDifficulty then
+										map.ClearAllPoints(GuildInstanceDifficulty)
+										ldbi:SetButtonToPosition(GuildInstanceDifficulty, value)
+									end
+									if MiniMapChallengeMode then
+										map.ClearAllPoints(MiniMapChallengeMode)
+										ldbi:SetButtonToPosition(MiniMapChallengeMode, value)
+									end
 								end
 							end
 						end,
