@@ -1,4 +1,4 @@
-## Interface: 40402, 40401
+## Interface: 40402
 ## Title: BasicMinimap_Options
 ## Author: Funkeh
 ## Notes: BasicMinimap Configuration Options.
