@@ -1,4 +1,4 @@
-## Interface: 50500, 50501
+## Interface: 50502, 50503
 ## Title: BasicMinimap_Options
 ## Author: Funkeh
 ## Notes: BasicMinimap Configuration Options.
