@@ -644,6 +644,13 @@ local function Login(self)
 		end
 	else -- TBC, kill the button in favor of clicking the minimap
 		self.SetParent(MiniMapTracking, self)
+		self.SetParent(MiniMapTrackingButton, Minimap)
+		self.ClearAllPoints(MiniMapTrackingButton)
+		self.SetPoint(MiniMapTrackingButton, "CENTER")
+		self.SetFixedFrameStrata(MiniMapTrackingButton, false)
+		self.SetFrameStrata(MiniMapTrackingButton, "BACKGROUND")
+		self.SetFixedFrameStrata(MiniMapTrackingButton, true)
+		MiniMapTrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
 	end
 
 	-- Classic
@@ -730,7 +737,7 @@ local function Login(self)
 	else -- TBC
 		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 			if btn == frame.db.profile.trackingBtn then
-				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+				MiniMapTrackingButton:OpenMenu()
 			elseif btn == frame.db.profile.mapBtn then
 				ToggleWorldMap()
 			elseif btn == "LeftButton" then
