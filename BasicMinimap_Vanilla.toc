@@ -25,5 +25,6 @@
 ## X-Wago-ID: 5bGoroK0
 
 embeds.xml
+Init_Vanilla.lua
 BasicMinimap_Vanilla.lua
 modules.xml

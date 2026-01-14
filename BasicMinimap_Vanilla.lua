@@ -1,5 +1,5 @@
 
-local name = ...
+local name, addonTable = ...
 local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 
@@ -77,7 +77,7 @@ local function Init(self)
 			radius = 5,
 			colorBorder = {0,0,0,1},
 			calendarBtn = "None",
-			trackingBtn = "None",
+			trackingBtn = "MiddleButton",
 			missionsBtn = "None",
 			mapBtn = "RightButton",
 			coordPrecision = "%d,%d",
@@ -123,6 +123,7 @@ local function Init(self)
 			blizzButtonLocation = {
 				zoomIn = 328,
 				zoomOut = 302,
+				calendar = 44,
 				mail = 20,
 				pvp = 210,
 				lfg = 215,
@@ -581,7 +582,11 @@ local function Login(self)
 	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
 	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
 	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-	self.SetParent(MinimapBorderTop, self) -- Zone text border
+	if addonTable.isVanilla then -- Vanilla
+		self.SetParent(MinimapBorderTop, self) -- Zone text border
+	else -- TBC
+		self.SetParent(MinimapCluster.BorderTop, self) -- Zone text border
+	end
 	self.SetParent(MinimapBorder, self) -- Minimap border
 
 	local shape = self.db.profile.shape
@@ -626,17 +631,19 @@ local function Login(self)
 	end
 
 	-- World map button
-	--self.SetParent(MiniMapWorldMapButton, self) -- Not on classic era
+	--self.SetParent(MiniMapWorldMapButton, self) -- Not on classic era/TBC
 
 	-- Tracking button
-	--self.SetParent(MiniMapTracking, self)
-
-	self.SetParent(MiniMapTracking, Minimap)
-	-- On classic (vanilla) only, when reloading UI, there's a bug where the tracking icon doesn't re-show.
-	local icon = GetTrackingTexture()
-	if icon then
-		MiniMapTrackingIcon:SetTexture(icon)
-		MiniMapTracking:Show()
+	if addonTable.isVanilla then -- Vanilla, move the button on to the minimap
+		self.SetParent(MiniMapTracking, Minimap)
+		-- On classic (vanilla) only, when reloading UI, there's a bug where the tracking icon doesn't re-show.
+		local icon = GetTrackingTexture()
+		if icon then
+			MiniMapTrackingIcon:SetTexture(icon)
+			MiniMapTracking:Show()
+		end
+	else -- TBC, kill the button in favor of clicking the minimap
+		self.SetParent(MiniMapTracking, self)
 	end
 
 	-- Classic
@@ -712,19 +719,25 @@ local function Login(self)
 		end
 	end)
 
-	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
-		--if btn == frame.db.profile.calendarBtn then
-		--	GameTimeFrame:Click()
-		--elseif btn == frame.db.profile.trackingBtn then
-		--	ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
-		--elseif btn == frame.db.profile.missionsBtn then
-		--	GarrisonLandingPageMinimapButton:Click()
-		if btn == frame.db.profile.mapBtn then
-			ToggleWorldMap()
-		elseif btn == "LeftButton" then
-			Minimap_OnClick(minimapFrame)
-		end
-	end)
+	if addonTable.isVanilla then -- Vanilla
+		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
+			if btn == frame.db.profile.mapBtn then
+				ToggleWorldMap()
+			elseif btn == "LeftButton" then
+				Minimap_OnClick(minimapFrame)
+			end
+		end)
+	else -- TBC
+		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
+			if btn == frame.db.profile.trackingBtn then
+				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
+			elseif btn == frame.db.profile.mapBtn then
+				ToggleWorldMap()
+			elseif btn == "LeftButton" then
+				Minimap_OnClick(minimapFrame)
+			end
+		end)
+	end
 end
 
 --function frame:CALENDAR_ACTION_PENDING()
@@ -773,7 +786,7 @@ function frame:LOADING_SCREEN_DISABLED(event)
 	CreateCoords(self)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 	CreateZoneText(self, fullMinimapSize)
-	if LFGMinimapFrame then -- Classic era only, loads after PLAYER_ENTERING_WORLD
+	if LFGMinimapFrame then -- Classic era & TBC only, loads after PLAYER_ENTERING_WORLD
 		blizzButtonNicknames.lfg = LFGMinimapFrame
 		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
 		self.ClearAllPoints(LFGMinimapFrame)
