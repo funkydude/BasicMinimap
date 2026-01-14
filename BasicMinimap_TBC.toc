@@ -26,5 +26,5 @@
 
 embeds.xml
 Init_TBC.lua
-BasicMinimap_Vanilla.lua
+BasicMinimap_Classic.lua
 modules.xml

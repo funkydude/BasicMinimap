@@ -26,5 +26,5 @@
 
 embeds.xml
 Init_Vanilla.lua
-BasicMinimap_Vanilla.lua
+BasicMinimap_Classic.lua
 modules.xml
