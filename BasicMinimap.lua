@@ -36,10 +36,10 @@ end
 
 local Minimap = Minimap
 if frame.GetFrameStrata(Minimap) ~= "LOW" then
-	frame.SetFrameStrata(Minimap, "LOW") -- Blizz Defaults patch 9.0.1 Minimap.xml
+	frame.SetFrameStrata(Minimap, "LOW") -- Blizz Defaults patch 12.0.1 Blizzard_Minimap/Mainline/Minimap.xml
 end
 if frame.GetFrameLevel(Minimap) ~= 2 then
-	frame.SetFrameLevel(Minimap, 2) -- Blizz Defaults patch 9.0.1 Minimap.xml
+	frame.SetFrameLevel(Minimap, 2) -- Blizz Defaults patch 12.0.1 Blizzard_Minimap/Mainline/Minimap.xml
 end
 
 -- Prevent the damage caused by automagic fuckery when a frame changes parent by locking the strata/level in place
@@ -581,6 +581,18 @@ local function Login(self)
 
 	self.SetScript(Minimap, "OnDragStart", function(minimapFrame)
 		if frame.IsMovable(minimapFrame) then
+			if frame.db.profile.shape == "ROUND" then
+				local x, y = GetCursorPosition()
+				x = x / minimapFrame:GetEffectiveScale()
+				y = y / minimapFrame:GetEffectiveScale()
+
+				local cx, cy = minimapFrame:GetCenter()
+				x = x - cx
+				y = y - cy
+				if math.sqrt(x * x + y * y) > (minimapFrame:GetWidth() / 2) then
+					return
+				end
+			end
 			frame.StartMoving(minimapFrame)
 		end
 	end)
@@ -878,6 +890,19 @@ local function Login(self)
 
 	hijackClicksFrame:SetSize(self.db.profile.size, self.db.profile.size)
 	hijackClicksFrame:SetScript("OnMouseUp", function(f, btn)
+		if frame.db.profile.shape == "ROUND" then
+			local x, y = GetCursorPosition()
+			x = x / f:GetEffectiveScale()
+			y = y / f:GetEffectiveScale()
+
+			local cx, cy = f:GetCenter()
+			x = x - cx
+			y = y - cy
+			if math.sqrt(x * x + y * y) > (f:GetWidth() / 2) then
+				return
+			end
+		end
+
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then

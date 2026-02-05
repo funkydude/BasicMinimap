@@ -32,6 +32,7 @@ read_globals = {
 	"EnableAddOn",
 	"GameTime_GetGameTime",
 	"GameTime_GetLocalTime",
+	"GetCursorPosition",
 	"GetCVarBool",
 	"GetGameTime",
 	"GetLocale",
