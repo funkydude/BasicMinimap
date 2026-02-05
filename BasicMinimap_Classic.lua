@@ -739,7 +739,9 @@ local function Login(self)
 			if btn == frame.db.profile.trackingBtn then
 				MiniMapTrackingButton:OpenMenu()
 			elseif btn == frame.db.profile.mapBtn then
-				ToggleWorldMap()
+				if not InCombatLockdown() then
+					ToggleWorldMap()
+				end
 			elseif btn == "LeftButton" then
 				Minimap_OnClick(minimapFrame)
 			end

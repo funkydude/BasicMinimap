@@ -740,7 +740,9 @@ local function Login(self)
 
 	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 		if btn == frame.db.profile.calendarBtn then
-			GameTimeFrame:Click()
+			if not InCombatLockdown() then
+				GameTimeFrame:Click()
+			end
 		elseif btn == frame.db.profile.trackingBtn then
 			if TrackingButton and TrackingButton.OpenMenu then -- Cata
 				TrackingButton:OpenMenu()
@@ -750,7 +752,9 @@ local function Login(self)
 		--elseif btn == frame.db.profile.missionsBtn then
 		--	GarrisonLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
-			MiniMapWorldMapButton:Click()
+			if not InCombatLockdown() then
+				MiniMapWorldMapButton:Click()
+			end
 		elseif btn == "LeftButton" then
 			Minimap_OnClick(minimapFrame)
 		end

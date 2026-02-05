@@ -904,7 +904,9 @@ local function Login(self)
 		end
 
 		if btn == frame.db.profile.calendarBtn then
-			GameTimeFrame:Click()
+			if not InCombatLockdown() then
+				GameTimeFrame:Click()
+			end
 		elseif btn == frame.db.profile.trackingBtn then
 			TrackingButton:OpenMenu()
 		elseif btn == frame.db.profile.missionsBtn then
