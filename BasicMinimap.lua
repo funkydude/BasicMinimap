@@ -58,6 +58,15 @@ backdropFrame:Show()
 local backdrop = backdropFrame:CreateTexture(nil, "BACKGROUND")
 backdrop:SetPoint("CENTER", Minimap, "CENTER")
 
+-- 12.0.1 minimap clicks workaround
+local hijackClicksFrame = CreateFrame("Frame")
+hijackClicksFrame:SetParent(Minimap)
+hijackClicksFrame:SetPoint("CENTER", Minimap, "CENTER")
+hijackClicksFrame:Show()
+hijackClicksFrame:EnableMouse(true)
+hijackClicksFrame:SetPassThroughButtons("LeftButton")
+hijackClicksFrame:SetPropagateMouseMotion(true)
+
 -- To turn off Blizz auto hiding the zoom buttons, we pretend the mouse is always over it.
 -- The alternative is killing the Minimap OnEnter/OnLeave script which could screw over other addons.
 -- See MinimapMixin:OnLeave() on line 185 of FrameXML/Minimap.lua
@@ -867,7 +876,8 @@ local function Login(self)
 		end
 	end)
 
-	self.SetScript(Minimap, "OnMouseUp", function(_, btn)
+	hijackClicksFrame:SetSize(self.db.profile.size, self.db.profile.size)
+	hijackClicksFrame:SetScript("OnMouseUp", function(f, btn)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
@@ -878,8 +888,6 @@ local function Login(self)
 			if not InCombatLockdown() then
 				ToggleWorldMap()
 			end
-		elseif btn == "LeftButton" then
-			Minimap:OnClick()
 		end
 	end)
 end
