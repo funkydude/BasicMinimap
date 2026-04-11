@@ -310,6 +310,11 @@ local options = function()
 						order = 5, type = "select",
 						values = buttonValues,
 					},
+					lfgBtn = {
+						name = L.openLFG,
+						order = 6, type = "select",
+						values = buttonValues,
+					},
 				},
 			},
 			buttons = {
@@ -458,14 +463,22 @@ local options = function()
 							map.coords:SetParent(value and Minimap or map)
 						end,
 					},
+					lfg = {
+						name = L.classicGroupFinder,
+						order = 10, type = "toggle",
+						set = function(_, value)
+							map.db.profile.lfg = value
+							LFGMinimapFrame:SetParent(value and Minimap or map)
+						end,
+					},
 					coordDesc = {
 						name = "\n\n\n".. L.coordinates..":",
-						order = 10, type = "description",
+						order = 11, type = "description",
 					},
 					coordPrecision = {
 						name = L.coordPrecision,
 						desc = L.coordPrecisionDesc,
-						order = 11, type = "select",
+						order = 12, type = "select",
 						values = {["%d,%d"] = L.normal, ["%.1f, %.1f"] = L.high, ["%.2f, %.2f"] = L.veryHigh},
 						set = function(_, value)
 							map.db.profile.coordPrecision = value
@@ -477,7 +490,7 @@ local options = function()
 					coordTime = {
 						name = L.coordUpdates,
 						desc = L.coordUpdatesDesc,
-						order = 12, type = "select",
+						order = 13, type = "select",
 						values = {[1] = L.normal, [0.5] = L.high, [0.1] = L.veryHigh},
 						set = function(_, value)
 							map.db.profile.coordTime = value
@@ -485,12 +498,12 @@ local options = function()
 					},
 					moveBlizzButtonDesc = {
 						name = "\n".. L.moveBlizzButtonsHeader1 .."\n".. L.moveBlizzButtonsHeader2,
-						order = 13, type = "description",
+						order = 14, type = "description",
 					},
 					moveBlizzButtonSelect = {
 						name = L.moveBlizzDropdown,
 						desc = L.moveBlizzDropdownDesc,
-						order = 14, type = "select",
+						order = 15, type = "select",
 						values = {
 							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
 							mail = L.newMail,
@@ -506,7 +519,7 @@ local options = function()
 						type = "range",
 						name = L.moveBlizzSlider,
 						desc = L.moveBlizzSliderDesc,
-						order = 15,
+						order = 16,
 						max = 360,
 						min = 1,
 						step = 1,

@@ -70,6 +70,7 @@ local function Init(self)
 			missions = true,
 			raidDiffIcon = true,
 			zoomBtn = false,
+			lfg = false,
 			mail = true,
 			autoZoom = true,
 			hideAddons = true,
@@ -83,6 +84,7 @@ local function Init(self)
 			trackingBtn = "MiddleButton",
 			missionsBtn = "None",
 			mapBtn = "RightButton",
+			lfgBtn = "None",
 			coordPrecision = "%d,%d",
 			coordTime = 1,
 			zoneTextConfig = {
@@ -765,6 +767,8 @@ local function Login(self)
 				if not InCombatLockdown() then
 					ToggleWorldMap()
 				end
+			elseif btn == frame.db.profile.lfgBtn then
+				LFGMinimapFrame:Click()
 			elseif btn == "LeftButton" then
 				Minimap_OnClick(minimapFrame)
 			end
@@ -777,6 +781,8 @@ local function Login(self)
 				if not InCombatLockdown() then
 					ToggleWorldMap()
 				end
+			elseif btn == frame.db.profile.lfgBtn then
+				LFGMinimapFrame:Click()
 			elseif btn == "LeftButton" then
 				Minimap_OnClick(minimapFrame)
 			end
@@ -793,6 +799,8 @@ local function Login(self)
 				if not InCombatLockdown() then
 					MiniMapWorldMapButton:Click()
 				end
+			elseif btn == frame.db.profile.lfgBtn then
+				LFGMinimapFrame:Click()
 			elseif btn == "LeftButton" then
 				Minimap_OnClick(minimapFrame)
 			end
@@ -853,6 +861,9 @@ function frame:LOADING_SCREEN_DISABLED(event)
 		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
 		self.ClearAllPoints(LFGMinimapFrame)
 		ldbi:SetButtonToPosition(LFGMinimapFrame, self.db.profile.blizzButtonLocation.lfg)
+		if not self.db.profile.lfg then
+			self.SetParent(LFGMinimapFrame, self)
+		end
 	end
 end
 frame:RegisterEvent("LOADING_SCREEN_DISABLED")

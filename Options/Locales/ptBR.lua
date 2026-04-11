@@ -25,6 +25,7 @@ local L = tbl.L
 --L.openTracking = "Open Tracking"
 --L.openMissions = "Open Missions"
 --L.openMap = "Open Map"
+--L.openLFG = "Open Group Finder"
 --L.font = "Font"
 --L.fontSize = "Font Size"
 --L.monochrome = "Monochrome"
