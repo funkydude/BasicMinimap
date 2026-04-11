@@ -11,10 +11,12 @@ frame:Hide()
 local blizzButtonNicknames = {
 	zoomIn = MinimapZoomIn,
 	zoomOut = MinimapZoomOut,
+	difficulty = MiniMapInstanceDifficulty or nil, -- If it exists...
+	calendar = addonTable.gameVersion >= 3 and GameTimeFrame or nil, -- Wrath+
 	mail = MiniMapMailFrame,
 	pvp = MiniMapBattlefieldFrame,
 	--lfg = LFGMinimapFrame, -- loads on PLAYER_ENTERING_WORLD
-	tracking = MiniMapTracking,
+	tracking = addonTable.gameVersion == 1 and MiniMapTracking or nil, -- Vanilla only
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -77,7 +79,7 @@ local function Init(self)
 			scale = 1,
 			radius = 5,
 			colorBorder = {0,0,0,1},
-			calendarBtn = "None",
+			calendarBtn = addonTable.gameVersion >= 3 and "RightButton" or "None", -- Wrath+
 			trackingBtn = "MiddleButton",
 			missionsBtn = "None",
 			mapBtn = "RightButton",
@@ -124,11 +126,12 @@ local function Init(self)
 			blizzButtonLocation = {
 				zoomIn = 328,
 				zoomOut = 302,
+				difficulty = MiniMapInstanceDifficulty and 140 or nil, -- If it exists...
 				calendar = 44,
 				mail = 20,
 				pvp = 210,
 				lfg = 215,
-				tracking = 150,
+				tracking = addonTable.gameVersion == 1 and 150 or nil, -- Vanilla
 			},
 		},
 	}
@@ -500,7 +503,9 @@ end
 
 -- Enable
 local function Login(self)
-	--self:CALENDAR_UPDATE_PENDING_INVITES()
+	if addonTable.gameVersion >= 3 then -- Wrath+
+		self:CALENDAR_UPDATE_PENDING_INVITES()
+	end
 
 	self.EnableMouse(MinimapCluster, false)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
@@ -583,9 +588,9 @@ local function Login(self)
 	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
 	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
 	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-	if MinimapCluster and MinimapCluster.BorderTop then -- TBC
+	if MinimapCluster and MinimapCluster.BorderTop then -- TBC/Wrath
 		self.SetParent(MinimapCluster.BorderTop, self) -- Zone text border
-	else -- Vanilla
+	else -- Vanilla/MoP
 		self.SetParent(MinimapBorderTop, self) -- Zone text border
 	end
 	self.SetParent(MinimapBorder, self) -- Minimap border
@@ -632,7 +637,9 @@ local function Login(self)
 	end
 
 	-- World map button
-	--self.SetParent(MiniMapWorldMapButton, self) -- Not on classic era/TBC
+	if addonTable.gameVersion >= 3 then
+		self.SetParent(MiniMapWorldMapButton, self) -- Not on classic era/TBC
+	end
 
 	-- Tracking button
 	if addonTable.gameVersion == 1 then -- Vanilla, move the button on to the minimap
@@ -643,7 +650,7 @@ local function Login(self)
 			MiniMapTrackingIcon:SetTexture(icon)
 			MiniMapTracking:Show()
 		end
-	else -- TBC, kill the button in favor of clicking the minimap
+	else -- TBC+ kill the button in favor of clicking the minimap
 		self.SetParent(MiniMapTracking, self)
 		self.SetParent(MiniMapTrackingButton, Minimap)
 		self.ClearAllPoints(MiniMapTrackingButton)
@@ -654,20 +661,35 @@ local function Login(self)
 		MiniMapTrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
 	end
 
-	-- Classic
-	self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button
-	self.SetParent(MinimapToggleButton, self) -- The "X" close button next to zone text
+	if addonTable.gameVersion >= 3 then -- Wrath+
+		self.SetParent(GameTimeFrame, Minimap) -- Calendar isn't parented to Minimap in Wrath
+	else -- Vanilla/TBC
+		self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button
+		self.SetParent(MinimapToggleButton, self) -- The "X" close button next to zone text
+	end
 
 	-- Difficulty indicators
-	--if not self.db.profile.raidDiffIcon then
-	--	self.SetParent(MiniMapInstanceDifficulty, self)
-	--	self.SetParent(GuildInstanceDifficulty, self)
-	--	self.SetParent(MiniMapChallengeMode, self)
-	--else
-	--	self.SetParent(MiniMapInstanceDifficulty, Minimap)
-	--	self.SetParent(GuildInstanceDifficulty, Minimap)
-	--	self.SetParent(MiniMapChallengeMode, Minimap)
-	--end
+	if not self.db.profile.raidDiffIcon then
+		if MiniMapInstanceDifficulty then
+			self.SetParent(MiniMapInstanceDifficulty, self)
+		end
+		if GuildInstanceDifficulty then
+			self.SetParent(GuildInstanceDifficulty, self)
+		end
+		if MiniMapChallengeMode then
+			self.SetParent(MiniMapChallengeMode, self)
+		end
+	else
+		if MiniMapInstanceDifficulty then
+			self.SetParent(MiniMapInstanceDifficulty, Minimap)
+		end
+		if GuildInstanceDifficulty then
+			self.SetParent(GuildInstanceDifficulty, Minimap)
+		end
+		if MiniMapChallengeMode then
+			self.SetParent(MiniMapChallengeMode, Minimap)
+		end
+	end
 
 	-- Missions button
 	--self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
@@ -692,6 +714,16 @@ local function Login(self)
 	for nickName, button in next, blizzButtonNicknames do
 		self.ClearAllPoints(button)
 		ldbi:SetButtonToPosition(button, self.db.profile.blizzButtonLocation[nickName])
+		if nickName == "difficulty" then
+			if GuildInstanceDifficulty then
+				self.ClearAllPoints(GuildInstanceDifficulty)
+				ldbi:SetButtonToPosition(GuildInstanceDifficulty, self.db.profile.blizzButtonLocation[nickName])
+			end
+			if MiniMapChallengeMode then
+				self.ClearAllPoints(MiniMapChallengeMode)
+				ldbi:SetButtonToPosition(MiniMapChallengeMode, self.db.profile.blizzButtonLocation[nickName])
+			end
+		end
 	end
 
 	-- This is our method of cancelling timers, we only let the very last scheduled timer actually run the code.
@@ -730,12 +762,14 @@ local function Login(self)
 	if addonTable.gameVersion == 1 then -- Vanilla
 		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 			if btn == frame.db.profile.mapBtn then
-				ToggleWorldMap()
+				if not InCombatLockdown() then
+					ToggleWorldMap()
+				end
 			elseif btn == "LeftButton" then
 				Minimap_OnClick(minimapFrame)
 			end
 		end)
-	else -- TBC
+	elseif addonTable.gameVersion == 2 then -- TBC
 		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 			if btn == frame.db.profile.trackingBtn then
 				MiniMapTrackingButton:OpenMenu()
@@ -747,19 +781,37 @@ local function Login(self)
 				Minimap_OnClick(minimapFrame)
 			end
 		end)
+	else -- Wrath+
+		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
+			if btn == frame.db.profile.calendarBtn then
+				if not InCombatLockdown() then
+					GameTimeFrame:Click()
+				end
+			elseif btn == frame.db.profile.trackingBtn then
+				MiniMapTrackingButton:OpenMenu()
+			elseif btn == frame.db.profile.mapBtn then
+				if not InCombatLockdown() then
+					MiniMapWorldMapButton:Click()
+				end
+			elseif btn == "LeftButton" then
+				Minimap_OnClick(minimapFrame)
+			end
+		end)
 	end
 end
 
---function frame:CALENDAR_ACTION_PENDING()
---	if C_Calendar.GetNumPendingInvites() < 1 then
---		self.Hide(GameTimeFrame)
---	else
---		self.Show(GameTimeFrame)
---	end
---end
---frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
---frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
---frame:RegisterEvent("CALENDAR_ACTION_PENDING")
+function frame:CALENDAR_ACTION_PENDING()
+	if C_Calendar.GetNumPendingInvites() < 1 then
+		self.Hide(GameTimeFrame)
+	else
+		self.Show(GameTimeFrame)
+	end
+end
+frame.CALENDAR_UPDATE_PENDING_INVITES = frame.CALENDAR_ACTION_PENDING
+if addonTable.gameVersion >= 3 then -- Wrath+
+	frame:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
+	frame:RegisterEvent("CALENDAR_ACTION_PENDING")
+end
 
 function frame:PET_BATTLE_OPENING_START()
 	self.Hide(Minimap)
@@ -796,7 +848,7 @@ function frame:LOADING_SCREEN_DISABLED(event)
 	CreateCoords(self)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 	CreateZoneText(self, fullMinimapSize)
-	if LFGMinimapFrame then -- Classic era & TBC only, loads after PLAYER_ENTERING_WORLD
+	if LFGMinimapFrame then -- Vanilla/TBC/Wrath, loads after PLAYER_ENTERING_WORLD
 		blizzButtonNicknames.lfg = LFGMinimapFrame
 		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
 		self.ClearAllPoints(LFGMinimapFrame)
