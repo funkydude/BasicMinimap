@@ -582,10 +582,10 @@ local function Login(self)
 	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
 	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
 	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-	if addonTable.isVanilla then -- Vanilla
-		self.SetParent(MinimapBorderTop, self) -- Zone text border
-	else -- TBC
+	if MinimapCluster and MinimapCluster.BorderTop then -- TBC
 		self.SetParent(MinimapCluster.BorderTop, self) -- Zone text border
+	else -- Vanilla
+		self.SetParent(MinimapBorderTop, self) -- Zone text border
 	end
 	self.SetParent(MinimapBorder, self) -- Minimap border
 

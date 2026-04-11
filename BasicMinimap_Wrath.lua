@@ -585,7 +585,11 @@ local function Login(self)
 	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
 	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
 	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-	self.SetParent(MinimapBorderTop, self) -- Zone text border
+	if MinimapCluster and MinimapCluster.BorderTop then -- Wrath
+		self.SetParent(MinimapCluster.BorderTop, self) -- Zone text border
+	else -- MoP
+		self.SetParent(MinimapBorderTop, self) -- Zone text border
+	end
 	self.SetParent(MinimapBorder, self) -- Minimap border
 
 	local shape = self.db.profile.shape
