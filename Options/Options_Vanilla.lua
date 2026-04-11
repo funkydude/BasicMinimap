@@ -277,7 +277,7 @@ local options = function()
 						name = L.openTracking,
 						order = 3, type = "select",
 						values = buttonValues,
-						disabled = true,
+						disabled = map.gameVersion == 1, -- Vanilla
 					},
 					missionsBtn = {
 						name = L.openMissions,
@@ -453,7 +453,12 @@ local options = function()
 						name = L.moveBlizzDropdown,
 						desc = L.moveBlizzDropdownDesc,
 						order = 14, type = "select",
-						values = {zoomIn = L.zoomIn, zoomOut = L.zoomOut, mail = L.newMail, pvp = L.classicPvPQueue, lfg = L.classicGroupFinder, tracking = L.tracking},
+						values = {
+							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
+							mail = L.newMail,
+							pvp = L.classicPvPQueue,
+							lfg = L.classicGroupFinder,
+							tracking = map.gameVersion == 1 and L.tracking or nil},
 						get = function() return blizzButtonMoveSelection or "" end,
 						set = function(_, value)
 							blizzButtonMoveSelection = value

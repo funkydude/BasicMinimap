@@ -1,3 +1,2 @@
 local _, addonTable = ...
-addonTable.isMists = true
 addonTable.gameVersion = 5

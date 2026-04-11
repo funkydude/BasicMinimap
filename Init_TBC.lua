@@ -1,3 +1,2 @@
 local _, addonTable = ...
-addonTable.isTBC = true
 addonTable.gameVersion = 2

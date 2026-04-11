@@ -4,6 +4,7 @@ local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 
 local frame = CreateFrame("Frame", name)
+frame.gameVersion = addonTable.gameVersion
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
@@ -634,7 +635,7 @@ local function Login(self)
 	--self.SetParent(MiniMapWorldMapButton, self) -- Not on classic era/TBC
 
 	-- Tracking button
-	if addonTable.isVanilla then -- Vanilla, move the button on to the minimap
+	if addonTable.gameVersion == 1 then -- Vanilla, move the button on to the minimap
 		self.SetParent(MiniMapTracking, Minimap)
 		-- On classic (vanilla) only, when reloading UI, there's a bug where the tracking icon doesn't re-show.
 		local icon = GetTrackingTexture()
@@ -726,7 +727,7 @@ local function Login(self)
 		end
 	end)
 
-	if addonTable.isVanilla then -- Vanilla
+	if addonTable.gameVersion == 1 then -- Vanilla
 		self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
 			if btn == frame.db.profile.mapBtn then
 				ToggleWorldMap()
