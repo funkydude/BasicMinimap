@@ -310,11 +310,11 @@ local options = function()
 						order = 5, type = "select",
 						values = buttonValues,
 					},
-					lfgBtn = {
+					lfgBtn = LFGMinimapFrame and {
 						name = L.openLFG,
 						order = 6, type = "select",
 						values = buttonValues,
-					},
+					} or nil,
 				},
 			},
 			buttons = {
@@ -463,14 +463,14 @@ local options = function()
 							map.coords:SetParent(value and Minimap or map)
 						end,
 					},
-					lfg = {
+					lfg = LFGMinimapFrame and {
 						name = L.classicGroupFinder,
 						order = 10, type = "toggle",
 						set = function(_, value)
 							map.db.profile.lfg = value
 							LFGMinimapFrame:SetParent(value and Minimap or map)
 						end,
-					},
+					} or nil,
 					coordDesc = {
 						name = "\n\n\n".. L.coordinates..":",
 						order = 11, type = "description",
@@ -508,7 +508,7 @@ local options = function()
 							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
 							mail = L.newMail,
 							pvp = L.classicPvPQueue,
-							lfg = L.classicGroupFinder,
+							lfg = LFGMinimapFrame and L.classicGroupFinder or nil,
 							tracking = map.gameVersion == 1 and L.tracking or nil},
 						get = function() return blizzButtonMoveSelection or "" end,
 						set = function(_, value)
