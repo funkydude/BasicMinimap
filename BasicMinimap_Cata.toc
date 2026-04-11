@@ -26,5 +26,5 @@
 
 embeds.xml
 Init_Cata.lua
-BasicMinimap_Wrath.lua
+BasicMinimap_Classic.lua
 modules.xml
