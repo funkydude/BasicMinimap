@@ -1,0 +1,3 @@
+local _, addonTable = ...
+addonTable.isCata = true
+addonTable.gameVersion = 4

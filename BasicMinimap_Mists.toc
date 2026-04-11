@@ -25,5 +25,6 @@
 ## X-Wago-ID: 5bGoroK0
 
 embeds.xml
+Init_Mists.lua
 BasicMinimap_Wrath.lua
 modules.xml

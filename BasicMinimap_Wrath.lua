@@ -7,8 +7,6 @@ local frame = CreateFrame("Frame", name)
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
-local TrackingButton = MiniMapTrackingButton
-
 local blizzButtonNicknames = {
 	zoomIn = MinimapZoomIn,
 	zoomOut = MinimapZoomOut,
@@ -16,7 +14,7 @@ local blizzButtonNicknames = {
 	calendar = GameTimeFrame,
 	mail = MiniMapMailFrame,
 	pvp = MiniMapBattlefieldFrame,
-	lfg = MiniMapLFGFrame,
+	--lfg = LFGMinimapFrame, -- loads on PLAYER_ENTERING_WORLD
 }
 frame.blizzButtonNicknames = blizzButtonNicknames
 
@@ -637,17 +635,17 @@ local function Login(self)
 	self.SetParent(MiniMapWorldMapButton, self)
 
 	-- Tracking button
-	if not TrackingButton or not TrackingButton.SetMenuAnchor then -- Wrath
+	if not MiniMapTrackingButton or not MiniMapTrackingButton.SetMenuAnchor then -- Wrath
 		self.SetParent(MiniMapTracking, self)
 	else -- Cata
 		self.SetParent(MiniMapTracking, self)
-		self.SetParent(TrackingButton, Minimap)
-		self.ClearAllPoints(TrackingButton)
-		self.SetPoint(TrackingButton, "CENTER")
-		self.SetFixedFrameStrata(TrackingButton, false)
-		self.SetFrameStrata(TrackingButton, "BACKGROUND")
-		self.SetFixedFrameStrata(TrackingButton, true)
-		TrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
+		self.SetParent(MiniMapTrackingButton, Minimap)
+		self.ClearAllPoints(MiniMapTrackingButton)
+		self.SetPoint(MiniMapTrackingButton, "CENTER")
+		self.SetFixedFrameStrata(MiniMapTrackingButton, false)
+		self.SetFrameStrata(MiniMapTrackingButton, "BACKGROUND")
+		self.SetFixedFrameStrata(MiniMapTrackingButton, true)
+		MiniMapTrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
 	end
 
 	-- Classic Wrath
@@ -691,7 +689,6 @@ local function Login(self)
 	-- PvE/PvP Queue button
 	--self.SetParent(QueueStatusMinimapButton, Minimap)
 	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
-	self.SetParent(MiniMapLFGFrame, Minimap) -- Special LFG button for classic/TBC
 
 	-- Update all blizz button positions
 	for nickName, button in next, blizzButtonNicknames do
@@ -748,11 +745,7 @@ local function Login(self)
 				GameTimeFrame:Click()
 			end
 		elseif btn == frame.db.profile.trackingBtn then
-			if TrackingButton and TrackingButton.OpenMenu then -- Cata
-				TrackingButton:OpenMenu()
-			else -- Wrath
-				ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, minimapFrame)
-			end
+			MiniMapTrackingButton:OpenMenu()
 		--elseif btn == frame.db.profile.missionsBtn then
 		--	GarrisonLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
@@ -811,6 +804,12 @@ function frame:LOADING_SCREEN_DISABLED(event)
 	CreateCoords(self)
 	local fullMinimapSize = self.db.profile.size + self.db.profile.borderSize
 	CreateZoneText(self, fullMinimapSize)
+	if LFGMinimapFrame then -- Classic era, TBC, wrath only, loads after PLAYER_ENTERING_WORLD
+		blizzButtonNicknames.lfg = LFGMinimapFrame
+		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
+		self.ClearAllPoints(LFGMinimapFrame)
+		ldbi:SetButtonToPosition(LFGMinimapFrame, self.db.profile.blizzButtonLocation.lfg)
+	end
 end
 frame:RegisterEvent("LOADING_SCREEN_DISABLED")
 

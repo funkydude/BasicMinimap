@@ -1,2 +1,3 @@
 local _, addonTable = ...
 addonTable.isWrath = true
+addonTable.gameVersion = 3

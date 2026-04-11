@@ -1,2 +1,3 @@
 local _, addonTable = ...
 addonTable.isVanilla = true
+addonTable.gameVersion = 1
