@@ -25,5 +25,4 @@
 
 embeds.xml
 locales.xml
-Options_Wrath.lua
-
+Options_Classic.lua
