@@ -191,18 +191,26 @@ local function CreateClock(self) -- Create our own clock
 	clockButton:EnableMouse(true)
 	clockButton:RegisterForClicks("AnyUp")
 	do
-		local clockFlags = nil
-		if self.db.profile.clockConfig.monochrome and self.db.profile.clockConfig.outline ~= "NONE" then
-			clockFlags = "MONOCHROME," .. self.db.profile.clockConfig.outline
-		elseif self.db.profile.clockConfig.monochrome then
-			clockFlags = "MONOCHROME"
-		elseif self.db.profile.clockConfig.outline ~= "NONE" then
-			clockFlags = self.db.profile.clockConfig.outline
+		local function UpdateFont()
+			local clockFlags = nil
+			if self.db.profile.clockConfig.monochrome and self.db.profile.clockConfig.outline ~= "NONE" then
+				clockFlags = "MONOCHROME," .. self.db.profile.clockConfig.outline
+			elseif self.db.profile.clockConfig.monochrome then
+				clockFlags = "MONOCHROME"
+			elseif self.db.profile.clockConfig.outline ~= "NONE" then
+				clockFlags = self.db.profile.clockConfig.outline
+			end
+			local prevText = clockFont:GetText()
+			clockFont:SetFont(media:Fetch("font", self.db.profile.clockConfig.font), self.db.profile.clockConfig.fontSize, clockFlags)
+			clockFont:SetText("99:99")
+			local width = clockFont:GetUnboundedStringWidth()
+			clockButton:SetWidth(width + 5)
+			if prevText and prevText ~= "" then
+				clockButton:SetText(prevText)
+			end
 		end
-		clockFont:SetFont(media:Fetch("font", self.db.profile.clockConfig.font), self.db.profile.clockConfig.fontSize, clockFlags)
-		clockFont:SetText("99:99")
-		local width = clockFont:GetUnboundedStringWidth()
-		clockButton:SetWidth(width + 5)
+		C_Timer.After(1, UpdateFont) -- Workaround custom fonts not loading
+		UpdateFont()
 	end
 	clockFont:SetTextColor(unpack(self.db.profile.clockConfig.color))
 	clockFont:SetJustifyH(self.db.profile.clockConfig.align)
@@ -362,15 +370,24 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 	zoneText:SetWidth(fullMinimapSize) -- Prevent text cropping
 	zoneText:SetHeight(self.db.profile.zoneTextConfig.fontSize+1) -- Prevent text cropping
 	do
-		local zoneTextFlags = nil
-		if self.db.profile.zoneTextConfig.monochrome and self.db.profile.zoneTextConfig.outline ~= "NONE" then
-			zoneTextFlags = "MONOCHROME," .. self.db.profile.zoneTextConfig.outline
-		elseif self.db.profile.zoneTextConfig.monochrome then
-			zoneTextFlags = "MONOCHROME"
-		elseif self.db.profile.zoneTextConfig.outline ~= "NONE" then
-			zoneTextFlags = self.db.profile.zoneTextConfig.outline
+		local function UpdateFont()
+			local zoneTextFlags = nil
+			if self.db.profile.zoneTextConfig.monochrome and self.db.profile.zoneTextConfig.outline ~= "NONE" then
+				zoneTextFlags = "MONOCHROME," .. self.db.profile.zoneTextConfig.outline
+			elseif self.db.profile.zoneTextConfig.monochrome then
+				zoneTextFlags = "MONOCHROME"
+			elseif self.db.profile.zoneTextConfig.outline ~= "NONE" then
+				zoneTextFlags = self.db.profile.zoneTextConfig.outline
+			end
+			local prevText = zoneTextFont:GetText()
+			zoneTextFont:SetFont(media:Fetch("font", self.db.profile.zoneTextConfig.font), self.db.profile.zoneTextConfig.fontSize, zoneTextFlags)
+			zoneTextFont:SetText("TEST")
+			if prevText and prevText ~= "" then
+				zoneTextFont:SetText(prevText)
+			end
 		end
-		zoneTextFont:SetFont(media:Fetch("font", self.db.profile.zoneTextConfig.font), self.db.profile.zoneTextConfig.fontSize, zoneTextFlags)
+		C_Timer.After(1, UpdateFont) -- Workaround custom fonts not loading
+		UpdateFont()
 	end
 	zoneTextFont:SetJustifyH(self.db.profile.zoneTextConfig.align)
 	if not self.db.profile.zoneText then
@@ -475,18 +492,26 @@ local function CreateCoords(self)
 	coords:SetPoint("TOPRIGHT", backdrop, "BOTTOMRIGHT", self.db.profile.coordsConfig.x, self.db.profile.coordsConfig.y)
 	coords:SetHeight(self.db.profile.coordsConfig.fontSize+1) -- Prevent text cropping
 	do
-		local coordsFlags = nil
-		if self.db.profile.coordsConfig.monochrome and self.db.profile.coordsConfig.outline ~= "NONE" then
-			coordsFlags = "MONOCHROME," .. self.db.profile.coordsConfig.outline
-		elseif self.db.profile.coordsConfig.monochrome then
-			coordsFlags = "MONOCHROME"
-		elseif self.db.profile.coordsConfig.outline ~= "NONE" then
-			coordsFlags = self.db.profile.coordsConfig.outline
+		local function UpdateFont()
+			local coordsFlags = nil
+			if self.db.profile.coordsConfig.monochrome and self.db.profile.coordsConfig.outline ~= "NONE" then
+				coordsFlags = "MONOCHROME," .. self.db.profile.coordsConfig.outline
+			elseif self.db.profile.coordsConfig.monochrome then
+				coordsFlags = "MONOCHROME"
+			elseif self.db.profile.coordsConfig.outline ~= "NONE" then
+				coordsFlags = self.db.profile.coordsConfig.outline
+			end
+			local prevText = coords:GetText()
+			coords:SetFont(media:Fetch("font", self.db.profile.coordsConfig.font), self.db.profile.coordsConfig.fontSize, coordsFlags)
+			coords:SetFormattedText(self.db.profile.coordPrecision, 100.77, 100.77)
+			local width = coords:GetUnboundedStringWidth()
+			coords:SetWidth(width + 5)
+			if prevText and prevText ~= "" then
+				coords:SetText(prevText)
+			end
 		end
-		coords:SetFont(media:Fetch("font", self.db.profile.coordsConfig.font), self.db.profile.coordsConfig.fontSize, coordsFlags)
-		coords:SetFormattedText(self.db.profile.coordPrecision, 100.77, 100.77)
-		local width = coords:GetUnboundedStringWidth()
-		coords:SetWidth(width + 5)
+		C_Timer.After(1, UpdateFont) -- Workaround custom fonts not loading
+		UpdateFont()
 	end
 	coords:SetTextColor(unpack(self.db.profile.coordsConfig.color))
 	coords:SetJustifyH(self.db.profile.coordsConfig.align)
