@@ -450,7 +450,7 @@ local options = function()
 						set = function(_, value)
 							map.db.profile.coords = value
 							map.coords.shown = value
-							map.coords:SetParent(value and Minimap or map)
+							map.coordsFrame:SetParent(value and Minimap or map)
 						end,
 					},
 					coordDesc = {
