@@ -167,7 +167,7 @@ local function CreateClock(self) -- Create our own clock
 	local clockButton = CreateFrame("Button", nil, Minimap) -- Having a nil frame name prevents minimap button grabbing addons mistaking it for an addon button
 	clockButton:SetFrameStrata("LOW")
 	clockButton:SetFixedFrameStrata(true)
-	clockButton:SetFrameLevel(1000)
+	clockButton:SetFrameLevel(4000)
 	clockButton:SetFixedFrameLevel(true)
 	local clockFont = clockButton:CreateFontString()
 
@@ -344,7 +344,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 	local zoneText = CreateFrame("Button", nil, Minimap) -- Having a nil frame name prevents minimap button grabbing addons mistaking it for an addon button
 	zoneText:SetFrameStrata("LOW")
 	zoneText:SetFixedFrameStrata(true)
-	zoneText:SetFrameLevel(1000)
+	zoneText:SetFrameLevel(4000)
 	zoneText:SetFixedFrameLevel(true)
 	local zoneTextFont = zoneText:CreateFontString()
 
@@ -477,7 +477,7 @@ local function CreateCoords(self)
 	local coordsFrame = CreateFrame("Frame", nil, Minimap) -- Having a nil frame name prevents minimap button grabbing addons mistaking it for an addon button
 	coordsFrame:SetFrameStrata("LOW")
 	coordsFrame:SetFixedFrameStrata(true)
-	coordsFrame:SetFrameLevel(1000)
+	coordsFrame:SetFrameLevel(4000)
 	coordsFrame:SetFixedFrameLevel(true)
 
 	local coords = coordsFrame:CreateFontString()
