@@ -629,7 +629,7 @@ local function Login(self)
 	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
 	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
 	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-	if MinimapCluster and MinimapCluster.BorderTop then -- TBC/Wrath
+	if MinimapCluster and MinimapCluster.BorderTop then -- TBC/Wrath/MoP
 		self.SetParent(MinimapCluster.BorderTop, self) -- Zone text border
 	else -- Vanilla/MoP
 		self.SetParent(MinimapBorderTop, self) -- Zone text border
@@ -702,11 +702,16 @@ local function Login(self)
 		MiniMapTrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
 	end
 
+	-- Calendar button
 	if addonTable.gameVersion >= 3 then -- Wrath+
 		self.SetParent(GameTimeFrame, Minimap) -- Calendar isn't parented to Minimap in Wrath
 	else -- Vanilla/TBC
 		self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button
-		self.SetParent(MinimapToggleButton, self) -- The "X" close button next to zone text
+	end
+
+	 -- The "X" close button next to zone text
+	if MinimapToggleButton then
+		self.SetParent(MinimapToggleButton, self)
 	end
 
 	-- Difficulty indicators
