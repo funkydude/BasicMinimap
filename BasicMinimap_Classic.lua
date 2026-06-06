@@ -70,7 +70,7 @@ local function Init(self)
 			missions = true,
 			raidDiffIcon = true,
 			zoomBtn = false,
-			lfg = false,
+			lfg = true,
 			mail = true,
 			autoZoom = true,
 			hideAddons = true,
@@ -904,6 +904,10 @@ function frame:LOADING_SCREEN_DISABLED(event)
 		blizzButtonNicknames.lfg = LFGMinimapFrame
 		self.SetParent(LFGMinimapFrame, Minimap) -- Special LFG button for classic era
 		self.ClearAllPoints(LFGMinimapFrame)
+		self.SetFrameStrata(LFGMinimapFrame, "MEDIUM")
+		self.SetFixedFrameStrata(LFGMinimapFrame, true)
+		self.SetFrameLevel(LFGMinimapFrame, 8)
+		self.SetFixedFrameLevel(LFGMinimapFrame, true)
 		ldbi:SetButtonToPosition(LFGMinimapFrame, self.db.profile.blizzButtonLocation.lfg)
 		if not self.db.profile.lfg then
 			self.SetParent(LFGMinimapFrame, self)
