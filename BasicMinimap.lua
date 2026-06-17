@@ -840,42 +840,31 @@ local function Login(self)
 		end
 	end
 
-	-- Missions button
-	if GarrisonLandingPageMinimapButton then -- XXX Dragonflight compat
-		self.SetParent(GarrisonLandingPageMinimapButton, Minimap)
-		self.SetSize(GarrisonLandingPageMinimapButton, 36, 36) -- Shrink the missions button
-		-- Stop Blizz changing the icon size || GarrisonLandingPageMinimapButton_UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
-		hooksecurefunc(GarrisonLandingPageMinimapButton, "SetSize", function()
-			frame.SetSize(GarrisonLandingPageMinimapButton, 36, 36)
-		end)
-		-- Stop Blizz moving the icon || GarrisonLandingPageMinimapButton_UpdateIcon() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
-		hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function() -- GarrisonLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
-			frame.ClearAllPoints(GarrisonLandingPageMinimapButton)
-			ldbi:SetButtonToPosition(GarrisonLandingPageMinimapButton, 190)
-		end)
-		if not self.db.profile.missions then
-			self.SetParent(GarrisonLandingPageMinimapButton, self)
+	-- Special Expansion/Season Button
+	self.SetParent(ExpansionLandingPageMinimapButton, Minimap)
+	-- Set parent again to compensate for garbage addons thinking it's a good idea to have wide ranging changes on by default
+	hooksecurefunc(ExpansionLandingPageMinimapButton, "SetParent", function()
+		frame.SetParent(ExpansionLandingPageMinimapButton, Minimap)
+		frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
+		ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, frame.db.profile.blizzButtonLocation.missions)
+	end)
+	self.SetSize(ExpansionLandingPageMinimapButton, 36, 36) -- Shrink
+	-- Stop Blizz changing the icon size || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
+	hooksecurefunc(ExpansionLandingPageMinimapButton, "SetSize", function()
+		frame.SetSize(ExpansionLandingPageMinimapButton, 36, 36)
+	end)
+	do
+		local function UpdatePosition()
+			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
+			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, frame.db.profile.blizzButtonLocation.missions)
 		end
-	else
-		self.SetParent(ExpansionLandingPageMinimapButton, Minimap)
-		self.SetSize(ExpansionLandingPageMinimapButton, 36, 36) -- Shrink the missions button
-		-- Stop Blizz changing the icon size || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
-		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetSize", function()
-			frame.SetSize(ExpansionLandingPageMinimapButton, 36, 36)
-		end)
 		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> self:UpdateIconForGarrison() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
-		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", function() -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
-			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
-			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, self.db.profile.blizzButtonLocation.missions)
-		end)
+		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", UpdatePosition) -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
 		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:SetLandingPageIconOffset() >> anchor:SetPoint()
-		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetLandingPageIconOffset", function() -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
-			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
-			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, self.db.profile.blizzButtonLocation.missions)
-		end)
-		if not self.db.profile.missions then
-			self.SetParent(ExpansionLandingPageMinimapButton, self)
-		end
+		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetLandingPageIconOffset", UpdatePosition) -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
+	end
+	if not self.db.profile.missions then
+		self.SetParent(ExpansionLandingPageMinimapButton, self)
 	end
 
 	-- PvE/PvP Queue button
