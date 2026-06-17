@@ -12,7 +12,7 @@ local TrackingButton = MinimapCluster.Tracking.Button
 local blizzButtonNicknames = {
 	zoomIn = Minimap.ZoomIn,
 	zoomOut = Minimap.ZoomOut,
-	missions = ExpansionLandingPageMinimapButton,
+	expansionSpecial = ExpansionLandingPageMinimapButton,
 	difficulty = MinimapCluster.InstanceDifficulty,
 	calendar = GameTimeFrame,
 	mail = MinimapCluster.IndicatorFrame.MailFrame,
@@ -86,7 +86,7 @@ local function Init(self)
 			clock = true,
 			zoneText = true,
 			coords = true,
-			missions = true,
+			expansionSpecial = true,
 			raidDiffIcon = true,
 			zoomBtn = false,
 			mail = true,
@@ -102,7 +102,7 @@ local function Init(self)
 			colorBorder = {0,0,0,1},
 			calendarBtn = "RightButton",
 			trackingBtn = "MiddleButton",
-			missionsBtn = "None",
+			expansionSpecialBtn = "None",
 			mapBtn = "None",
 			coordPrecision = "%d,%d",
 			coordTime = 1,
@@ -147,7 +147,7 @@ local function Init(self)
 			blizzButtonLocation = {
 				zoomIn = 328,
 				zoomOut = 302,
-				missions = 190,
+				expansionSpecial = 190,
 				difficulty = 150,
 				calendar = 35,
 				mail = 20,
@@ -846,7 +846,7 @@ local function Login(self)
 	hooksecurefunc(ExpansionLandingPageMinimapButton, "SetParent", function()
 		frame.SetParent(ExpansionLandingPageMinimapButton, Minimap)
 		frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
-		ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, frame.db.profile.blizzButtonLocation.missions)
+		ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, frame.db.profile.blizzButtonLocation.expansionSpecial)
 	end)
 	self.SetSize(ExpansionLandingPageMinimapButton, 36, 36) -- Shrink
 	-- Stop Blizz changing the icon size || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> SetLandingPageIconFromAtlases() >> self:SetSize()
@@ -856,14 +856,14 @@ local function Login(self)
 	do
 		local function UpdatePosition()
 			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
-			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, frame.db.profile.blizzButtonLocation.missions)
+			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, frame.db.profile.blizzButtonLocation.expansionSpecial)
 		end
 		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> self:UpdateIconForGarrison() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
 		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", UpdatePosition) -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
 		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:SetLandingPageIconOffset() >> anchor:SetPoint()
 		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetLandingPageIconOffset", UpdatePosition) -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
 	end
-	if not self.db.profile.missions then
+	if not self.db.profile.expansionSpecial then
 		self.SetParent(ExpansionLandingPageMinimapButton, self)
 	end
 
@@ -937,7 +937,7 @@ local function Login(self)
 			end
 		elseif btn == frame.db.profile.trackingBtn then
 			TrackingButton:OpenMenu()
-		elseif btn == frame.db.profile.missionsBtn then
+		elseif btn == frame.db.profile.expansionSpecialBtn then
 			ExpansionLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then
 			if not InCombatLockdown() then

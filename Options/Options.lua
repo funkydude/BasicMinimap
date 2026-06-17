@@ -287,8 +287,8 @@ local options = function()
 						order = 3, type = "select",
 						values = buttonValues,
 					},
-					missionsBtn = {
-						name = L.openMissions,
+					expansionSpecialBtn = {
+						name = L.openOmniumFolio,
 						order = 4, type = "select",
 						values = buttonValues,
 					},
@@ -382,11 +382,11 @@ local options = function()
 							end
 						end,
 					},
-					missions = {
-						name = L.missions,
+					expansionSpecial = {
+						name = L.omniumFolio,
 						order = 6, type = "toggle",
 						set = function(_, value)
-							map.db.profile.missions = value
+							map.db.profile.expansionSpecial = value
 							if GarrisonLandingPageMinimapButton then
 								map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
 							else
@@ -488,7 +488,7 @@ local options = function()
 						order = 14, type = "select",
 						values = {
 							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
-							missions = L.missions,
+							expansionSpecial = L.omniumFolio,
 							difficulty = L.difficultyIndicator,
 							calendar = L.CALENDAR,
 							mail = L.newMail,
