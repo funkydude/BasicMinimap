@@ -191,7 +191,9 @@ local function CreateClock(self) -- Create our own clock
 	clockButton:EnableMouse(true)
 	clockButton:RegisterForClicks("AnyUp")
 	do
+		local num = 0
 		local function UpdateFont()
+			num = num + 1
 			local clockFlags = nil
 			if self.db.profile.clockConfig.monochrome and self.db.profile.clockConfig.outline ~= "NONE" then
 				clockFlags = "MONOCHROME," .. self.db.profile.clockConfig.outline
@@ -208,8 +210,10 @@ local function CreateClock(self) -- Create our own clock
 			if prevText and prevText ~= "" then
 				clockButton:SetText(prevText)
 			end
+			if num < 3 then
+				C_Timer.After(1, UpdateFont) -- Workaround custom fonts not loading
+			end
 		end
-		C_Timer.After(1, UpdateFont) -- Workaround custom fonts not loading
 		UpdateFont()
 	end
 	clockFont:SetTextColor(unpack(self.db.profile.clockConfig.color))
