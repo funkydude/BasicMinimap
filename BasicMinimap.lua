@@ -76,6 +76,13 @@ Minimap.ZoomIn:Show()
 Minimap.ZoomOut.IsMouseOver = fakeMouseOver
 Minimap.ZoomOut:Show()
 
+-- Kill Blizz coords
+if MinimapCluster.MinimapContainer.PlayerCoords then
+	MinimapCluster.MinimapContainer.PlayerCoords:SetScript("OnUpdate", nil)
+	frame.SetParent(MinimapCluster.MinimapContainer.PlayerCoords, frame)
+	MinimapCluster.MinimapContainer.PlayerCoords.CoordText:ClearText()
+end
+
 -- Init
 local function Init(self)
 	local defaults = {
