@@ -1,4 +1,4 @@
-## Interface: 120100, 120105, 120007
+## Interface: 11508, 11509, 16001, 20505, 20506, 30405, 38002, 40402, 50503, 50504, 120100, 120105, 120007
 ## Version: @project-version@
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
@@ -25,5 +25,7 @@
 ## X-Wago-ID: 5bGoroK0
 
 embeds.xml
-BasicMinimap.lua
+BasicMinimap.lua [AllowLoadGameType mainline]
+Init_[Game].lua [AllowLoadGameType classic]
+BasicMinimap_Classic.lua [AllowLoadGameType classic]
 modules.xml
