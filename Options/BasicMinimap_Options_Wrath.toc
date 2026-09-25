@@ -1,4 +1,4 @@
-## Interface: 30405, 38001
+## Interface: 30405, 38002
 ## Title: BasicMinimap_Options
 ## Author: Funkeh
 ## Notes: BasicMinimap Configuration Options.
