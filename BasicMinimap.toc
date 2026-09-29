@@ -25,7 +25,7 @@
 ## X-Wago-ID: 5bGoroK0
 
 embeds.xml
-BasicMinimap.lua [AllowLoadGameType mainline]
 Init_[Game].lua [AllowLoadGameType standard, classic]
+BasicMinimap.lua [AllowLoadGameType mainline]
 BasicMinimap_Classic.lua [AllowLoadGameType classic]
 modules.xml

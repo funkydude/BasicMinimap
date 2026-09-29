@@ -758,7 +758,7 @@ local function Login(self)
 		self.SetParent(AddonCompartmentFrame, self)
 	end
 	-- Day/Night
-	if not self.isRetail then
+	if not addonTable.isRetail then
 		if self.db.profile.daynight then
 			self.SetParent(MinimapCluster.DielFrame, Minimap)
 		else
