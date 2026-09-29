@@ -13,6 +13,7 @@ local blizzButtonNicknames = {
 	zoomOut = MinimapZoomOut,
 	difficulty = MiniMapInstanceDifficulty or nil, -- If it exists...
 	calendar = addonTable.gameVersion >= 3 and GameTimeFrame or nil, -- Wrath+
+	daynight = (addonTable.gameVersion == 1 or addonTable.gameVersion == 2) and GameTimeFrame or nil,
 	mail = MiniMapMailFrame,
 	pvp = MiniMapBattlefieldFrame,
 	--lfg = LFGMinimapFrame, -- loads on PLAYER_ENTERING_WORLD
@@ -72,6 +73,7 @@ local function Init(self)
 			zoomBtn = false,
 			lfg = true,
 			mail = true,
+			daynight = true,
 			autoZoom = true,
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
@@ -129,7 +131,8 @@ local function Init(self)
 				zoomIn = 328,
 				zoomOut = 302,
 				difficulty = MiniMapInstanceDifficulty and 140 or nil, -- If it exists...
-				calendar = 44,
+				calendar = 38,
+				daynight = 20,
 				mail = 20,
 				pvp = 210,
 				lfg = 215,
@@ -706,12 +709,17 @@ local function Login(self)
 		MiniMapTrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
 	end
 
-	-- Calendar button
+	-- Calendar button (Wrath+) | Day/Night indicator (Vanilla/TBC)
 	if addonTable.gameVersion >= 3 then -- Wrath+
 		self.SetParent(GameTimeFrame, Minimap) -- Calendar isn't parented to Minimap in Wrath
 	else -- Vanilla/TBC
-		self.SetParent(GameTimeFrame, self) -- Day/Night indicator/button
+		if self.db.profile.daynight then
+			self.SetParent(GameTimeFrame, Minimap)
+		else
+			self.SetParent(GameTimeFrame, self)
+		end
 	end
+	GameTimeFrame:SetSize(31, 31) -- Shrink to sane size
 
 	 -- The "X" close button next to zone text
 	if MinimapToggleButton then

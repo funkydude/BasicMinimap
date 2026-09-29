@@ -291,6 +291,7 @@ local options = function()
 						name = L.openOmniumFolio,
 						order = 4, type = "select",
 						values = buttonValues,
+						hidden = not map.isRetail,
 					},
 					mapBtn = {
 						name = L.openMap,
@@ -381,6 +382,7 @@ local options = function()
 								end
 							end
 						end,
+						hidden = not map.isRetail,
 					},
 					expansionSpecial = {
 						name = L.omniumFolio,
@@ -393,10 +395,11 @@ local options = function()
 								map.SetParent(ExpansionLandingPageMinimapButton, value and Minimap or map)
 							end
 						end,
+						hidden = not map.isRetail,
 					},
 					mail = {
 						name = L.newMail,
-						order = 6.5, type = "toggle",
+						order = 7, type = "toggle",
 						set = function(_, value)
 							map.db.profile.mail = value
 							MinimapCluster.IndicatorFrame.MailFrame:SetParent(value and Minimap or map)
@@ -404,7 +407,7 @@ local options = function()
 					},
 					addonCompartment = {
 						name = L.addonCompartment,
-						order = 6.6, type = "toggle",
+						order = 8, type = "toggle",
 						set = function(_, value)
 							map.db.profile.addonCompartment = value
 							AddonCompartmentFrame:SetParent(value and Minimap or map)
@@ -412,15 +415,16 @@ local options = function()
 					},
 					craftingOrder = {
 						name = L.craftingOrder,
-						order = 6.7, type = "toggle",
+						order = 9, type = "toggle",
 						set = function(_, value)
 							map.db.profile.craftingOrder = value
 							MinimapCluster.IndicatorFrame.CraftingOrderFrame:SetParent(value and Minimap or map)
 						end,
+						hidden = not map.isRetail,
 					},
 					zoneText = {
 						name = L.ZONETEXT,
-						order = 7, type = "toggle",
+						order = 10, type = "toggle",
 						set = function(_, value)
 							map.db.profile.zoneText = value
 							if value then
@@ -438,7 +442,7 @@ local options = function()
 					},
 					clock = {
 						name = L.clock,
-						order = 8, type = "toggle",
+						order = 11, type = "toggle",
 						set = function(_, value)
 							map.db.profile.clock = value
 							map.clock:SetParent(value and Minimap or map)
@@ -446,21 +450,30 @@ local options = function()
 					},
 					coords = {
 						name = L.coordinates,
-						order = 9, type = "toggle",
+						order = 12, type = "toggle",
 						set = function(_, value)
 							map.db.profile.coords = value
 							map.coords.shown = value
 							map.coordsFrame:SetParent(value and Minimap or map)
 						end,
 					},
+					daynight = {
+						name = L.daynight,
+						order = 13, type = "toggle",
+						set = function(_, value)
+							map.db.profile.daynight = value
+							MinimapCluster.DielFrame:SetParent(value and Minimap or map)
+						end,
+						hidden = map.isRetail,
+					},
 					coordDesc = {
 						name = "\n".. L.coordinates..":",
-						order = 10, type = "description",
+						order = 14, type = "description",
 					},
 					coordPrecision = {
 						name = L.coordPrecision,
 						desc = L.coordPrecisionDesc,
-						order = 11, type = "select",
+						order = 15, type = "select",
 						values = {["%d,%d"] = L.normal, ["%.1f, %.1f"] = L.high, ["%.2f, %.2f"] = L.veryHigh},
 						set = function(_, value)
 							map.db.profile.coordPrecision = value
@@ -472,7 +485,7 @@ local options = function()
 					coordTime = {
 						name = L.coordUpdates,
 						desc = L.coordUpdatesDesc,
-						order = 12, type = "select",
+						order = 16, type = "select",
 						values = {[1] = L.normal, [0.5] = L.high, [0.1] = L.veryHigh},
 						set = function(_, value)
 							map.db.profile.coordTime = value
@@ -480,19 +493,20 @@ local options = function()
 					},
 					moveBlizzButtonDesc = {
 						name = "\n".. L.moveBlizzButtonsHeader1 .."\n".. L.moveBlizzButtonsHeader2,
-						order = 13, type = "description",
+						order = 17, type = "description",
 					},
 					moveBlizzButtonSelect = {
 						name = L.moveBlizzDropdown,
 						desc = L.moveBlizzDropdownDesc,
-						order = 14, type = "select",
+						order = 18, type = "select",
 						values = {
 							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
-							expansionSpecial = L.omniumFolio,
-							difficulty = L.difficultyIndicator,
+							expansionSpecial = map.isRetail and L.omniumFolio or nil,
+							difficulty = map.isRetail and L.difficultyIndicator or nil,
 							calendar = L.CALENDAR,
 							mail = L.newMail,
-							craftingOrder = L.craftingOrder,
+							craftingOrder = map.isRetail and L.craftingOrder or nil,
+							daynight = not map.isRetail and L.daynight or nil,
 							addonCompartment = L.addonCompartment,
 						},
 						get = function() return blizzButtonMoveSelection or "" end,
@@ -504,7 +518,7 @@ local options = function()
 						type = "range",
 						name = L.moveBlizzSlider,
 						desc = L.moveBlizzSliderDesc,
-						order = 15,
+						order = 19,
 						max = 360,
 						min = 1,
 						step = 1,

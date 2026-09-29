@@ -1,9 +1,11 @@
 
-local name = ...
+local name, addonTable = ...
 local media = LibStub("LibSharedMedia-3.0")
 local ldbi = LibStub("LibDBIcon-1.0")
 
 local frame = CreateFrame("Frame", name)
+frame.gameVersion = addonTable.gameVersion
+frame.isRetail = addonTable.isRetail
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
@@ -15,6 +17,7 @@ local blizzButtonNicknames = {
 	expansionSpecial = ExpansionLandingPageMinimapButton,
 	difficulty = MinimapCluster.InstanceDifficulty,
 	calendar = GameTimeFrame,
+	daynight = not addonTable.isRetail and MinimapCluster.DielFrame or nil,
 	mail = MinimapCluster.IndicatorFrame.MailFrame,
 	craftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame,
 	addonCompartment = AddonCompartmentFrame,
@@ -99,6 +102,7 @@ local function Init(self)
 			mail = true,
 			craftingOrder = true,
 			addonCompartment = false,
+			daynight = true,
 			autoZoom = true,
 			hideAddons = true,
 			position = {"CENTER", "CENTER", 0, 0},
@@ -156,7 +160,8 @@ local function Init(self)
 				zoomOut = 302,
 				expansionSpecial = 190,
 				difficulty = 150,
-				calendar = 35,
+				calendar = 38,
+				daynight = 20,
 				mail = 20,
 				addonCompartment = 132,
 				craftingOrder = 170,
@@ -752,6 +757,15 @@ local function Login(self)
 	else
 		self.SetParent(AddonCompartmentFrame, self)
 	end
+	-- Day/Night
+	if not self.isRetail then
+		if self.db.profile.daynight then
+			self.SetParent(MinimapCluster.DielFrame, Minimap)
+		else
+			self.SetParent(MinimapCluster.DielFrame, self)
+		end
+		--MinimapCluster.DielFrame:SetSize(31, 31) -- Shrink to sane size
+	end
 
 	-- XXX hopefuly temporary workaround for line 376 of Minimap.lua
 	self.Layout = function() end
@@ -928,34 +942,63 @@ local function Login(self)
 	end)
 
 	hijackClicksFrame:SetSize(self.db.profile.size, self.db.profile.size)
-	hijackClicksFrame:SetScript("OnMouseUp", function(f, btn)
-		if frame.db.profile.shape == "ROUND" then
-			local x, y = GetCursorPosition()
-			x = x / f:GetEffectiveScale()
-			y = y / f:GetEffectiveScale()
+	if addonTable.isRetail then -- Remove the expansion special button click on retail
+		hijackClicksFrame:SetScript("OnMouseUp", function(f, btn)
+			if frame.db.profile.shape == "ROUND" then
+				local x, y = GetCursorPosition()
+				x = x / f:GetEffectiveScale()
+				y = y / f:GetEffectiveScale()
 
-			local cx, cy = f:GetCenter()
-			x = x - cx
-			y = y - cy
-			if math.sqrt(x * x + y * y) > (f:GetWidth() / 2) then
-				return
+				local cx, cy = f:GetCenter()
+				x = x - cx
+				y = y - cy
+				if math.sqrt(x * x + y * y) > (f:GetWidth() / 2) then
+					return
+				end
 			end
-		end
 
-		if btn == frame.db.profile.calendarBtn then
-			if not InCombatLockdown() then
-				GameTimeFrame:Click()
+			if btn == frame.db.profile.calendarBtn then
+				if not InCombatLockdown() then
+					GameTimeFrame:Click()
+				end
+			elseif btn == frame.db.profile.trackingBtn then
+				TrackingButton:OpenMenu()
+			elseif btn == frame.db.profile.expansionSpecialBtn then
+				ExpansionLandingPageMinimapButton:Click()
+			elseif btn == frame.db.profile.mapBtn then
+				if not InCombatLockdown() then
+					ToggleWorldMap()
+				end
 			end
-		elseif btn == frame.db.profile.trackingBtn then
-			TrackingButton:OpenMenu()
-		elseif btn == frame.db.profile.expansionSpecialBtn then
-			ExpansionLandingPageMinimapButton:Click()
-		elseif btn == frame.db.profile.mapBtn then
-			if not InCombatLockdown() then
-				ToggleWorldMap()
+		end)
+	else
+		hijackClicksFrame:SetScript("OnMouseUp", function(f, btn)
+			if frame.db.profile.shape == "ROUND" then
+				local x, y = GetCursorPosition()
+				x = x / f:GetEffectiveScale()
+				y = y / f:GetEffectiveScale()
+
+				local cx, cy = f:GetCenter()
+				x = x - cx
+				y = y - cy
+				if math.sqrt(x * x + y * y) > (f:GetWidth() / 2) then
+					return
+				end
 			end
-		end
-	end)
+
+			if btn == frame.db.profile.calendarBtn then
+				if not InCombatLockdown() then
+					GameTimeFrame:Click()
+				end
+			elseif btn == frame.db.profile.trackingBtn then
+				TrackingButton:OpenMenu()
+			elseif btn == frame.db.profile.mapBtn then
+				if not InCombatLockdown() then
+					ToggleWorldMap()
+				end
+			end
+		end)
+	end
 end
 
 function frame:CALENDAR_ACTION_PENDING()

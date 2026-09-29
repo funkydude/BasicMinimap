@@ -26,6 +26,6 @@
 
 embeds.xml
 BasicMinimap.lua [AllowLoadGameType mainline]
-Init_[Game].lua [AllowLoadGameType classic]
+Init_[Game].lua [AllowLoadGameType standard, classic]
 BasicMinimap_Classic.lua [AllowLoadGameType classic]
 modules.xml

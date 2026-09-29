@@ -1,0 +1,3 @@
+local _, addonTable = ...
+addonTable.gameVersion = 100
+addonTable.isRetail = true

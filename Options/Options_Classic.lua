@@ -471,6 +471,15 @@ local options = function()
 							LFGMinimapFrame:SetParent(value and Minimap or map)
 						end,
 					} or nil,
+					daynight = {
+						name = L.daynight,
+						order = 10.5, type = "toggle",
+						set = function(_, value)
+							map.db.profile.daynight = value
+							GameTimeFrame:SetParent(value and Minimap or map)
+						end,
+						hidden =  map.gameVersion > 2,
+					},
 					coordDesc = {
 						name = "\n\n\n".. L.coordinates..":",
 						order = 11, type = "description",
@@ -508,7 +517,9 @@ local options = function()
 							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
 							mail = L.newMail,
 							pvp = L.classicPvPQueue,
+							calendar = map.gameVersion >= 3 and L.CALENDAR or nil,
 							lfg = LFGMinimapFrame and L.classicGroupFinder or nil,
+							daynight = (map.gameVersion == 1 or map.gameVersion == 2) and L.daynight or nil,
 							tracking = map.gameVersion == 1 and L.tracking or nil},
 						get = function() return blizzButtonMoveSelection or "" end,
 						set = function(_, value)
