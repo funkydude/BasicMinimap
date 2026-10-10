@@ -764,6 +764,12 @@ local function Login(self)
 		else
 			self.SetParent(MinimapCluster.DielFrame, self)
 		end
+		-- In Blizzard_Minimap\Camelot\Diel.lua the function `SetEditModeScale` changes the scale and point, so we need to overwrite this to keep it in place
+		hooksecurefunc(MinimapCluster, "SetEditModeScale", function()
+			frame.SetScale(MinimapCluster.DielFrame, 1)
+			frame.ClearAllPoints(MinimapCluster.DielFrame)
+			ldbi:SetButtonToPosition(MinimapCluster.DielFrame, frame.db.profile.blizzButtonLocation.daynight)
+		end)
 		--MinimapCluster.DielFrame:SetSize(31, 31) -- Shrink to sane size
 	end
 
