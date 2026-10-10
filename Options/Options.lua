@@ -382,7 +382,6 @@ local options = function()
 								end
 							end
 						end,
-						hidden = not map.isRetail,
 					},
 					expansionSpecial = {
 						name = L.omniumFolio,
@@ -502,7 +501,7 @@ local options = function()
 						values = {
 							zoomIn = L.zoomIn, zoomOut = L.zoomOut,
 							expansionSpecial = map.isRetail and L.omniumFolio or nil,
-							difficulty = map.isRetail and L.difficultyIndicator or nil,
+							difficulty = L.difficultyIndicator,
 							calendar = L.CALENDAR,
 							mail = L.newMail,
 							craftingOrder = map.isRetail and L.craftingOrder or nil,
