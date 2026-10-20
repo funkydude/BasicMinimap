@@ -38,7 +38,6 @@ read_globals = {
 	"GetLocale",
 	"GetMinimapZoneText",
 	"GetSubZoneText",
-	"GetZonePVPInfo",
 	"GetZoneText",
 	"HIGHLIGHT_FONT_COLOR",
 	"hooksecurefunc",

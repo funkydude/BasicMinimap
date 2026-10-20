@@ -405,7 +405,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 		zoneText:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	end
 	do
-		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, C_PvP and C_PvP.GetZonePVPInfo or GetZonePVPInfo
+		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, C_PvP.GetZonePVPInfo
 		local function UpdateDisplay(zoneTextFrame) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
 			local text = GetMinimapZoneText()
 			zoneTextFont:SetText(text)

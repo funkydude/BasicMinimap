@@ -162,7 +162,7 @@ local function Init(self)
 				difficulty = 150,
 				calendar = 38,
 				daynight = 20,
-				mail = 20,
+				mail = 5,
 				addonCompartment = 132,
 				craftingOrder = 170,
 			},
@@ -385,24 +385,26 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 
 	do
 		-- Kill Blizz Frame
-		if MinimapZoneTextButton then -- XXX Dragonflight compat
-			zoneText.SetParent(MinimapZoneTextButton, self)
-			zoneTextFont.SetParent(MinimapZoneText, self)
-			MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 719-722 script "<OnLoad>" as of wow 9.0.1
-			MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
-			MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
-			local function blockBtn(MinimapZoneTextButton)
-				zoneText.SetParent(MinimapZoneTextButton, frame)
-			end
-			local function blockText(MinimapZoneText)
-				zoneTextFont.SetParent(MinimapZoneText, frame)
-			end
-			hooksecurefunc(MinimapZoneTextButton, "SetParent", blockBtn)
-			hooksecurefunc(MinimapZoneText, "SetParent", blockText)
-		else
+		--if MinimapZoneTextButton then -- XXX Dragonflight compat
+		--	zoneText.SetParent(MinimapZoneTextButton, self)
+		--	zoneTextFont.SetParent(MinimapZoneText, self)
+		--	MinimapCluster:UnregisterEvent("ZONE_CHANGED") -- Minimap.xml line 719-722 script "<OnLoad>" as of wow 9.0.1
+		--	MinimapCluster:UnregisterEvent("ZONE_CHANGED_INDOORS")
+		--	MinimapCluster:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+		--	local function blockBtn(MinimapZoneTextButton)
+		--		zoneText.SetParent(MinimapZoneTextButton, frame)
+		--	end
+		--	local function blockText(MinimapZoneText)
+		--		zoneTextFont.SetParent(MinimapZoneText, frame)
+		--	end
+		--	hooksecurefunc(MinimapZoneTextButton, "SetParent", blockBtn)
+		--	hooksecurefunc(MinimapZoneText, "SetParent", blockText)
+		--else
 			zoneText.SetParent(MinimapCluster.ZoneTextButton, self)
-			zoneText.SetParent(MinimapCluster.BorderTop, self)
-		end
+			if MinimapCluster.BorderTop then -- XXX removed in 12.1.7
+				zoneText.SetParent(MinimapCluster.BorderTop, self)
+			end
+		--end
 	end
 
 	zoneText:SetPoint("BOTTOM", backdrop, "TOP", self.db.profile.zoneTextConfig.x, self.db.profile.zoneTextConfig.y)
@@ -438,7 +440,7 @@ local function CreateZoneText(self, fullMinimapSize) -- Create our own zone text
 		zoneText:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	end
 	do
-		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, C_PvP and C_PvP.GetZonePVPInfo or GetZonePVPInfo
+		local GetMinimapZoneText, GetZonePVPInfo = GetMinimapZoneText, C_PvP.GetZonePVPInfo
 		local function UpdateDisplay(zoneTextFrame) -- Minimap.lua line 47 function "Minimap_Update" as of wow 9.0.1
 			local text = GetMinimapZoneText()
 			zoneTextFont:SetText(text)
@@ -667,33 +669,33 @@ local function Login(self)
 	self.SetSize(Minimap, self.db.profile.size, self.db.profile.size)
 	-- I'm not sure of a better way to update the render layer to the new size
 	if Minimap:GetZoom() ~= 5 then
-		if Minimap_ZoomInClick then -- XXX Dragonflight compat
-			Minimap_ZoomInClick()
-			Minimap_ZoomOutClick()
-		else
+		--if Minimap_ZoomInClick then -- XXX Dragonflight compat
+		--	Minimap_ZoomInClick()
+		--	Minimap_ZoomOutClick()
+		--else
 			Minimap.ZoomIn:Click()
 			Minimap.ZoomOut:Click()
-		end
+		--end
 	else
-		if Minimap_ZoomInClick then -- XXX Dragonflight compat
-			Minimap_ZoomOutClick()
-			Minimap_ZoomInClick()
-		else
+		--if Minimap_ZoomInClick then -- XXX Dragonflight compat
+		--	Minimap_ZoomOutClick()
+		--	Minimap_ZoomInClick()
+		--else
 			Minimap.ZoomOut:Click()
 			Minimap.ZoomIn:Click()
-		end
+		--end
 	end
 
 	ldbi:SetButtonRadius(self.db.profile.radius) -- Do this after changing size as an easy way to avoid having to call :Refresh
-	if MinimapNorthTag then -- XXX Dragonflight compat
-		self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
-		-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
-		--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
-		self.SetParent(MinimapBorderTop, self) -- Zone text border
-		self.SetParent(MinimapBorder, self) -- Minimap border
-	else
+	--if MinimapNorthTag then -- XXX Dragonflight compat
+	--	self.SetParent(MinimapNorthTag, self) -- North tag (static minimap)
+	--	-- When rotating minimap is enabled, it has it's own special north tag. I don't think we need to hide it
+	--	--self.SetParent(MinimapCompassTexture, self) -- North tag & compass (when rotating minimap is enabled)
+	--	self.SetParent(MinimapBorderTop, self) -- Zone text border
+	--	self.SetParent(MinimapBorder, self) -- Minimap border
+	--else
 		self.SetParent(MinimapBackdrop, self) -- N/E/S/W circular indicator
-	end
+	--end
 
 	local shape = self.db.profile.shape
 	if shape == "SQUARE" then
@@ -721,15 +723,15 @@ local function Login(self)
 	Minimap:SetQuestBlobRingAlpha(0)
 
 	-- Zoom buttons
-	if MinimapZoomIn then -- XXX Dragonflight compat
-		if not self.db.profile.zoomBtn then
-			self.SetParent(MinimapZoomIn, self)
-			self.SetParent(MinimapZoomOut, self)
-		else
-			self.SetParent(MinimapZoomIn, Minimap)
-			self.SetParent(MinimapZoomOut, Minimap)
-		end
-	else
+	--if MinimapZoomIn then -- XXX Dragonflight compat
+	--	if not self.db.profile.zoomBtn then
+	--		self.SetParent(MinimapZoomIn, self)
+	--		self.SetParent(MinimapZoomOut, self)
+	--	else
+	--		self.SetParent(MinimapZoomIn, Minimap)
+	--		self.SetParent(MinimapZoomOut, Minimap)
+	--	end
+	--else
 		if not self.db.profile.zoomBtn then
 			self.SetParent(Minimap.ZoomIn, self)
 			self.SetParent(Minimap.ZoomOut, self)
@@ -737,7 +739,7 @@ local function Login(self)
 			self.SetParent(Minimap.ZoomIn, Minimap)
 			self.SetParent(Minimap.ZoomOut, Minimap)
 		end
-	end
+	--end
 
 	-- New mail button
 	if self.db.profile.mail then
@@ -746,10 +748,12 @@ local function Login(self)
 		self.SetParent(MinimapCluster.IndicatorFrame.MailFrame, self)
 	end
 	-- New Crafting Order button
-	if self.db.profile.craftingOrder then
-		self.SetParent(MinimapCluster.IndicatorFrame.CraftingOrderFrame, Minimap)
-	else
-		self.SetParent(MinimapCluster.IndicatorFrame.CraftingOrderFrame, self)
+	if MinimapCluster.IndicatorFrame.CraftingOrderFrame then
+		if self.db.profile.craftingOrder then
+			self.SetParent(MinimapCluster.IndicatorFrame.CraftingOrderFrame, Minimap)
+		else
+			self.SetParent(MinimapCluster.IndicatorFrame.CraftingOrderFrame, self)
+		end
 	end
 	-- Addon Compartment
 	if self.db.profile.addonCompartment then
@@ -780,26 +784,33 @@ local function Login(self)
 	self.SetParent(GameTimeFrame, Minimap)
 
 	-- World map button
-	if MiniMapWorldMapButton then -- XXX Dragonflight compat
-		self.SetParent(MiniMapWorldMapButton, self)
-	else
+	--if MiniMapWorldMapButton then -- XXX Dragonflight compat
+	--	self.SetParent(MiniMapWorldMapButton, self)
+	--else
 		local overlayMail = MinimapCluster.IndicatorFrame.MailFrame:CreateTexture(nil, "OVERLAY")
 		overlayMail:SetSize(53,53)
 		overlayMail:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
-		overlayMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER", 10, -10)
+		overlayMail:SetPoint("CENTER", MinimapCluster.IndicatorFrame.MailFrame, "CENTER", 10, -10)
 		local backgroundMail = MinimapCluster.IndicatorFrame.MailFrame:CreateTexture(nil, "BACKGROUND")
 		backgroundMail:SetSize(25,25)
 		backgroundMail:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
-		backgroundMail:SetPoint("CENTER", MiniMapMailIcon, "CENTER")
+		backgroundMail:SetPoint("CENTER", MinimapCluster.IndicatorFrame.MailFrame, "CENTER")
+		if not addonTable.isRetail then
+			MiniMapMailIcon:SetScale(0.7)
+		end
+		MiniMapMailIcon:ClearAllPoints()
+		MiniMapMailIcon:SetPoint("CENTER")
 
-		local overlayCraftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture(nil, "OVERLAY")
-		overlayCraftingOrder:SetSize(53,53)
-		overlayCraftingOrder:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
-		overlayCraftingOrder:SetPoint("CENTER", MiniMapCraftingOrderIcon, "CENTER", 10, -10)
-		local backgroundCraftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture(nil, "BACKGROUND")
-		backgroundCraftingOrder:SetSize(25,25)
-		backgroundCraftingOrder:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
-		backgroundCraftingOrder:SetPoint("CENTER", MiniMapCraftingOrderIcon, "CENTER")
+		if MinimapCluster.IndicatorFrame.CraftingOrderFrame then
+			local overlayCraftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture(nil, "OVERLAY")
+			overlayCraftingOrder:SetSize(53,53)
+			overlayCraftingOrder:SetTexture(136430) -- 136430 = Interface\\Minimap\\MiniMap-TrackingBorder
+			overlayCraftingOrder:SetPoint("CENTER", MiniMapCraftingOrderIcon, "CENTER", 10, -10)
+			local backgroundCraftingOrder = MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture(nil, "BACKGROUND")
+			backgroundCraftingOrder:SetSize(25,25)
+			backgroundCraftingOrder:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
+			backgroundCraftingOrder:SetPoint("CENTER", MiniMapCraftingOrderIcon, "CENTER")
+		end
 
 		local overlayAddonCompartment = AddonCompartmentFrame:CreateTexture(nil, "OVERLAY")
 		overlayAddonCompartment:SetSize(53,53)
@@ -809,6 +820,13 @@ local function Login(self)
 		backgroundAddonCompartment:SetSize(25,25)
 		backgroundAddonCompartment:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
 		backgroundAddonCompartment:SetPoint("CENTER", AddonCompartmentFrame, "CENTER")
+		-- Hide the border
+		if AddonCompartmentFrame.StateTexture then
+			self.SetParent(AddonCompartmentFrame.StateTexture, self)
+		end
+		if AddonCompartmentFrame.AddTexture then
+			self.SetParent(AddonCompartmentFrame.AddTexture, self)
+		end
 
 		local overlayCalendar = GameTimeFrame:CreateTexture(nil, "OVERLAY")
 		overlayCalendar:SetSize(53,53)
@@ -836,12 +854,12 @@ local function Login(self)
 		backgroundZoomOut:SetSize(25,25)
 		backgroundZoomOut:SetTexture(136467) -- 136467 = Interface\\Minimap\\UI-Minimap-Background
 		backgroundZoomOut:SetPoint("CENTER", Minimap.ZoomOut, "CENTER")
-	end
+	--end
 
 	-- Tracking button
-	if MiniMapTracking then -- XXX Dragonflight compat
-		self.SetParent(MiniMapTracking, self)
-	else
+	--if MiniMapTracking then -- XXX Dragonflight compat
+	--	self.SetParent(MiniMapTracking, self)
+	--else
 		self.SetParent(MinimapCluster.Tracking, self)
 		self.SetParent(TrackingButton, Minimap)
 		self.ClearAllPoints(TrackingButton)
@@ -850,24 +868,26 @@ local function Login(self)
 		self.SetFrameStrata(TrackingButton, "BACKGROUND")
 		self.SetFixedFrameStrata(TrackingButton, true)
 		TrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
-	end
+	--end
 
 	-- Difficulty indicators
-	if not self.db.profile.raidDiffIcon then
-		if MiniMapInstanceDifficulty then
-			self.SetParent(MiniMapInstanceDifficulty, self)
-			self.SetParent(GuildInstanceDifficulty, self)
-			self.SetParent(MiniMapChallengeMode, self)
+	if addonTable.isRetail then
+		if not self.db.profile.raidDiffIcon then
+			--if MiniMapInstanceDifficulty then
+			--	self.SetParent(MiniMapInstanceDifficulty, self)
+			--	self.SetParent(GuildInstanceDifficulty, self)
+			--	self.SetParent(MiniMapChallengeMode, self)
+			--else
+				self.SetParent(MinimapCluster.InstanceDifficulty, self)
+			--end
 		else
-			self.SetParent(MinimapCluster.InstanceDifficulty, self)
-		end
-	else
-		if MiniMapInstanceDifficulty then
-			self.SetParent(MiniMapInstanceDifficulty, Minimap)
-			self.SetParent(GuildInstanceDifficulty, Minimap)
-			self.SetParent(MiniMapChallengeMode, Minimap)
-		else
-			self.SetParent(MinimapCluster.InstanceDifficulty, Minimap)
+			--if MiniMapInstanceDifficulty then
+			--	self.SetParent(MiniMapInstanceDifficulty, Minimap)
+			--	self.SetParent(GuildInstanceDifficulty, Minimap)
+			--	self.SetParent(MiniMapChallengeMode, Minimap)
+			--else
+				self.SetParent(MinimapCluster.InstanceDifficulty, Minimap)
+			--end
 		end
 	end
 
@@ -899,9 +919,9 @@ local function Login(self)
 	end
 
 	-- PvE/PvP Queue button
-	if QueueStatusMinimapButton then -- XXX Dragonflight compat
-		self.SetParent(QueueStatusMinimapButton, Minimap)
-	end
+	--if QueueStatusMinimapButton then -- XXX Dragonflight compat
+	--	self.SetParent(QueueStatusMinimapButton, Minimap)
+	--end
 
 	-- Update all blizz button positions
 	for nickName, button in next, blizzButtonNicknames do
@@ -917,13 +937,13 @@ local function Login(self)
 		current = current + 1
 		if started == current then
 			Minimap:SetZoom(0)
-			if MinimapZoomIn then -- XXX Dragonflight compat
-				MinimapZoomIn:Enable()
-				MinimapZoomOut:Disable()
-			else
+			--if MinimapZoomIn then -- XXX Dragonflight compat
+			--	MinimapZoomIn:Enable()
+			--	MinimapZoomOut:Disable()
+			--else
 				Minimap.ZoomIn:Enable()
 				Minimap.ZoomOut:Disable()
-			end
+			--end
 			started, current = 0, 0
 		end
 	end
