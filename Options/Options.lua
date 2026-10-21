@@ -663,7 +663,7 @@ local options = function()
 								name = function()
 									local pvpType = C_PvP.GetZonePVPInfo()
 									if not pvpType then
-										return L.currentZone:format(L.zoneNormal)
+										return L.currentZone:format(L.zone_normal)
 									else
 										local name = L["zone_"..pvpType]
 										return L.currentZone:format(name)
