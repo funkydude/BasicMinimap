@@ -388,11 +388,7 @@ local options = function()
 						order = 6, type = "toggle",
 						set = function(_, value)
 							map.db.profile.expansionSpecial = value
-							if GarrisonLandingPageMinimapButton then
-								map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
-							else
-								map.SetParent(ExpansionLandingPageMinimapButton, value and Minimap or map)
-							end
+							map.SetParent(ExpansionLandingPageMinimapButton, value and Minimap or map)
 						end,
 						hidden = not map.isRetail,
 					},

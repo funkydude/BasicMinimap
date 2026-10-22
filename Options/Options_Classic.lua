@@ -410,14 +410,14 @@ local options = function()
 						end,
 						disabled = not MiniMapInstanceDifficulty,
 					},
-					missions = {
+					expansionSpecial = {
 						name = L.missions,
 						order = 6, type = "toggle",
 						set = function(_, value)
-							map.db.profile.missions = value
-							map.SetParent(GarrisonLandingPageMinimapButton, value and Minimap or map)
+							map.db.profile.expansionSpecial = value
+							map.SetParent(ExpansionLandingPageMinimapButton, value and Minimap or map)
 						end,
-						disabled = true,
+						hidden = true,
 					},
 					mail = {
 						name = L.newMail,

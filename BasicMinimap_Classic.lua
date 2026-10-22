@@ -23,10 +23,8 @@ frame.blizzButtonNicknames = blizzButtonNicknames
 
 do
 	local function openOpts()
-		local EnableAddOn = C_AddOns.EnableAddOn or EnableAddOn
-		local LoadAddOn = C_AddOns.LoadAddOn or LoadAddOn
-		EnableAddOn("BasicMinimap_Options") -- Make sure it wasn't left disabled for whatever reason
-		LoadAddOn("BasicMinimap_Options")
+		C_AddOns.EnableAddOn("BasicMinimap_Options") -- Make sure it wasn't left disabled for whatever reason
+		C_AddOns.LoadAddOn("BasicMinimap_Options")
 		LibStub("AceConfigDialog-3.0"):Open(name)
 	end
 	SlashCmdList.BASICMINIMAP = openOpts
@@ -68,7 +66,7 @@ local function Init(self)
 			clock = true,
 			zoneText = true,
 			coords = true,
-			missions = true,
+			expansionSpecial = true,
 			raidDiffIcon = true,
 			zoomBtn = false,
 			lfg = true,
@@ -142,7 +140,7 @@ local function Init(self)
 	}
 	self.db = LibStub("AceDB-3.0"):New("BasicMinimapSV", defaults, true)
 	do
-		local rl = function() ReloadUI() end
+		local rl = function() C_UI.Reload() end
 		self.db.RegisterCallback(self, "OnProfileChanged", rl)
 		self.db.RegisterCallback(self, "OnProfileCopied", rl)
 		self.db.RegisterCallback(self, "OnProfileReset", rl)
@@ -766,7 +764,7 @@ local function Login(self)
 	--end
 
 	-- PvP Queue button
-	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- QueueStatusMinimapButton (Retail) > MiniMapBattlefieldFrame (Classic)
+	self.SetParent(MiniMapBattlefieldFrame, Minimap) -- MiniMapBattlefieldFrame (Classic)
 
 	-- Update all blizz button positions
 	for nickName, button in next, blizzButtonNicknames do
